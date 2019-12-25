@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>D_AddAVP</class>
+ <widget class="QDialog" name="D_AddAVP">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>610</width>
+    <height>442</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Добавление АВП</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Рубрика: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
+    <widget class="QLineEdit" name="lineEditAge"/>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Хронометраж, мин:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2">
+    <widget class="QDateEdit" name="dateEditYearOfRelease"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Наименование АВП на русском: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="lineEditURL_AVS"/>
+   </item>
+   <item row="12" column="0" colspan="3">
+    <widget class="QFrame" name="frame">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>55</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::WinPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>613</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonApply">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Применить</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/ok.ico</normaloff>:/icons/icons/ok.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonCancel">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Отмена</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/cancel.ico</normaloff>:/icons/icons/cancel.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonExit">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Выход</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QLineEdit" name="lineEditFilmMaker"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>URL АВС: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Режиссер/Автор: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QLineEdit" name="lineEditRubric"/>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Возраст:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Год выпуска: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QLineEdit" name="lineEditURL_AVP"/>
+   </item>
+   <item row="11" column="2">
+    <widget class="QSpinBox" name="spinBoxDuration">
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="lineEditNameOriginal"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Наименование АВП на языке оригинала:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="lineEditName"/>
+   </item>
+   <item row="6" column="2">
+    <widget class="QLineEdit" name="lineEditFormAVP"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>URL АВП: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Форма АВП: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_11">
+     <property name="text">
+      <string>Наименование АВС: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="lineEditNameAVS"/>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lineEditNameAVS</tabstop>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>lineEditNameOriginal</tabstop>
+  <tabstop>lineEditURL_AVS</tabstop>
+  <tabstop>lineEditURL_AVP</tabstop>
+  <tabstop>lineEditFormAVP</tabstop>
+  <tabstop>lineEditRubric</tabstop>
+  <tabstop>lineEditFilmMaker</tabstop>
+  <tabstop>lineEditAge</tabstop>
+  <tabstop>dateEditYearOfRelease</tabstop>
+  <tabstop>spinBoxDuration</tabstop>
+  <tabstop>pushButtonApply</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+  <tabstop>pushButtonExit</tabstop>
+ </tabstops>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButtonApply</sender>
+   <signal>clicked()</signal>
+   <receiver>D_AddAVP</receiver>
+   <slot>slotApply()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>433</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>D_AddAVP</receiver>
+   <slot>slotCancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>413</x>
+     <y>393</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonExit</sender>
+   <signal>clicked()</signal>
+   <receiver>D_AddAVP</receiver>
+   <slot>slotExit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>517</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>498</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotApply()</slot>
+  <slot>slotCancel()</slot>
+  <slot>slotExit()</slot>
+ </slots>
+</ui>

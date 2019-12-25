@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>D_Group</class>
+ <widget class="QDialog" name="D_Group">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>650</width>
+    <height>469</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Группы пользователей</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTableWidget" name="tableWidgetGroup">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>0</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Группа</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Категория</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::WinPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButtonAdd">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Добавить</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/add.ico</normaloff>:/icons/icons/add.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonDelete">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Удалить</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/delete.ico</normaloff>:/icons/icons/delete.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonEdit">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Редактировать</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>103</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonExit">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Выход</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButtonAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>D_Group</receiver>
+   <slot>slotAdd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>95</x>
+     <y>426</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>D_Group</receiver>
+   <slot>slotDelete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>424</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-2</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonEdit</sender>
+   <signal>clicked()</signal>
+   <receiver>D_Group</receiver>
+   <slot>slotEdit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>353</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonExit</sender>
+   <signal>clicked()</signal>
+   <receiver>D_Group</receiver>
+   <slot>slotExit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>597</x>
+     <y>432</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>645</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotAdd()</slot>
+  <slot>slotDelete()</slot>
+  <slot>slotEdit()</slot>
+  <slot>slotExit()</slot>
+ </slots>
+</ui>

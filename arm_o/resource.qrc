@@ -1,0 +1,37 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons/7ccd3948634917.560839cc6580c.png</file>
+    <file>icons/badge.ico</file>
+    <file>icons/group1.ico</file>
+    <file>icons/category.ico</file>
+    <file>icons/group.ico</file>
+    <file>icons/cfDB.ico</file>
+    <file>icons/deleteBD.png</file>
+    <file>icons/adduser.ico</file>
+    <file>icons/addusergroup.ico</file>
+    <file>icons/cleardb.png</file>
+    <file>icons/cancel.ico</file>
+    <file>icons/alarm.ico</file>
+    <file>icons/ok.ico</file>
+    <file>icons/grfc.png</file>
+    <file>icons/close.ico</file>
+    <file>icons/enter.ico</file>
+    <file>icons/add.ico</file>
+    <file>icons/edit.ico</file>
+    <file>icons/delete.ico</file>
+    <file>icons/delete_png.png</file>
+    <file>icons/about.png</file>
+    <file>icons/add_db.png</file>
+    <file>icons/button_reload.png</file>
+    <file>icons/configure_db.png</file>
+    <file>icons/date2.ico</file>
+    <file>icons/excel.png</file>
+    <file>icons/exit.png</file>
+    <file>icons/film_maker1.ico</file>
+    <file>icons/film_projector_cinema.ico</file>
+    <file>icons/question.ico</file>
+    <file>icons/rubric.ico</file>
+    <file>icons/user.ico</file>
+    <file>icons/web.ico</file>
+  </qresource>
+</RCC>
