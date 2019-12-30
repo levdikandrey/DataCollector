@@ -2,6 +2,7 @@
 #define D_ENTER_H
 
 #include <QDialog>
+#include <QSqlQuery>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class D_Enter; }
@@ -13,6 +14,7 @@ class DEnter: public QDialog
 public:
     DEnter(QWidget *parent = nullptr);
     QString currentUserName();
+    void initUserComBoBox();
 
 private slots:
     void slotEnter();
@@ -20,7 +22,7 @@ private slots:
 
 private:
     Ui::D_Enter *ui;
-
+    QSqlQuery *query;
 };
 
 #endif // D_ENTER_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1247</width>
-    <height>791</height>
+    <width>1256</width>
+    <height>796</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -322,6 +322,32 @@
       </layout>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="toolButtonKinopoisk">
+      <property name="minimumSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Импорт АВП из kinopoisk.ru</string>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resource.qrc">
+        <normaloff>:/icons/icons/rubric.ico</normaloff>:/icons/icons/rubric.ico</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0" colspan="7">
      <widget class="QTabWidget" name="tabWidget">
       <property name="toolTip">
@@ -338,28 +364,54 @@
         <string>Список АВП</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="3">
-         <widget class="QLabel" name="label_5">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="checkBoxAnalyzed">
           <property name="text">
-           <string>Выберите АВС:</string>
+           <string>Проанализированные</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
-         <spacer name="horizontalSpacer_3">
+        <item row="0" column="1" colspan="10">
+         <spacer name="horizontalSpacer_7">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>810</width>
+            <width>772</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="0" column="0" colspan="5">
+        <item row="0" column="11">
+         <widget class="QLineEdit" name="lineEdit"/>
+        </item>
+        <item row="0" column="12">
+         <widget class="QToolButton" name="toolButton">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/find.ico</normaloff>:/icons/icons/find.ico</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="13">
          <widget class="QTableWidget" name="tableWidgetAVP">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
@@ -413,13 +465,16 @@
           </column>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QPushButton" name="pushButtonAddAVP">
           <property name="minimumSize">
            <size>
             <width>120</width>
             <height>33</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Добавить новую запись об АВП</string>
           </property>
           <property name="text">
            <string>Добавить АВП</string>
@@ -436,7 +491,160 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="4">
+        <item row="2" column="1">
+         <widget class="QPushButton" name="pushButtonDeleteAVP">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>33</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Удалить записи об АВП</string>
+          </property>
+          <property name="text">
+           <string>Удалить АВП</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/delete.ico</normaloff>:/icons/icons/delete.ico</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>67</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="3">
+         <widget class="QPushButton" name="pushButtonPreview">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>33</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Предыдущие 1000 записей</string>
+          </property>
+          <property name="text">
+           <string>1000</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/previous.ico</normaloff>:/icons/icons/previous.ico</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Страница</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QLineEdit" name="lineEditNumberPage">
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhNone</set>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="6">
+         <widget class="QLabel" name="labelCountAVP">
+          <property name="text">
+           <string>из 250 (всего АВП  250000)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="7">
+         <widget class="QPushButton" name="pushButtonNext">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>33</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Следующие 1000 записей</string>
+          </property>
+          <property name="text">
+           <string>1000</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/next.ico</normaloff>:/icons/icons/next.ico</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="8">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="9">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Выберите АВС:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="10" colspan="3">
          <widget class="QComboBox" name="comboBoxAVS">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -461,29 +669,6 @@
             <string>Все</string>
            </property>
           </item>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="pushButtonDeleteAVP">
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>33</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Удалить АВП</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/delete.ico</normaloff>:/icons/icons/delete.ico</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
          </widget>
         </item>
        </layout>
@@ -765,32 +950,6 @@
       </widget>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QToolButton" name="toolButtonKinopoisk">
-      <property name="minimumSize">
-       <size>
-        <width>32</width>
-        <height>32</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Импорт АВП из kinopoisk.ru</string>
-      </property>
-      <property name="text">
-       <string>...</string>
-      </property>
-      <property name="icon">
-       <iconset resource="resource.qrc">
-        <normaloff>:/icons/icons/rubric.ico</normaloff>:/icons/icons/rubric.ico</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -798,7 +957,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1247</width>
+     <width>1256</width>
      <height>21</height>
     </rect>
    </property>
@@ -808,6 +967,8 @@
     </property>
     <addaction name="actionExcel"/>
     <addaction name="actionKinopoisk"/>
+    <addaction name="separator"/>
+    <addaction name="action"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -954,6 +1115,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+K</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/icons/group1.ico</normaloff>:/icons/icons/group1.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Смена пользователя</string>
    </property>
   </action>
  </widget>
@@ -1185,6 +1355,70 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButtonNext</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotNext()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>725</x>
+     <y>665</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>787</x>
+     <y>762</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonPreview</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotPrevious()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>663</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>379</x>
+     <y>766</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditNumberPage</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotChangeNumberPage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>511</x>
+     <y>677</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>534</x>
+     <y>770</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxAVS</sender>
+   <signal>activated(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotSelectAVS(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1003</x>
+     <y>674</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>963</x>
+     <y>769</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotExit()</slot>
@@ -1200,5 +1434,9 @@
   <slot>slotDeleteAVP()</slot>
   <slot>slotReload()</slot>
   <slot>slotImportKinopoisk()</slot>
+  <slot>slotNext()</slot>
+  <slot>slotPrevious()</slot>
+  <slot>slotChangeNumberPage()</slot>
+  <slot>slotSelectAVS(QString)</slot>
  </slots>
 </ui>

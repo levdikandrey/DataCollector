@@ -15,7 +15,7 @@ public:
     DAddTask(QWidget *parent = nullptr);
     ~DAddTask();
     void initComboBoxUser();
-    void initTableListAVP();
+    void initTableListAVP(int numberPage = 1);
 
 private slots:
     void slotAdd();
@@ -23,10 +23,18 @@ private slots:
     void slotApply();
     void slotCancel();
     void slotExit();
+    void slotPrevious();
+    void slotNext();
+    void slotChangeNumberPage();
 
 private:
     Ui::D_AddTask *ui;
     QSqlQuery *query;
+
+    int countAVP();
+    int m_countAVP;
+    int m_currentNumberPage;
+
 };
 
 #endif // DADDTASK_H

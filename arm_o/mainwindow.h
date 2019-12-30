@@ -44,7 +44,7 @@ public:
     /**
      * @brief initTableAVP - функция заполнения таблицы "Список АВП"
      */
-    void initTableAVP();
+    void initTableAVP(int numberPage = 1, long idAVS = -1);
     /**
      * @brief initTableTask - функция заполнения таблицы "Текущие задачи"
      */
@@ -80,7 +80,13 @@ private slots:
      */
     void slotDeleteAVP();
     void slotAddTask();
+
     void slotEditTask();
+    /**
+     * @brief slotEdit - функция вызывает диалог для редактирования параметров "Текущие задачи" в БД АВП (при двойном клике на строке записи в таблице)
+     */
+    void slotEditTask(int, int);
+
     void slotDeleteTask();
     void slotEditMyTask();
     void slotReload();
@@ -89,6 +95,11 @@ private slots:
     void slotGroup();
     void slotUser();
     void slotViolation();
+    void slotNext();
+    void slotPrevious();
+    void slotChangeNumberPage();
+    void slotSelectAVS(QString);
+    void slotStateChanged(int);
 
 public slots:
     /**
@@ -124,5 +135,9 @@ private:
     int stepProgress;
 
     void initDialog();
+    int countAVP(long idAVS = -1);
+    int m_countAVP;
+    int m_currentNumberPage;
+    long idAVS(QString nameAVS);
 };
 #endif // MAINWINDOW_H

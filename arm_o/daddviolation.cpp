@@ -8,6 +8,7 @@ DAddViolation::DAddViolation(QWidget *parent) :
     ui(new Ui::DAddViolation)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================
@@ -20,6 +21,18 @@ DAddViolation::~DAddViolation()
 const QString DAddViolation::violation() const
 {
     return ui->lineEditName->text();
+}
+
+//=========================================================
+void DAddViolation::setViolation(QString violation)
+{
+    ui->lineEditName->setText(violation);
+}
+
+//=========================================================
+void DAddViolation::setTitle(QString title)
+{
+    setWindowTitle(title);
 }
 
 //=========================================================

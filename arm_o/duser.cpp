@@ -25,6 +25,7 @@ DUser::DUser(QWidget *parent) :
     connect(ui->tableWidgetUser, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEdit(int, int)));
 
 //    initTableUser();
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================
@@ -159,11 +160,27 @@ void DUser::slotDelete()
         {
             while (!selectedRows.empty())
             {
-                sql = "DELETE FROM \"User\" WHERE \"ID\"=";sql += ui->tableWidgetUser->item(selectedRows[0].row(),3)->text(); sql += ";";
-                qDebug()<<"sql ="<<sql;
-                query->exec(sql);
-                ui->tableWidgetUser->removeRow(selectedRows[0].row());
-                selectedRows = ui->tableWidgetUser->selectionModel()->selectedRows();
+                try
+                {
+                    sql = "DELETE FROM \"User\" WHERE \"ID\"=";sql += ui->tableWidgetUser->item(selectedRows[0].row(),3)->text(); sql += ";";
+                    qDebug()<<"sql ="<<sql;
+                    if(query->exec(sql))
+                    {
+                        ui->tableWidgetUser->removeRow(selectedRows[0].row());
+                        selectedRows = ui->tableWidgetUser->selectionModel()->selectedRows();
+                    }
+                    else
+                    {
+                        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+                        break;
+                    }
+                }
+                catch(std::exception &e)
+                {
+                    qDebug()<<e.what();
+                    qDebug()<<query->lastError().text();
+                    QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+                }
             }
         }
     }
@@ -199,7 +216,10 @@ void DUser::slotEdit()
             if(query->exec(sql))
                 initTableUser();
             else
+            {
                 qDebug()<<query->lastError().text();
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            }
         }
     }
 }

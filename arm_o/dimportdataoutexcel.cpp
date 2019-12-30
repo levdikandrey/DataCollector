@@ -12,6 +12,7 @@ DImportDataOutExcel::DImportDataOutExcel(QWidget *parent)
 {
     ui->setupUi(this);
     m_mainWindow = reinterpret_cast<MainWindow*>(parent);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

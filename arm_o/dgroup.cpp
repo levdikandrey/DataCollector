@@ -25,6 +25,7 @@ DGroup::DGroup(QWidget *parent)
     connect(ui->tableWidgetGroup, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEdit(int, int)));
 
     initTableGroup();
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

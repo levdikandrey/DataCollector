@@ -66,21 +66,6 @@
      <property name="toolTip">
       <string>Выберите пользователя</string>
      </property>
-     <item>
-      <property name="text">
-       <string>Иванов И.И.</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Петров С.С.</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Сидоров А.В.</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="1" column="0">
@@ -115,7 +100,10 @@
       <string>Введите пароль</string>
      </property>
      <property name="text">
-      <string>********</string>
+      <string>123</string>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
      </property>
     </widget>
    </item>

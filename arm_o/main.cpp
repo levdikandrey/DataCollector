@@ -11,16 +11,13 @@ QString currentUserName;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    DEnter *dEnter = new DEnter();
-    if(dEnter->exec()!=QDialog::Accepted)
+    MainWindow w;
+    DEnter dEnter;
+    if(dEnter.exec()==QDialog::Accepted)
     {
-        qDebug()<<"DEnter::slotEnter()";
-        delete dEnter;
+        w.showMaximized();
         return a.exec();
     }
-    currentUserName = dEnter->currentUserName();
-    MainWindow w;
-    w.show();
-    qDebug() << a.libraryPaths().join(";");
-    return a.exec();
+    else
+        exit(0);
 }

@@ -9,6 +9,7 @@ DEditTask::DEditTask(QWidget *parent)
     , ui(new Ui::D_EditTask)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

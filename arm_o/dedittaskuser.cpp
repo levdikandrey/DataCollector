@@ -9,6 +9,7 @@ DEditTaskUser::DEditTaskUser(QWidget *parent)
     , ui(new Ui::D_EditTaskUser)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

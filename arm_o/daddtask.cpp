@@ -19,6 +19,16 @@ DAddTask::DAddTask(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
     ui->tableWidget->horizontalHeader()->resizeSection(3, 0);
+
+    m_currentNumberPage = 1;
+    m_countAVP = countAVP();
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(0, m_countAVP/1000, this) );
+    ui->labelCountAVP->setText(text);
+
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    ui->pushButtonPreview->setEnabled(false);
 }
 
 //=========================================================
@@ -86,15 +96,97 @@ void DAddTask::initComboBoxUser()
 }
 
 //=========================================================
-void DAddTask::initTableListAVP()
+int DAddTask::countAVP()
 {
-    QString sql="";
+    int count = 0;
+    QString sql;
+    try
+    {
+        sql = "SELECT COUNT(*) FROM avp;";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                count = query->value(0).toInt();
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+        qDebug()<<query->lastError().text();
+    }
+    return count;
+}
+
+//=========================================================
+void DAddTask::slotPrevious()
+{
+    QString tmp;
+    if(m_currentNumberPage>1)
+    {
+        ui->pushButtonNext->setEnabled(true);
+        m_currentNumberPage--;
+        initTableListAVP(m_currentNumberPage);
+        ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
+        if(m_currentNumberPage == 1)
+           ui->pushButtonPreview->setEnabled(false);
+    }
+}
+
+//=========================================================
+void DAddTask::slotNext()
+{
+    QString tmp;
+    if(m_currentNumberPage<=(m_countAVP/1000))
+    {
+        ui->pushButtonPreview->setEnabled(true);
+        m_currentNumberPage++;
+        initTableListAVP(m_currentNumberPage);
+        ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
+        if(m_currentNumberPage == (m_countAVP/1000))
+            ui->pushButtonNext->setEnabled(false);
+    }
+}
+
+//=========================================================
+void DAddTask::slotChangeNumberPage()
+{
+    qDebug()<<ui->lineEditNumberPage->text();
+    m_currentNumberPage = ui->lineEditNumberPage->text().toInt();
+
+    if(m_currentNumberPage<=(m_countAVP/1000))
+    {
+        if( (m_currentNumberPage>1) && (m_currentNumberPage<(m_countAVP/1000)) )
+        {
+            ui->pushButtonPreview->setEnabled(true);
+            ui->pushButtonNext->setEnabled(true);
+        }
+        else if(m_currentNumberPage==1)
+        {
+            ui->pushButtonPreview->setEnabled(false);
+            ui->pushButtonNext->setEnabled(true);
+        }
+        else if(m_currentNumberPage==(m_countAVP/1000))
+        {
+            ui->pushButtonNext->setEnabled(false);
+            ui->pushButtonPreview->setEnabled(true);
+        }
+
+        initTableListAVP(m_currentNumberPage);
+    }
+}
+
+
+//=========================================================
+void DAddTask::initTableListAVP(int numberPage)
+{
+    QString sql="",tmp;
     try
     {
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
 
-        sql = "SELECT \"NameRus\",\"URL\",\"ID\" FROM \"avp\";";
+        sql = "SELECT \"NameRus\",\"URL\",\"ID\" FROM \"avp\" ORDER BY \"ID\" LIMIT 1000 OFFSET ";
+        sql+=tmp.setNum((numberPage-1)*1000);sql+=";";
 
         if(query->exec(sql))
         {

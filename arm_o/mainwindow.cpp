@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionUser, SIGNAL(triggered()), SLOT(slotUser()));
     connect(ui->actionViolation, SIGNAL(triggered()), SLOT(slotViolation()));
 
+    connect(ui->tableWidgetCurrentTasks, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEditTask(int, int)));
+    connect(ui->checkBoxAnalyzed, SIGNAL(stateChanged(int)),this, SLOT(slotStateChanged(int))));
 
     query = nullptr;
 
@@ -71,14 +73,23 @@ MainWindow::MainWindow(QWidget *parent)
     dUser = new DUser(this);
     dViolation = new DViolation(this);
 
-    QWidget::showMaximized();
+    m_currentNumberPage = 1;
+    m_countAVP = countAVP();
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->labelCountAVP->setText(text);
+    ui->pushButtonPreview->setEnabled(false);
 }
 
 //=========================================================
 MainWindow::~MainWindow()
 {
 //    qDebug()<<"~MainWindow()";
+    importDataThread.quit();
     importDataThread.terminate();
+    importDataThreadKinopoisk.quit();
+    importDataThreadKinopoisk.terminate();
     delete cImportData;
 
     delete ui;
@@ -342,11 +353,12 @@ void MainWindow::initAVS()
                ui->comboBoxAVS->addItem(itemAVS);
            }
        }
+       else
+           qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
         qDebug()<<e.what();
-        qDebug()<<query->lastError().text();
     }
 }
 
@@ -402,9 +414,154 @@ void MainWindow::initTableTask()
 }
 
 //=========================================================
-void MainWindow::initTableAVP()
+int MainWindow::countAVP(long idAVS)
 {
-    QString sql="";
+    int count = 0;
+    QString sql, tmp;
+    try
+    {
+        if(idAVS == -1)
+        {
+            sql = "SELECT COUNT(*) FROM avp;";
+        }
+        else
+        {
+            sql = "SELECT COUNT(*) FROM avp WHERE \"ID_AVS\"="+ tmp.setNum(idAVS)+ ";";
+        }
+        if(query->exec(sql))
+        {
+            if(query->next())
+                count = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return count;
+}
+
+//=========================================================
+long MainWindow::idAVS(QString nameAVS)
+{
+    long id = -1;
+    QString sql;
+    try
+    {
+        sql = "SELECT \"ID\" FROM avs WHERE \"NameAVS\"=\'"+ nameAVS +"\';";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                id = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return id;
+}
+
+//=========================================================
+void MainWindow::slotStateChanged(int state)
+{
+    if(state == Qt::Unchecked)
+    {
+    }
+    else if(state == Qt::Checked)
+    {
+    }
+}
+
+//=========================================================
+void MainWindow::slotSelectAVS(QString nameAVS)
+{
+    QString avs;
+    long id = -1;
+    if(nameAVS == "Все")
+        initTableAVP(1,-1);
+    else
+    {
+        avs = nameAVS.mid(0,nameAVS.indexOf('(')-1);
+        id = idAVS(avs);
+        initTableAVP(1,id);
+    }
+
+    m_currentNumberPage = 1;
+    m_countAVP = countAVP(id);
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->labelCountAVP->setText(text);
+    ui->pushButtonPreview->setEnabled(false);
+}
+
+//=========================================================
+void MainWindow::slotNext()
+{
+    QString tmp;
+    if(m_currentNumberPage<=(m_countAVP/1000))
+    {
+        ui->pushButtonPreview->setEnabled(true);
+        m_currentNumberPage++;
+        initTableAVP(m_currentNumberPage);
+        ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
+        if(m_currentNumberPage == (m_countAVP/1000))
+            ui->pushButtonNext->setEnabled(false);
+    }
+}
+
+//=========================================================
+void MainWindow::slotPrevious()
+{
+    QString tmp;
+    if(m_currentNumberPage>1)
+    {
+        ui->pushButtonNext->setEnabled(true);
+        m_currentNumberPage--;
+        initTableAVP(m_currentNumberPage);
+        ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
+        if(m_currentNumberPage == 1)
+           ui->pushButtonPreview->setEnabled(false);
+    }
+}
+
+//=========================================================
+void MainWindow::slotChangeNumberPage()
+{
+    qDebug()<<ui->lineEditNumberPage->text();
+    m_currentNumberPage = ui->lineEditNumberPage->text().toInt();
+
+    if(m_currentNumberPage<=(m_countAVP/1000))
+    {
+        if( (m_currentNumberPage>1) && (m_currentNumberPage<(m_countAVP/1000)) )
+        {
+            ui->pushButtonPreview->setEnabled(true);
+            ui->pushButtonNext->setEnabled(true);
+        }
+        else if(m_currentNumberPage==1)
+        {
+            ui->pushButtonPreview->setEnabled(false);
+            ui->pushButtonNext->setEnabled(true);
+        }
+        else if(m_currentNumberPage==(m_countAVP/1000))
+        {
+            ui->pushButtonNext->setEnabled(false);
+            ui->pushButtonPreview->setEnabled(true);
+        }
+
+        initTableAVP(m_currentNumberPage);
+    }
+}
+
+//=========================================================
+void MainWindow::initTableAVP(int numberPage, long idAVS )
+{
+    QString sql="",tmp;
     try
     {
         ui->tableWidgetAVP->clearContents();
@@ -423,9 +580,13 @@ void MainWindow::initTableAVP()
               "avp.\"ID\" FROM avp "
               "INNER JOIN avs ON avp.\"ID_AVS\" = avs.\"ID\" "
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
-              "INNER JOIN \"User\" u ON u.\"ID\" = aa.\"ID_User\" "
-              "WHERE avp.\"ID\" >= (SELECT MIN(\"ID\") FROM avp) "
-              "AND avp.\"ID\" < (SELECT MIN(\"ID\") FROM avp)+1000;";
+              "INNER JOIN \"User\" u ON u.\"ID\" = aa.\"ID_User\"";
+              if( idAVS != -1)
+              {
+                  sql+=" WHERE \"ID_AVS\"="; sql+=tmp.setNum(idAVS);
+              }
+              sql+=" ORDER BY avp.\"ID\" LIMIT 1000 OFFSET ";
+        sql+=tmp.setNum((numberPage-1)*1000);sql+=";";
 
         if(query->exec(sql))
         {
@@ -504,11 +665,12 @@ void MainWindow::initTableAVP()
 //                    break;
             }
         }
+        else
+            qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
         qDebug()<<e.what();
-        qDebug()<<query->lastError().text();
     }
 }
 
@@ -642,6 +804,12 @@ void MainWindow::slotAddTask()
 void MainWindow::slotEditTask()
 {
     dEditTaskUser->exec();
+}
+
+//=========================================================
+void MainWindow::slotEditTask(int, int)
+{
+    slotEditTask();
 }
 
 //=========================================================

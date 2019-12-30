@@ -15,6 +15,8 @@ public:
     explicit DAddViolation(QWidget *parent = nullptr);
     ~DAddViolation();
     const QString violation() const;
+    void setViolation(QString violation);
+    void setTitle(QString title);
 
 public slots:
     void slotApply();

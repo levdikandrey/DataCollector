@@ -17,6 +17,7 @@ DAddAVP::DAddAVP(QWidget *parent)
     query = nullptr;
     query = new QSqlQuery(db);
     m_cImportData = new CImportData();
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

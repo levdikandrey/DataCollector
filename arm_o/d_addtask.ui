@@ -225,6 +225,9 @@
    </item>
    <item row="3" column="0" colspan="3">
     <widget class="QFrame" name="frame">
+     <property name="whatsThis">
+      <string/>
+     </property>
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
      </property>
@@ -233,13 +236,120 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>192</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonPreview">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Предыдущие 1000 записей</string>
+        </property>
+        <property name="text">
+         <string>1000</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/previous.ico</normaloff>:/icons/icons/previous.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Страница</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditNumberPage">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="text">
+         <string>1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelCountAVP">
+        <property name="text">
+         <string>из 250 (всего АВП  250000)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonNext">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Следующие 1000 записей</string>
+        </property>
+        <property name="text">
+         <string>1000</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/next.ico</normaloff>:/icons/icons/next.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>613</width>
+          <width>192</width>
           <height>20</height>
          </size>
         </property>
@@ -335,6 +445,21 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>pushButtonPreview</tabstop>
+  <tabstop>lineEditNumberPage</tabstop>
+  <tabstop>pushButtonNext</tabstop>
+  <tabstop>comboBoxUser</tabstop>
+  <tabstop>comboBox_2</tabstop>
+  <tabstop>comboBox_3</tabstop>
+  <tabstop>listWidgetJobTasks</tabstop>
+  <tabstop>pushButton_4</tabstop>
+  <tabstop>pushButton_5</tabstop>
+  <tabstop>pushButtonApply</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+  <tabstop>pushButtonExit</tabstop>
+ </tabstops>
  <resources>
   <include location="resource.qrc"/>
  </resources>
@@ -419,6 +544,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButtonPreview</sender>
+   <signal>clicked()</signal>
+   <receiver>D_AddTask</receiver>
+   <slot>slotPrevious()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>270</x>
+     <y>622</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>324</x>
+     <y>657</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonNext</sender>
+   <signal>clicked()</signal>
+   <receiver>D_AddTask</receiver>
+   <slot>slotNext()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>600</x>
+     <y>620</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>654</x>
+     <y>657</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditNumberPage</sender>
+   <signal>returnPressed()</signal>
+   <receiver>D_AddTask</receiver>
+   <slot>slotChangeNumberPage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>381</x>
+     <y>624</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>452</x>
+     <y>655</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotApply()</slot>
@@ -426,5 +599,8 @@
   <slot>slotExit()</slot>
   <slot>slotAdd()</slot>
   <slot>slotDelete()</slot>
+  <slot>slotPrevious()</slot>
+  <slot>slotNext()</slot>
+  <slot>slotChangeNumberPage()</slot>
  </slots>
 </ui>

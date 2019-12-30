@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/find.ico</file>
+    <file>icons/next.ico</file>
+    <file>icons/previous.ico</file>
     <file>icons/7ccd3948634917.560839cc6580c.png</file>
     <file>icons/badge.ico</file>
     <file>icons/group1.ico</file>

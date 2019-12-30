@@ -7,6 +7,7 @@ DEditGroup::DEditGroup(QWidget *parent) :
     ui(new Ui::DEditGroup)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

@@ -9,6 +9,7 @@ DAddUser::DAddUser(QWidget *parent) :
     ui(new Ui::DAddUser)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================

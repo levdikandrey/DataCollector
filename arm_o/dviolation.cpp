@@ -23,6 +23,8 @@ DViolation::DViolation(QWidget *parent) :
     connect(ui->tableWidgetViolation, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEdit(int, int)));
 
     initTableViolation();
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
 }
 
 //=========================================================
@@ -99,6 +101,8 @@ DViolation::~DViolation()
 void DViolation::slotAdd()
 {
     QString sql = "";
+    m_dAddViolation->setTitle("Добавление нарушения");
+    m_dAddViolation->setViolation("");
     if( m_dAddViolation->exec() == QDialog::Accepted )
     {
         try
@@ -124,11 +128,63 @@ void DViolation::slotAdd()
 //=========================================================
 void DViolation::slotDelete()
 {
+    QString sql="";
+    QModelIndexList selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+    if(selectedRows.empty())
+    {
+        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для удаления!"),tr("Да"));
+        return;
+    }
+    else
+    {
+        if(QMessageBox::warning(this, tr("Внимание"),tr("Вы действительно хотите удалить выбранные нарушения?"),tr("Да"),tr("Нет")) == 0)
+        {
+            while (!selectedRows.empty())
+            {
+                sql = "DELETE FROM \"Violation\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text(); sql += ";";
+                qDebug()<<"sql ="<<sql;
+                query->exec(sql);
+                ui->tableWidgetViolation->removeRow(selectedRows[0].row());
+                selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+            }
+        }
+    }
+
 }
 
 //=========================================================
 void DViolation::slotEdit()
 {
+    QString sql="";
+    QString tmp;
+    QModelIndexList selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+    if(selectedRows.empty())
+    {
+        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для редактирования!"),tr("Да"));
+        return;
+    }
+    else
+    {
+        m_dAddViolation->setViolation(ui->tableWidgetViolation->item(selectedRows[0].row(),0)->text());
+        m_dAddViolation->setTitle("Редактирование нарушения");
+
+        if(m_dAddViolation->exec() == QDialog::Accepted)
+        {
+            sql = "UPDATE \"Violation\" SET \"Violation\"=\'";
+            sql += m_dAddViolation->violation(); sql += "\' WHERE \"ID\"=";
+            sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text();
+            sql += ";";
+            qDebug()<<"sql ="<<sql;
+            if(query->exec(sql))
+                initTableViolation();
+            else
+            {
+                qDebug()<<query->lastError().text();
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            }
+        }
+    }
+
 }
 
 //=========================================================

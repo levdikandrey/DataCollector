@@ -9,6 +9,7 @@ D_AddGroup::D_AddGroup(QWidget *parent) :
     ui(new Ui::D_AddGroup)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 //=========================================================
