@@ -8,6 +8,7 @@
 #include <QMessageBox>
 
 extern QSqlDatabase db;
+extern QString currentUserName;
 //=========================================================
 DEnter::DEnter(QWidget *parent)
     : QDialog(parent)
@@ -28,7 +29,7 @@ DEnter::DEnter(QWidget *parent)
 }
 
 //=========================================================
-QString DEnter::currentUserName()
+QString DEnter::currentUserName1()
 {
     return ui->comboBoxUsers->currentText();
 }
@@ -60,6 +61,7 @@ void DEnter::initUserComBoBox()
 //=========================================================
 void DEnter::slotEnter()
 {
+    currentUserName = ui->comboBoxUsers->currentText();
     accept();
 }
 

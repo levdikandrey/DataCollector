@@ -13,7 +13,7 @@ class DEnter: public QDialog
     Q_OBJECT
 public:
     DEnter(QWidget *parent = nullptr);
-    QString currentUserName();
+    QString currentUserName1();
     void initUserComBoBox();
 
 private slots:

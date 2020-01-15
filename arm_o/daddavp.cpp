@@ -29,6 +29,73 @@ DAddAVP::~DAddAVP()
 }
 
 //=========================================================
+const QString DAddAVP::getNameAVS() const
+{
+    return ui->lineEditNameAVS->text();
+}
+
+//=========================================================
+const QString DAddAVP::getNameAVP() const
+{
+    return ui->lineEditName->text();
+}
+
+//=========================================================
+const QString DAddAVP::getNameOriginal() const
+{
+    return ui->lineEditNameOriginal->text();
+}
+
+//=========================================================
+const QString DAddAVP::getURL_AVS() const
+{
+    return ui->lineEditURL_AVS->text();
+}
+
+//=========================================================
+const QString DAddAVP::getURL_AVP() const
+{
+    return ui->lineEditURL_AVP->text();
+}
+
+//=========================================================
+const QString DAddAVP::getFormAVP() const
+{
+    return ui->lineEditFormAVP->text();
+}
+
+//=========================================================
+const QString DAddAVP::getRubricAVP() const
+{
+    return ui->lineEditRubric->text();
+}
+
+//=========================================================
+const QString DAddAVP::getFilmMaker() const
+{
+    return ui->lineEditFilmMaker->text();
+}
+
+//=========================================================
+const QString DAddAVP::getAge() const
+{
+    return ui->lineEditAge->text();
+}
+
+//=========================================================
+const QString DAddAVP::getYearOfRelease() const
+{
+    return ui->dateEditYearOfRelease->date().toString("yyyy-MM-dd");
+}
+
+//=========================================================
+const QString DAddAVP::getDuration() const
+{
+    QString tmp;
+    return tmp.setNum(ui->spinBoxDuration->value());
+}
+
+//=========================================================
 void DAddAVP::slotApply()
 {
     if( (ui->lineEditName->text()=="") ||

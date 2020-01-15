@@ -55,6 +55,11 @@ public:
      * @brief m_sDataAVP - объект структуры данных АВП
      */
     SDataAVP m_sDataAVP;
+    /**
+     * @brief addSaveInDB
+     * @param sDataAVP
+     * @return
+     */
     bool addSaveInDB(SDataAVP &sDataAVP);
 
 signals:

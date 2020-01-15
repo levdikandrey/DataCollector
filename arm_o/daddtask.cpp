@@ -1,5 +1,6 @@
 #include "daddtask.h"
 #include "ui_d_addtask.h"
+#include "mainwindow.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -15,10 +16,13 @@ DAddTask::DAddTask(QWidget *parent)
 {
     ui->setupUi(this);
     query = new QSqlQuery(db);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->resizeSection(3, 0);
+
+    ui->tableWidget->horizontalHeader()->resizeSection(0, 200);//Название АВП
+    ui->tableWidget->horizontalHeader()->resizeSection(1, 250);//URL
+    ui->tableWidget->horizontalHeader()->resizeSection(2, 80);//Год выпуска
+    ui->tableWidget->horizontalHeader()->resizeSection(3, 200);//Режиссер
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::Stretch);
+    ui->tableWidget->horizontalHeader()->resizeSection(5, 0);
 
     m_currentNumberPage = 1;
     m_countAVP = countAVP();
@@ -29,6 +33,15 @@ DAddTask::DAddTask(QWidget *parent)
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     ui->pushButtonPreview->setEnabled(false);
+
+    connect(ui->lineEditFindString,SIGNAL(textChanged(const QString&)),SLOT(slotTextChanged(const QString&)));
+
+    m_timer.setInterval(1000);
+    m_timer.setSingleShot(true);
+    connect(&m_timer, &QTimer::timeout, this, [&]
+            {
+                slotFindAVP();
+            });
 }
 
 //=========================================================
@@ -36,6 +49,30 @@ DAddTask::~DAddTask()
 {
     delete query;
     delete ui;
+}
+
+//=========================================================
+const QString DAddTask::getUserFIO() const
+{
+    return ui->comboBoxUser->currentText();
+}
+
+//=========================================================
+const QString DAddTask::getStatusName() const
+{
+    return ui->comboBoxStatus->currentText();
+}
+
+//=========================================================
+const QString DAddTask::getNamePriority() const
+{
+    return ui->comboBoxPriority->currentText();
+}
+
+//=========================================================
+const std::map<long,QString> DAddTask::getListAVP() const
+{
+    return listAVP;
 }
 
 //=========================================================
@@ -53,8 +90,11 @@ void DAddTask::slotAdd()
        {
 //            qDebug()<<ui->tableWidget->item(selectedRows[i].row(),0)->text();
             ui->listWidgetJobTasks->addItem(ui->tableWidget->item(selectedRows[i].row(),0)->text());
+            listAVP.insert(std::make_pair(ui->tableWidget->item(selectedRows[i].row(),5)->text().toLong(),ui->tableWidget->item(selectedRows[i].row(),0)->text()));
        }
     }
+//    for(auto item: listAVP)
+//        qDebug()<<"==>"<<item.first<<" "<<item.second;
 }
 
 //=========================================================
@@ -63,8 +103,18 @@ void DAddTask::slotDelete()
    for(int i=0; i<ui->listWidgetJobTasks->count();++i)
    {
        if(ui->listWidgetJobTasks->item(i)->isSelected())
+       {
+            for(auto it = listAVP.begin(); it!=listAVP.end();it++)
+            {
+//                qDebug()<<"(*it).second="<<(*it).second<<"ui->listWidgetJobTasks->item(i)->text()="<<ui->listWidgetJobTasks->item(i)->text();
+                if((*it).second == ui->listWidgetJobTasks->item(i)->text())
+                    it = listAVP.erase(it);
+            }
             ui->listWidgetJobTasks->takeItem(i);
+       }
    }
+//   for(auto item: listAVP)
+//       qDebug()<<"<=="<<item.first<<" "<<item.second;
 }
 
 //=========================================================
@@ -92,6 +142,60 @@ void DAddTask::initComboBoxUser()
     {
         qDebug()<<e.what();
         qDebug()<<query->lastError().text();
+    }
+}
+
+//=========================================================
+void DAddTask::initComboBoxPriority()
+{
+    QString sql="";
+    try
+    {
+        ui->comboBoxPriority->clear();
+
+        sql = "SELECT \"NamePriority\" FROM \"Priority\";";
+
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                ui->comboBoxPriority->addItem(query->value(0).toString());
+
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DAddTask::initComboBoxStatus()
+{
+    QString sql="";
+    try
+    {
+        ui->comboBoxStatus->clear();
+
+        sql = "SELECT \"StatusName\" FROM \"TaskStatus\";";
+
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                ui->comboBoxStatus->addItem(query->value(0).toString());
+
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
     }
 }
 
@@ -177,6 +281,105 @@ void DAddTask::slotChangeNumberPage()
 
 
 //=========================================================
+void DAddTask::slotFindAVP()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QString sql="",tmp;
+
+    try
+    {
+        ui->tableWidget->clearContents();
+        ui->tableWidget->setRowCount(0);
+
+        sql = "SELECT avp.\"NameRus\","
+              "avp.\"URL\","
+              "aa.\"YearOfRelease\","
+              "aa.\"FilmMaker\","
+              "avp.\"ID\" "
+              "FROM \"avp\" "
+              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" ";
+        if(!ui->lineEditFindString->text().isEmpty())
+            sql += " WHERE avp.\"NameRus\" LIKE \'"+ui->lineEditFindString->text()+"%\';";
+        else
+            sql += " ORDER BY avp.\"ID\" LIMIT 1000 OFFSET 0;";
+
+        if(query->exec(sql))
+        {
+            if(query->size()==0)
+            {
+                QApplication::restoreOverrideCursor();
+                QMessageBox::information(this,"Сообщение","Нет такого АВП, удовлетворяющего условиям поиска!","Да");
+            }
+            else
+            {
+                ui->tableWidget->clearContents();
+                ui->tableWidget->setRowCount(0);
+
+                int row = 0;
+                while(query->next())
+                {
+                    ui->tableWidget->setRowCount(row+1);
+
+                    QTableWidgetItem *newItem = new QTableWidgetItem();
+                    QIcon icon;
+                    icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    newItem->setIcon(icon);
+                    newItem->setText(query->value(0).toString());
+                    newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
+                    ui->tableWidget->setItem(row,0, newItem);
+
+                    QTableWidgetItem *newItem1 = new QTableWidgetItem();
+                    QIcon icon1;
+                    icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    newItem1->setIcon(icon1);
+                    newItem1->setText(query->value(1).toString());
+                    newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
+                    ui->tableWidget->setItem(row,1, newItem1);
+
+                    QTableWidgetItem *newItem2 = new QTableWidgetItem();
+                    newItem2->setText(query->value(2).toString());
+                    newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
+                    ui->tableWidget->setItem(row,2, newItem2);
+
+                    QTableWidgetItem *newItem3 = new QTableWidgetItem();
+                    QIcon icon4;
+                    icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    newItem3->setIcon(icon4);
+                    newItem3->setText(query->value(3).toString());
+                    newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
+                    ui->tableWidget->setItem(row,3, newItem3);
+
+                    QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt());
+                    ui->tableWidget->setItem(row, 4, newItem4);
+
+                    QTableWidgetItem *newItem5 = new QTableWidgetItem();
+                    newItem5->setText(query->value(4).toString());
+                    ui->tableWidget->setItem(row,5, newItem5);
+
+                    row++;
+                }
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+
+    }
+    catch (std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    QApplication::restoreOverrideCursor();
+
+}
+
+//=========================================================
+void DAddTask::slotTextChanged(const QString &text)
+{
+    if(text.length()>1)
+        m_timer.start();
+}
+
+//=========================================================
 void DAddTask::initTableListAVP(int numberPage)
 {
     QString sql="",tmp;
@@ -184,8 +387,17 @@ void DAddTask::initTableListAVP(int numberPage)
     {
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
+        listAVP.clear();
+        ui->listWidgetJobTasks->clear();
 
-        sql = "SELECT \"NameRus\",\"URL\",\"ID\" FROM \"avp\" ORDER BY \"ID\" LIMIT 1000 OFFSET ";
+        sql = "SELECT avp.\"NameRus\","
+              "avp.\"URL\","
+              "aa.\"YearOfRelease\","
+              "aa.\"FilmMaker\","
+              "avp.\"ID\" "
+              "FROM \"avp\" "
+              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
+              "ORDER BY \"ID\" LIMIT 1000 OFFSET ";
         sql+=tmp.setNum((numberPage-1)*1000);sql+=";";
 
         if(query->exec(sql))
@@ -212,25 +424,34 @@ void DAddTask::initTableListAVP(int numberPage)
                 ui->tableWidget->setItem(row,1, newItem1);
 
                 QTableWidgetItem *newItem2 = new QTableWidgetItem();
-                QIcon icon2;
-                icon2.addFile(QString::fromUtf8(":/icons/icons/question.ico"), QSize(), QIcon::Normal, QIcon::Off);
-                newItem2->setIcon(icon2);
-                newItem2->setText("АВП не анализировалось");
+                newItem2->setText(query->value(2).toString());
                 newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidget->setItem(row, 2, newItem2);
+                ui->tableWidget->setItem(row,2, newItem2);
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
-                newItem3->setText(query->value(2).toString());
+                QIcon icon4;
+                icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                newItem3->setIcon(icon4);
+                newItem3->setText(query->value(3).toString());
+                newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(row,3, newItem3);
+
+                QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt());
+                ui->tableWidget->setItem(row, 4, newItem4);
+
+                QTableWidgetItem *newItem5 = new QTableWidgetItem();
+                newItem5->setText(query->value(4).toString());
+                ui->tableWidget->setItem(row,5, newItem5);
 
                 row++;
             }
         }
+        else
+            qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
         qDebug()<<e.what();
-        qDebug()<<query->lastError().text();
     }
 
 }
@@ -246,8 +467,8 @@ void DAddTask::slotCancel()
 {
     ui->listWidgetJobTasks->clear();
     ui->comboBoxUser->setCurrentIndex(0);
-    ui->comboBox_2->setCurrentIndex(0);
-    ui->comboBox_3->setCurrentIndex(0);
+    ui->comboBoxPriority->setCurrentIndex(0);
+    ui->comboBoxStatus->setCurrentIndex(0);
 }
 
 //=========================================================

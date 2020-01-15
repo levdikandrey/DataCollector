@@ -15,6 +15,17 @@ class DAddAVP: public QDialog
 public:
     DAddAVP(QWidget *parent = nullptr);
     ~DAddAVP();
+    const QString getNameAVS() const;
+    const QString getNameAVP() const;
+    const QString getNameOriginal() const;
+    const QString getURL_AVS() const;
+    const QString getURL_AVP() const;
+    const QString getFormAVP() const;
+    const QString getRubricAVP() const;
+    const QString getFilmMaker() const;
+    const QString getAge() const;
+    const QString getYearOfRelease() const;
+    const QString getDuration() const;
 
 private slots:
     void slotApply();
@@ -22,9 +33,9 @@ private slots:
     void slotExit();
 
 private:
-    Ui::D_AddAVP *ui;
     CImportData *m_cImportData;
     QSqlQuery *query;
+    Ui::D_AddAVP *ui;
 
     bool addAVP();
 };

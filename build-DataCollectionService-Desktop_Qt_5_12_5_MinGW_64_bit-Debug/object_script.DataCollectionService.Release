@@ -1,0 +1,12 @@
+release/capidbavp.o
+release/cdatacollectionservice.o
+release/cdownloader.o
+release/cpageparserivi.o
+release/main.o
+release/request.o
+release/requestsender.o
+release/moc_capidbavp.o
+release/moc_cdatacollectionservice.o
+release/moc_cdownloader.o
+release/moc_cpageparserivi.o
+release/moc_requestsender.o
