@@ -13,6 +13,7 @@ class DEditTask: public QDialog
 public:
     DEditTask(QWidget *parent = nullptr);
     ~DEditTask();
+    void initTableViolation(long id_avp);
     void initComboBoxStatus(QString currentStatus);
 
     void setNameAVP(QString nameAVP);

@@ -156,6 +156,7 @@ void MainWindow::initDialog()
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(6,250);//%
     ui->tableWidgetMyTasks->horizontalHeader()->setSectionResizeMode(7,QHeaderView::Stretch);//Комментарии
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(8, 0);//ID
+    ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(9, 0);//ID_AVP
 }
 
 //=========================================================
@@ -382,6 +383,11 @@ void MainWindow::initTableMyTask()
                 newItem9->setText(query->value(7).toString());
                 newItem9->setFlags(newItem9->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetMyTasks->setItem(row,8, newItem9);
+
+                QTableWidgetItem *newItem10 = new QTableWidgetItem();
+                newItem10->setText(query->value(8).toString());
+                newItem10->setFlags(newItem10->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidgetMyTasks->setItem(row,9, newItem10);
 
                 row++;
             }
@@ -1273,6 +1279,7 @@ void MainWindow::slotEditMyTask()
     QString tmp, timestamp, sql ="";
     QModelIndexList selectedRows = ui->tableWidgetMyTasks->selectionModel()->selectedRows();
 
+    dEditTask->initTableViolation(ui->tableWidgetMyTasks->item(selectedRows[0].row(),9)->text().toLong());
     dEditTask->initComboBoxStatus(ui->tableWidgetMyTasks->item(selectedRows[0].row(),4)->text());
 
     dEditTask->setNameAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),0)->text());
