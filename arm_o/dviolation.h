@@ -27,6 +27,8 @@ public:
      * @brief initTableUser - функцияя заполнения таблицы данными об нарушениях из БД АВП
      */
     void initTableViolation();
+    void initTableStatus();
+    short m_typeDictionary;
 
 private slots:
     /**

@@ -24,7 +24,7 @@ public:
      * @brief addSaveInDB - функция добавления записи в БД АВП
      * @param avpName - название АВП
      */
-    void addSaveInDB(const QString &avpName);
+    bool addSaveInDB();
 
 signals:
     /**
@@ -57,11 +57,31 @@ private:
      * @param avpName - название АВП
      * @return - true - если существует запись
      */
-    bool existsSaveInDb(const QString &avpName);
+    bool existsSaveInDb(const QString &url);
+    /**
+     * @brief parsePageExt - функция разбора страницы на наличие дополнительных параметров об АВП
+     * @param fileName - имя страницы
+     */
+    void parsePageExt(const QString &fileName);
+    QString decode(QString str);
+
+    QString findIdAVS(QString url, QString name);
+    QString findIdAVP(QString &url);
+    QString findIdUser(QString fio);
 
     QSqlDatabase m_db;
     QSqlQuery *m_query;
     int colAVP;
+
+    QString m_nameRus;
+    QString m_nameOriginal;
+    QString m_URL;
+    QString m_yearOfRelease;
+    QString m_rubric;
+    QString m_country;
+    QString m_age;
+    QString m_duration;
+    QString m_filmMaker;
 };
 
 #endif // CPAGEPARSERIVI_H

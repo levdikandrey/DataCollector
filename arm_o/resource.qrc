@@ -1,5 +1,10 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/attach.ico</file>
+    <file>icons/minus.ico</file>
+    <file>icons/plus.ico</file>
+    <file>icons/unspin.ico</file>
+    <file>icons/analysis.ico</file>
     <file>icons/find.ico</file>
     <file>icons/next.ico</file>
     <file>icons/previous.ico</file>

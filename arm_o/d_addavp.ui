@@ -14,34 +14,15 @@
    <string>Добавление АВП</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>9</number>
-   </property>
-   <property name="topMargin">
-    <number>5</number>
-   </property>
-   <property name="bottomMargin">
-    <number>3</number>
-   </property>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_5">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_11">
      <property name="text">
-      <string>Рубрика: *</string>
+      <string>Наименование АВС: *</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="2">
-    <widget class="QLineEdit" name="lineEditAge"/>
-   </item>
-   <item row="11" column="0">
-    <widget class="QLabel" name="label_10">
-     <property name="text">
-      <string>Хронометраж, мин:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="2">
-    <widget class="QDateEdit" name="dateEditYearOfRelease"/>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="comboBoxNameAVS"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label">
@@ -50,10 +31,104 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lineEditName"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Наименование АВП на языке оригинала:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="lineEditNameOriginal"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>URL АВС: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
     <widget class="QLineEdit" name="lineEditURL_AVS"/>
    </item>
-   <item row="12" column="0" colspan="3">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>URL АВП: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="lineEditURL_AVP"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Форма АВП: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="lineEditFormAVP"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Рубрика: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="lineEditRubric"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Режиссер/Автор: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="lineEditFilmMaker"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Возраст:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLineEdit" name="lineEditAge"/>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Год выпуска: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QDateEdit" name="dateEditYearOfRelease"/>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Хронометраж, мин:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QSpinBox" name="spinBoxDuration">
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="2">
     <widget class="QFrame" name="frame">
      <property name="maximumSize">
       <size>
@@ -153,94 +228,9 @@
      </layout>
     </widget>
    </item>
-   <item row="8" column="2">
-    <widget class="QLineEdit" name="lineEditFilmMaker"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>URL АВС: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>Режиссер/Автор: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
-    <widget class="QLineEdit" name="lineEditRubric"/>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Возраст:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_9">
-     <property name="text">
-      <string>Год выпуска: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2">
-    <widget class="QLineEdit" name="lineEditURL_AVP"/>
-   </item>
-   <item row="11" column="2">
-    <widget class="QSpinBox" name="spinBoxDuration">
-     <property name="maximum">
-      <number>10000</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLineEdit" name="lineEditNameOriginal"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Наименование АВП на языке оригинала:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="lineEditName"/>
-   </item>
-   <item row="6" column="2">
-    <widget class="QLineEdit" name="lineEditFormAVP"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>URL АВП: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Форма АВП: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_11">
-     <property name="text">
-      <string>Наименование АВС: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLineEdit" name="lineEditNameAVS"/>
-   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>lineEditNameAVS</tabstop>
   <tabstop>lineEditName</tabstop>
   <tabstop>lineEditNameOriginal</tabstop>
   <tabstop>lineEditURL_AVS</tabstop>

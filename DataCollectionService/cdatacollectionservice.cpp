@@ -43,9 +43,10 @@ CDataCollectionService::CDataCollectionService(QObject *parent) : QObject(parent
 //=========================================================
 CDataCollectionService::~CDataCollectionService()
 {
+    sendRequestThread.quit();
     sendRequestThread.terminate();
     parsingPagesIVIThread.quit();
-    parsingPagesIVIThread.wait();
+    parsingPagesIVIThread.terminate();
     delete m_downloader;
     delete m_requestSender;
 }
@@ -200,7 +201,7 @@ void CDataCollectionService::testExistsFilmInDB()
             i++;
             QString avpName = file.readLine();
             qDebug()<<" ";
-            m_pageParserIVI->addSaveInDB(avpName.mid(0,avpName.length()-1));
+//            m_pageParserIVI->addSaveInDB(avpName.mid(0,avpName.length()-1));
 //            if(i==5)
 //                break;
         }
@@ -343,15 +344,17 @@ void CDataCollectionService::run()
 //    downlodPageIMDB();
 
 //===Test functions===
-//    operate("c:\\DownloadData\\ivi\\www.ivi.ru");
+    operate("c:\\DownloadData\\ivi\\www.ivi.ru");
 //    testExistsFilmInDB();
-//    importDataIVI_InFile();
+    importDataIVI_InFile();
 //    countValidFilmsInFileAchiveKinopoisk("C:\\Users\\leaa\\Documents\\kp_content");
-    m_cAPIdbAVP->setDB(db);
-    QList<APIDB::SAVPattribute> listPath = m_cAPIdbAVP->getAttributeAVP("Пятница");
-    for(auto &item: listPath)
-    {
-        qDebug()<<item.id<<" "<<item.urlAVP<<" "<<item.filmMaker<<" "<<item.yearOfRelease;
-    }
+//====END test
+
+//    m_cAPIdbAVP->setDB(db);
+//    QList<APIDB::SAVPattribute> listPath = m_cAPIdbAVP->getAttributeAVP("Пятница");
+//    for(auto &item: listPath)
+//    {
+//        qDebug()<<item.id<<" "<<item.urlAVP<<" "<<item.filmMaker<<" "<<item.yearOfRelease;
+//    }
 }
 

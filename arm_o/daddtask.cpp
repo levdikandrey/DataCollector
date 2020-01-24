@@ -24,8 +24,11 @@ DAddTask::DAddTask(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::Stretch);
     ui->tableWidget->horizontalHeader()->resizeSection(5, 0);
 
+    m_currentIdAVS = -1;
     m_currentNumberPage = 1;
+    m_currentState = -1;
     m_countAVP = countAVP();
+
     QString tmp;
     QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
     ui->lineEditNumberPage->setValidator( new QIntValidator(0, m_countAVP/1000, this) );
@@ -34,7 +37,11 @@ DAddTask::DAddTask(QWidget *parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     ui->pushButtonPreview->setEnabled(false);
 
+    connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));
+    connect(ui->radioButtonChecked,SIGNAL(toggled(bool)), SLOT(slotRBChecked(bool)));
+    connect(ui->radioButtonAll,SIGNAL(toggled(bool)), SLOT(slotRBAll(bool)));
     connect(ui->lineEditFindString,SIGNAL(textChanged(const QString&)),SLOT(slotTextChanged(const QString&)));
+    connect(ui->lineEditFindString,SIGNAL(returnPressed()),SLOT(slotFindAVP()));
 
     m_timer.setInterval(1000);
     m_timer.setSingleShot(true);
@@ -76,6 +83,19 @@ const std::map<long,QString> DAddTask::getListAVP() const
 }
 
 //=========================================================
+bool DAddTask::isExistAVP(long idAVS)
+{
+    bool res = false;
+    for(auto it = listAVP.begin(); it!=listAVP.end();it++)
+    {
+//        qDebug()<<"(*it).first="<<(*it).first<<" idAVS="<<idAVS;
+        if((*it).first == idAVS)
+            res =true;
+    }
+    return res;
+}
+
+//=========================================================
 void DAddTask::slotAdd()
 {
     QModelIndexList selectedRows = ui->tableWidget->selectionModel()->selectedRows();
@@ -86,35 +106,82 @@ void DAddTask::slotAdd()
     }
     else
     {
-       for( int i=0; i<selectedRows.count();++i)
-       {
-//            qDebug()<<ui->tableWidget->item(selectedRows[i].row(),0)->text();
-            ui->listWidgetJobTasks->addItem(ui->tableWidget->item(selectedRows[i].row(),0)->text());
-            listAVP.insert(std::make_pair(ui->tableWidget->item(selectedRows[i].row(),5)->text().toLong(),ui->tableWidget->item(selectedRows[i].row(),0)->text()));
-       }
+        try
+        {
+            for( int i=0; i<selectedRows.count();++i)
+            {
+     //            qDebug()<<ui->tableWidget->item(selectedRows[i].row(),0)->text();
+                 if(!isExistAVP(ui->tableWidget->item(selectedRows[i].row(),5)->text().toLong()))
+                 {
+                     ui->listWidgetJobTasks->addItem(ui->tableWidget->item(selectedRows[i].row(),0)->text());
+                     listAVP.insert(std::make_pair(ui->tableWidget->item(selectedRows[i].row(),5)->text().toLong(),ui->tableWidget->item(selectedRows[i].row(),0)->text()));
+                 }
+            }
+            //            for(auto item: listAVP)
+            //                qDebug()<<"==>"<<item.first<<" "<<item.second;
+        }
+        catch(std::exception &e)
+        {
+            qDebug()<<e.what();
+        }
     }
-//    for(auto item: listAVP)
-//        qDebug()<<"==>"<<item.first<<" "<<item.second;
 }
 
 //=========================================================
 void DAddTask::slotDelete()
 {
-   for(int i=0; i<ui->listWidgetJobTasks->count();++i)
+   for(int i=0; i<ui->listWidgetJobTasks->count();)
    {
        if(ui->listWidgetJobTasks->item(i)->isSelected())
        {
+//           qDebug()<<"\n===========Выбранный элемент = "<<ui->listWidgetJobTasks->item(i)->text();
             for(auto it = listAVP.begin(); it!=listAVP.end();it++)
             {
-//                qDebug()<<"(*it).second="<<(*it).second<<"ui->listWidgetJobTasks->item(i)->text()="<<ui->listWidgetJobTasks->item(i)->text();
+//                qDebug()<<"LIST_AVP="<<(*it).second<<"   ITEM="<<ui->listWidgetJobTasks->item(i)->text();
                 if((*it).second == ui->listWidgetJobTasks->item(i)->text())
+                {
+//                    qDebug()<<"Delete AVP ="<<(*it).second;
                     it = listAVP.erase(it);
+//                    for(auto item: listAVP)
+//                       qDebug()<<"==>"<<item.first<<" "<<item.second;
+                    break;
+                }
             }
             ui->listWidgetJobTasks->takeItem(i);
        }
+       else
+           i++;
    }
 //   for(auto item: listAVP)
 //       qDebug()<<"<=="<<item.first<<" "<<item.second;
+}
+
+//=========================================================
+void DAddTask::initAVS()
+{
+    QString sql="";
+    QString itemAVS;
+    try
+    {
+       ui->comboBoxAVS->clear();
+       ui->comboBoxAVS->addItem("Все");
+       sql="SELECT \"ID\",\"URL\",\"NameAVS\" FROM avs;";
+       if(query->exec(sql))
+       {
+           while(query->next())
+           {
+               itemAVS = query->value(2).toString();itemAVS +=" (";
+               itemAVS += query->value(1).toString();itemAVS +=" )";
+               ui->comboBoxAVS->addItem(itemAVS);
+           }
+       }
+       else
+           qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================
@@ -200,23 +267,31 @@ void DAddTask::initComboBoxStatus()
 }
 
 //=========================================================
-int DAddTask::countAVP()
+int DAddTask::countAVP(long idAVS)
 {
     int count = 0;
-    QString sql;
+    QString sql, tmp;
     try
     {
-        sql = "SELECT COUNT(*) FROM avp;";
+        if(idAVS == -1)
+        {
+            sql = "SELECT COUNT(*) FROM avp;";
+        }
+        else
+        {
+            sql = "SELECT COUNT(*) FROM avp WHERE \"ID_AVS\"="+ tmp.setNum(idAVS)+ ";";
+        }
         if(query->exec(sql))
         {
             if(query->next())
                 count = query->value(0).toInt();
         }
+        else
+            qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
         qDebug()<<e.what();
-        qDebug()<<query->lastError().text();
     }
     return count;
 }
@@ -380,7 +455,62 @@ void DAddTask::slotTextChanged(const QString &text)
 }
 
 //=========================================================
-void DAddTask::initTableListAVP(int numberPage)
+void DAddTask::slotRBViolation(bool state)
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    if(state)
+       initTableListAVP(1,m_currentIdAVS, 1);
+
+    m_currentState = 1;
+    m_currentNumberPage = 1;
+    m_countAVP = m_countCurrentAVP;
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->labelCountAVP->setText(text);
+    ui->pushButtonPreview->setEnabled(false);
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DAddTask::slotRBChecked(bool state)
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    if(state)
+       initTableListAVP(1, m_currentIdAVS, 2);
+
+    m_currentState = 2;
+    m_currentNumberPage = 1;
+    m_countAVP = m_countCurrentAVP;
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->labelCountAVP->setText(text);
+    ui->pushButtonPreview->setEnabled(false);
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DAddTask::slotRBAll(bool state)
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+    if(state)
+       initTableListAVP(1, m_currentIdAVS, -1);
+
+    m_currentState = -1;
+    m_currentNumberPage = 1;
+    m_countAVP = countAVP(m_currentIdAVS);
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->labelCountAVP->setText(text);
+    ui->pushButtonPreview->setEnabled(false);
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
 {
     QString sql="",tmp;
     try
@@ -396,13 +526,40 @@ void DAddTask::initTableListAVP(int numberPage)
               "aa.\"FilmMaker\","
               "avp.\"ID\" "
               "FROM \"avp\" "
-              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
-              "ORDER BY \"ID\" LIMIT 1000 OFFSET ";
+              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\"";
+        if( idAVS != -1)
+        {
+            sql+=" WHERE \"ID_AVS\"="; sql+=tmp.setNum(idAVS);
+        }
+        if( state == 1)
+        {
+            if( idAVS != -1)
+            {
+                sql+=" AND avp.\"ID\" IN (SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\"!=12)";
+            }
+            else
+            {
+                sql+=" WHERE avp.\"ID\" IN (SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\"!=12)";
+            }
+        }
+        else if( state == 2)
+        {
+            if( idAVS != -1)
+            {
+                sql+=" AND avp.\"ID\" IN (SELECT \"ID_AVP\" FROM \"AnalysisResult\")";
+            }
+            else
+            {
+                sql+=" WHERE avp.\"ID\" IN (SELECT \"ID_AVP\" FROM \"AnalysisResult\")";
+            }
+        }
+        sql+=" ORDER BY avp.\"ID\" LIMIT 1000 OFFSET ";
         sql+=tmp.setNum((numberPage-1)*1000);sql+=";";
 
         if(query->exec(sql))
         {
             int row=0;
+            m_countCurrentAVP = query->size();
             while(query->next())
             {
                 ui->tableWidget->setRowCount(row+1);
@@ -454,6 +611,63 @@ void DAddTask::initTableListAVP(int numberPage)
         qDebug()<<e.what();
     }
 
+}
+
+//=========================================================
+long DAddTask::idAVS(QString nameAVS)
+{
+    long id = -1;
+    QString sql;
+    try
+    {
+        sql = "SELECT \"ID\" FROM avs WHERE \"NameAVS\"=\'"+ nameAVS +"\';";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                id = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return id;
+}
+\
+//=========================================================
+void DAddTask::slotSelectAVS(QString nameAVS)
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QString avs;
+    long id = -1;
+    if(nameAVS == "Все")
+    {
+        m_currentIdAVS = -1;
+        initTableListAVP(1,m_currentIdAVS,m_currentState);
+    }
+    else
+    {
+        avs = nameAVS.mid(0,nameAVS.indexOf('(')-1);
+        id = idAVS(avs);
+        m_currentIdAVS = id;
+        initTableListAVP(1,m_currentIdAVS,m_currentState);
+    }
+
+    m_currentNumberPage = 1;
+
+    if(m_currentState == -1)
+        m_countAVP = countAVP(m_currentIdAVS);
+    else
+        m_countAVP = m_countCurrentAVP;
+
+    QString tmp;
+    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->labelCountAVP->setText(text);
+    ui->pushButtonPreview->setEnabled(false);
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================

@@ -29,9 +29,37 @@ DAddAVP::~DAddAVP()
 }
 
 //=========================================================
+void DAddAVP::initAVS()
+{
+    QString sql="";
+    QString itemAVS;
+    try
+    {
+       ui->comboBoxNameAVS->clear();
+//       ui->comboBoxNameAVS->addItem("Все");
+       sql="SELECT \"ID\",\"URL\",\"NameAVS\" FROM avs;";
+       if(query->exec(sql))
+       {
+           while(query->next())
+           {
+               itemAVS = query->value(2).toString();itemAVS +=" (";
+               itemAVS += query->value(1).toString();itemAVS +=" )";
+               ui->comboBoxNameAVS->addItem(itemAVS);
+           }
+       }
+       else
+           qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 const QString DAddAVP::getNameAVS() const
 {
-    return ui->lineEditNameAVS->text();
+    return ui->comboBoxNameAVS->currentText();
 }
 
 //=========================================================
@@ -99,7 +127,6 @@ const QString DAddAVP::getDuration() const
 void DAddAVP::slotApply()
 {
     if( (ui->lineEditName->text()=="") ||
-            (ui->lineEditNameAVS->text()=="") ||
             (ui->lineEditURL_AVS->text()=="") ||
             (ui->lineEditURL_AVP->text()=="") ||
             (ui->lineEditFormAVP->text()=="") ||
@@ -139,7 +166,7 @@ bool DAddAVP::addAVP()
     QString tmp;
     try
     {
-        m_cImportData->m_sDataAVP.avsName = ui->lineEditNameAVS->text();
+        m_cImportData->m_sDataAVP.avsName = ui->comboBoxNameAVS->currentText();
         m_cImportData->m_sDataAVP.avpNameRus = ui->lineEditName->text();
         m_cImportData->m_sDataAVP.avpNameOriginal = ui->lineEditNameOriginal->text();
         m_cImportData->m_sDataAVP.avsURL = ui->lineEditURL_AVS->text();

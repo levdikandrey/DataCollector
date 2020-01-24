@@ -6,379 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1456</width>
-    <height>868</height>
+    <width>1388</width>
+    <height>867</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Добавление  новых задач для мониторинга АВП</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Список АВП:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="5">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Список АВП для проверки:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QToolButton" name="toolButton">
-     <property name="minimumSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Поиск АВП</string>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="icon">
-      <iconset resource="resource.qrc">
-       <normaloff>:/icons/icons/find.ico</normaloff>:/icons/icons/find.ico</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="6">
-    <widget class="QFrame" name="frame">
-     <property name="whatsThis">
-      <string/>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::WinPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <spacer name="horizontalSpacer_6">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>192</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonPreview">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Предыдущие 1000 записей</string>
-        </property>
-        <property name="text">
-         <string>1000</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/previous.ico</normaloff>:/icons/icons/previous.ico</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Страница</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEditNumberPage">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhNone</set>
-        </property>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelCountAVP">
-        <property name="text">
-         <string>из 250 (всего АВП  250000)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonNext">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Следующие 1000 записей</string>
-        </property>
-        <property name="text">
-         <string>1000</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/next.ico</normaloff>:/icons/icons/next.ico</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>192</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonApply">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Применить</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/ok.ico</normaloff>:/icons/icons/ok.ico</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonCancel">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Отмена</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/cancel.ico</normaloff>:/icons/icons/cancel.ico</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonExit">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Выход</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="lineEditFindString">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Поиск АВП</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_4">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>33</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>60</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>&gt;&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_5">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>33</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>60</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>&lt;&lt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="5">
-    <widget class="QListWidget" name="listWidgetJobTasks">
-     <property name="maximumSize">
-      <size>
-       <width>400</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::MultiSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectItems</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="6">
+   <item row="0" column="0" colspan="12">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">
@@ -473,10 +109,123 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="4">
+   <item row="1" column="0" colspan="4">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Отобразить АВП</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QRadioButton" name="radioButtonViolation">
+        <property name="text">
+         <string>С нарушениями</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonChecked">
+        <property name="text">
+         <string>Проверенные</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonAll">
+        <property name="text">
+         <string>Все</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="8">
+    <widget class="QLineEdit" name="lineEditFindString">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Поиск АВП</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="9">
+    <widget class="QToolButton" name="toolButton">
+     <property name="minimumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Поиск АВП</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/find.ico</normaloff>:/icons/icons/find.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="11">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Список АВП для проверки:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="10">
     <widget class="QTableWidget" name="tableWidget">
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
      </property>
      <attribute name="horizontalHeaderMinimumSectionSize">
       <number>0</number>
@@ -513,26 +262,388 @@
      </column>
     </widget>
    </item>
-   <item row="1" column="1">
-    <spacer name="horizontalSpacer_2">
+   <item row="2" column="10">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>33</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>&gt;&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>33</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>&lt;&lt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="11">
+    <widget class="QListWidget" name="listWidgetJobTasks">
+     <property name="maximumSize">
+      <size>
+       <width>450</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::MultiSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <spacer name="horizontalSpacer_3">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>40</width>
+       <width>112</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="pushButtonPreview">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>33</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Предыдущие 1000 записей</string>
+     </property>
+     <property name="text">
+      <string>1000</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/previous.ico</normaloff>:/icons/icons/previous.ico</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Страница</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="lineEditNumberPage">
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhNone</set>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QLabel" name="labelCountAVP">
+     <property name="text">
+      <string>из 250 (всего АВП  250000)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="5">
+    <widget class="QPushButton" name="pushButtonNext">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>33</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Следующие 1000 записей</string>
+     </property>
+     <property name="text">
+      <string>1000</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/next.ico</normaloff>:/icons/icons/next.ico</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="6">
+    <spacer name="horizontalSpacer_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>112</width>
+       <height>30</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="7">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Выберите АВС:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="8" colspan="2">
+    <widget class="QComboBox" name="comboBoxAVS">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>3000</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Выберите АВС</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>Все</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="10" colspan="2">
+    <spacer name="horizontalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>321</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="12">
+    <widget class="QFrame" name="frame">
+     <property name="whatsThis">
+      <string/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::WinPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>192</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonApply">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Применить</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/ok.ico</normaloff>:/icons/icons/ok.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonCancel">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Отмена</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/cancel.ico</normaloff>:/icons/icons/cancel.ico</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonExit">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Выход</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="7">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Поиск:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>tableWidget</tabstop>
-  <tabstop>pushButtonPreview</tabstop>
-  <tabstop>lineEditNumberPage</tabstop>
-  <tabstop>pushButtonNext</tabstop>
   <tabstop>comboBoxUser</tabstop>
   <tabstop>comboBoxPriority</tabstop>
   <tabstop>comboBoxStatus</tabstop>
@@ -554,8 +665,8 @@
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>986</x>
-     <y>785</y>
+     <x>1115</x>
+     <y>846</y>
     </hint>
     <hint type="destinationlabel">
      <x>1028</x>
@@ -570,8 +681,8 @@
    <slot>slotCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1112</x>
-     <y>785</y>
+     <x>1241</x>
+     <y>846</y>
     </hint>
     <hint type="destinationlabel">
      <x>1032</x>
@@ -586,8 +697,8 @@
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1238</x>
-     <y>785</y>
+     <x>1367</x>
+     <y>846</y>
     </hint>
     <hint type="destinationlabel">
      <x>1028</x>
@@ -602,8 +713,8 @@
    <slot>slotAdd()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>888</x>
-     <y>398</y>
+     <x>1115</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -618,8 +729,8 @@
    <slot>slotDelete()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>888</x>
-     <y>437</y>
+     <x>1115</x>
+     <y>461</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -634,8 +745,8 @@
    <slot>slotPrevious()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>310</x>
-     <y>785</y>
+     <x>204</x>
+     <y>796</y>
     </hint>
     <hint type="destinationlabel">
      <x>324</x>
@@ -650,8 +761,8 @@
    <slot>slotNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>644</x>
-     <y>785</y>
+     <x>538</x>
+     <y>796</y>
     </hint>
     <hint type="destinationlabel">
      <x>654</x>
@@ -666,8 +777,8 @@
    <slot>slotChangeNumberPage()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>421</x>
-     <y>778</y>
+     <x>315</x>
+     <y>789</y>
     </hint>
     <hint type="destinationlabel">
      <x>452</x>
@@ -682,12 +793,28 @@
    <slot>slotFindAVP()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>813</x>
-     <y>48</y>
+     <x>1048</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>1254</x>
      <y>47</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxAVS</sender>
+   <signal>activated(QString)</signal>
+   <receiver>D_AddTask</receiver>
+   <slot>slotSelectAVS(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>852</x>
+     <y>772</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>911</x>
+     <y>864</y>
     </hint>
    </hints>
   </connection>
@@ -702,5 +829,6 @@
   <slot>slotNext()</slot>
   <slot>slotChangeNumberPage()</slot>
   <slot>slotFindAVP()</slot>
+  <slot>slotSelectAVS(QString)</slot>
  </slots>
 </ui>

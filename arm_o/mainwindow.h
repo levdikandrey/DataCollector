@@ -17,9 +17,11 @@
 #include "daddtask.h"
 #include "dedittask.h"
 #include "dedittaskuser.h"
+#include "deditaudit.h"
 #include "dgroup.h"
 #include "duser.h"
 #include "dviolation.h"
+#include "denter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -58,6 +60,10 @@ public:
      * @brief initTableMyTask - функция заполнения таблицы "Мои задачи"
      */
     void initTableMyTask();
+    /**
+     * @brief initTableMyAudit
+     */
+    void initTableAudit();
     /**
      * @brief initAVS - функция заполнения "Выберите АВС"
      */
@@ -111,6 +117,10 @@ private slots:
      */
     void slotEditMyTask(int, int);
     /**
+     * @brief slotEditAudit
+     */
+    void slotEditAudit(int, int);
+    /**
      * @brief slotDeleteTask - удаляет одину или несколько задач из таблицы и БД
      */
     void slotDeleteTask();
@@ -118,6 +128,10 @@ private slots:
      * @brief slotEditMyTask
      */
     void slotEditMyTask();
+    /**
+     * @brief slotEditAudit
+     */
+    void slotEditAudit();
     /**
      * @brief slotReload
      */
@@ -170,6 +184,11 @@ private slots:
     void slotTextChanged(const QString&);
     void slotFilterApply();
     void slotCurrentChanged(int);
+    void slotChangeUser();
+    void slotAnalysisAVP();
+    void slotGoToURL();
+    void slotStatus();
+    void slotContextMenuRequested(const QPoint &pos);
 
 public slots:
     /**
@@ -205,6 +224,9 @@ private:
     DGroup *dGroup;
     DUser *dUser;
     DViolation *dViolation;
+    DEnter *dEnter1;
+    DEditAudit *dEditAudit;
+
     int progress;
     int stepProgress;
     int m_countAVP;

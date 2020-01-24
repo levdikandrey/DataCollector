@@ -6,69 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>570</width>
-    <height>734</height>
+    <width>614</width>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Редактирование задачи</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Процент готовности:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>220</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Комментарии</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QTextEdit" name="textEditComment">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>200</height>
-         </size>
-        </property>
-        <property name="html">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нет нарушений&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="3">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Наименование АВП:</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="3">
+    <widget class="QLabel" name="labelNameAVP">
+     <property name="text">
+      <string>Мажор</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Статус задачи:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="1" column="3">
+    <widget class="QComboBox" name="comboBoxStatus">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>В работе</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Процент готовности:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
     <widget class="QSpinBox" name="spinBoxPercent">
      <property name="maximum">
       <number>100</number>
@@ -78,7 +67,319 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="3" column="0">
+    <widget class="QToolButton" name="toolButtonAdd">
+     <property name="minimumSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Добавить нарушение</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/plus.ico</normaloff>:/icons/icons/plus.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QToolButton" name="toolButtonDelete">
+     <property name="minimumSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Удалить нарушение</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/minus.ico</normaloff>:/icons/icons/minus.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" colspan="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="4">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Добавление нарушения</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Тип нарушения:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboBoxViolation"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Таймкод:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>С:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="timeEditBegin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="displayFormat">
+           <string>H:mm:ss</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>По:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="timeEditEnd">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="displayFormat">
+           <string>H:mm:ss</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Описание нарушения:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QTextEdit" name="textEditViolation">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>80</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Прикрепить скриншот:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEditScreenShot">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QToolButton" name="toolButtonAttach">
+        <property name="minimumSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/attach.ico</normaloff>:/icons/icons/attach.ico</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonApplyViolation">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Применить</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/ok.ico</normaloff>:/icons/icons/ok.ico</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonCancelViolation">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Отмена</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/cancel.ico</normaloff>:/icons/icons/cancel.ico</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Нарушения</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableWidgetViolation">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>0</number>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Наименование</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Описание нарушения</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Изображение</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="4">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
@@ -102,6 +403,9 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonApply">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -125,6 +429,9 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonCancel">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -172,51 +479,6 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="labelNameAVP">
-     <property name="text">
-      <string>Мажор</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="comboBoxStatus">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <item>
-      <property name="text">
-       <string>В работе</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Нарушения</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QTableWidget" name="tableWidgetViolation">
-        <column>
-         <property name="text">
-          <string>Наименование</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>% Обнаружения</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources>
@@ -230,8 +492,8 @@ p, li { white-space: pre-wrap; }
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>160</x>
-     <y>505</y>
+     <x>302</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
@@ -246,8 +508,8 @@ p, li { white-space: pre-wrap; }
    <slot>slotCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>334</x>
-     <y>499</y>
+     <x>428</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>510</x>
@@ -262,12 +524,172 @@ p, li { white-space: pre-wrap; }
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>434</x>
-     <y>495</y>
+     <x>554</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>510</x>
      <y>478</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotAddViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>16</x>
+     <y>104</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>572</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotDeleteViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>572</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonAttach</sender>
+   <signal>clicked()</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotAtachFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>640</x>
+     <y>298</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>571</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonApplyViolation</sender>
+   <signal>clicked()</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotApplyViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>495</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>569</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonCancelViolation</sender>
+   <signal>clicked()</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotCancelViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>605</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>571</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxViolation</sender>
+   <signal>activated(int)</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotActivated(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>430</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>669</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textEditViolation</sender>
+   <signal>textChanged()</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotTextChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>429</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>669</x>
+     <y>257</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditScreenShot</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotTextChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>352</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>670</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxStatus</sender>
+   <signal>activated(int)</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotStatusActivated(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>518</x>
+     <y>39</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>671</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxPercent</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>D_EditTask</receiver>
+   <slot>slotValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>61</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>670</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -276,5 +698,15 @@ p, li { white-space: pre-wrap; }
   <slot>slotApply()</slot>
   <slot>slotCancel()</slot>
   <slot>slotExit()</slot>
+  <slot>slotAddViolation()</slot>
+  <slot>slotDeleteViolation()</slot>
+  <slot>slotAtachFile()</slot>
+  <slot>slotApplyViolation()</slot>
+  <slot>slotCancelViolation()</slot>
+  <slot>slotActivated(int)</slot>
+  <slot>slotTextChanged()</slot>
+  <slot>slotTextChanged(QString)</slot>
+  <slot>slotStatusActivated(int)</slot>
+  <slot>slotValueChanged(int)</slot>
  </slots>
 </ui>

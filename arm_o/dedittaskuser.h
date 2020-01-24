@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QSqlQuery>
+#include <QTableWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class D_EditTaskUser; }
@@ -17,7 +18,7 @@ public:
     void initComboBoxUser(QString currentUser);
     void initComboBoxPriority(QString currentPriority);
     void initComboBoxStatus(QString currentStatus);
-    void initComboBoxViolation(QString currentViolation = "");
+    void initTableViolation(long id_avp);
 
     void setNameAVP(QString nameAVP);
     void setPercent(QString percent);
@@ -28,6 +29,7 @@ public:
     const QString getStatus() const;
     const QString getPercent() const;
     const QString getComment() const;
+    QTableWidget* getViolations() const;
 
 private slots:
     void slotApply();

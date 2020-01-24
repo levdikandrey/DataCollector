@@ -15,6 +15,11 @@ class DAddAVP: public QDialog
 public:
     DAddAVP(QWidget *parent = nullptr);
     ~DAddAVP();
+    /**
+     * @brief initAVS - функция заполнения "Выберите АВС"
+     */
+    void initAVS();
+
     const QString getNameAVS() const;
     const QString getNameAVP() const;
     const QString getNameOriginal() const;

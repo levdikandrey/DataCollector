@@ -31,12 +31,57 @@ DViolation::DViolation(QWidget *parent) :
 void DViolation::initTableViolation()
 {
     QString sql="";
+    setWindowTitle("Справочник нарушений");
+    ui->tableWidgetViolation->horizontalHeaderItem(0)->setText("Нарушения");
     try
     {
         ui->tableWidgetViolation->clearContents();
         ui->tableWidgetViolation->setRowCount(0);
 
         sql = "SELECT * FROM \"Violation\";";
+
+        if(query->exec(sql))
+        {
+            int row=0;
+            while(query->next())
+            {
+                ui->tableWidgetViolation->setRowCount(row+1);
+
+                QTableWidgetItem *newItem = new QTableWidgetItem();
+                QIcon icon;
+//                icon.addFile(QString::fromUtf8(":/icons/icons/user.ico"), QSize(24,24), QIcon::Normal, QIcon::Off);
+//                newItem->setIcon(icon);
+                newItem->setText(query->value(1).toString());
+                ui->tableWidgetViolation->setItem(row,0, newItem);
+                newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
+
+                QTableWidgetItem *newItem3 = new QTableWidgetItem();
+                newItem3->setText(query->value(0).toString());
+                ui->tableWidgetViolation->setItem(row,1, newItem3);
+
+                row++;
+            }
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+        qDebug()<<query->lastError().text();
+    }
+}
+
+//=========================================================
+void DViolation::initTableStatus()
+{
+    QString sql="";
+    setWindowTitle("Справочник статусов");
+    ui->tableWidgetViolation->horizontalHeaderItem(0)->setText("Статусы");
+    try
+    {
+        ui->tableWidgetViolation->clearContents();
+        ui->tableWidgetViolation->setRowCount(0);
+
+        sql = "SELECT * FROM \"TaskStatus\";";
 
         if(query->exec(sql))
         {
@@ -101,25 +146,35 @@ DViolation::~DViolation()
 void DViolation::slotAdd()
 {
     QString sql = "";
-    m_dAddViolation->setTitle("Добавление нарушения");
+    if(m_typeDictionary == 1)
+        m_dAddViolation->setTitle("Добавление нарушения");
+    else if(m_typeDictionary == 2)
+        m_dAddViolation->setTitle("Добавление статуса");
     m_dAddViolation->setViolation("");
     if( m_dAddViolation->exec() == QDialog::Accepted )
     {
         try
         {
-            sql = "INSERT INTO \"Violation\"(\"Violation\") VALUES(\'";
+            if(m_typeDictionary == 1)
+                sql = "INSERT INTO \"Violation\"(\"Violation\") VALUES(\'";
+            else if(m_typeDictionary == 2)
+                sql = "INSERT INTO \"TaskStatus\"(\"StatusName\") VALUES(\'";
             sql +=  m_dAddViolation->violation();
             sql += "\');";
             qDebug()<<"sql="<<sql;
             if(query->exec(sql))
-                initTableViolation();
+            {
+                if(m_typeDictionary == 1)
+                    initTableViolation();
+                else if(m_typeDictionary == 2)
+                    initTableStatus();
+            }
             else
                 qDebug()<<query->lastError().text();
         }
         catch(std::exception &e)
         {
             qDebug()<<e.what();
-            qDebug()<<query->lastError().text();
         }
 
     }
@@ -132,22 +187,46 @@ void DViolation::slotDelete()
     QModelIndexList selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
     if(selectedRows.empty())
     {
-        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для удаления!"),tr("Да"));
+        if(m_typeDictionary == 1)
+            QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для удаления!"),tr("Да"));
+        else if(m_typeDictionary == 2)
+            QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали статус для удаления!"),tr("Да"));
         return;
     }
     else
     {
-        if(QMessageBox::warning(this, tr("Внимание"),tr("Вы действительно хотите удалить выбранные нарушения?"),tr("Да"),tr("Нет")) == 0)
+        try
         {
-            while (!selectedRows.empty())
+            QString text = "Вы действительно хотите удалить выбранные ";
+            if(m_typeDictionary == 1)
+                text +=" нарушения?";
+            else if(m_typeDictionary == 2)
+                text +=" статусы?";
+            if(QMessageBox::warning(this, tr("Внимание"),text,tr("Да"),tr("Нет")) == 0)
             {
-                sql = "DELETE FROM \"Violation\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text(); sql += ";";
-                qDebug()<<"sql ="<<sql;
-                query->exec(sql);
-                ui->tableWidgetViolation->removeRow(selectedRows[0].row());
-                selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+                while (!selectedRows.empty())
+                {
+                    if(m_typeDictionary == 1)
+                    {
+                        sql = "DELETE FROM \"Violation\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text(); sql += ";";
+                    }
+                    else if(m_typeDictionary == 2)
+                    {
+                        sql = "DELETE FROM \"TaskStatus\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text(); sql += ";";
+                    }
+                    qDebug()<<"sql ="<<sql;
+                    query->exec(sql);
+                    ui->tableWidgetViolation->removeRow(selectedRows[0].row());
+                    selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+                }
             }
         }
+        catch(std::exception &e)
+        {
+            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            qDebug()<<e.what();
+        }
+
     }
 
 }
@@ -160,23 +239,44 @@ void DViolation::slotEdit()
     QModelIndexList selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
     if(selectedRows.empty())
     {
-        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для редактирования!"),tr("Да"));
+        if(m_typeDictionary == 1)
+            QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для редактирования!"),tr("Да"));
+        else if(m_typeDictionary == 2)
+            QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали статус для редактирования!"),tr("Да"));
         return;
     }
     else
     {
         m_dAddViolation->setViolation(ui->tableWidgetViolation->item(selectedRows[0].row(),0)->text());
-        m_dAddViolation->setTitle("Редактирование нарушения");
+        if(m_typeDictionary == 1)
+            m_dAddViolation->setTitle("Редактирование нарушения");
+        else if(m_typeDictionary == 2)
+            m_dAddViolation->setTitle("Редактирование статуса");
 
         if(m_dAddViolation->exec() == QDialog::Accepted)
         {
-            sql = "UPDATE \"Violation\" SET \"Violation\"=\'";
-            sql += m_dAddViolation->violation(); sql += "\' WHERE \"ID\"=";
-            sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text();
-            sql += ";";
+            if(m_typeDictionary == 1)
+            {
+                sql = "UPDATE \"Violation\" SET \"Violation\"=\'";
+                sql += m_dAddViolation->violation(); sql += "\' WHERE \"ID\"=";
+                sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text();
+                sql += ";";
+            }
+            else if(m_typeDictionary == 2)
+            {
+                sql = "UPDATE \"TaskStatus\" SET \"StatusName\"=\'";
+                sql += m_dAddViolation->violation(); sql += "\' WHERE \"ID\"=";
+                sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text();
+                sql += ";";
+            }
             qDebug()<<"sql ="<<sql;
             if(query->exec(sql))
-                initTableViolation();
+            {
+                if(m_typeDictionary == 1)
+                    initTableViolation();
+                else if(m_typeDictionary == 2)
+                    initTableStatus();
+            }
             else
             {
                 qDebug()<<query->lastError().text();

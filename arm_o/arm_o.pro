@@ -28,6 +28,7 @@ SOURCES += \
     daddtask.cpp \
     dadduser.cpp \
     daddviolation.cpp \
+    deditaudit.cpp \
     deditgroup.cpp \
     dedittask.cpp \
     dedittaskuser.cpp \
@@ -48,6 +49,7 @@ HEADERS += \
     daddtask.h \
     dadduser.h \
     daddviolation.h \
+    deditaudit.h \
     deditgroup.h \
     dedittask.h \
     dedittaskuser.h \
@@ -65,6 +67,7 @@ FORMS += \
     d_addtask.ui \
     d_adduser.ui \
     d_addviolation.ui \
+    d_editaudit.ui \
     d_editgroup.ui \
     d_edittask.ui \
     d_edittaskusers.ui \

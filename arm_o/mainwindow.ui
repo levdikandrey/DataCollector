@@ -485,6 +485,9 @@
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
           <attribute name="horizontalHeaderMinimumSectionSize">
            <number>0</number>
           </attribute>
@@ -963,6 +966,9 @@
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
           <attribute name="horizontalHeaderMinimumSectionSize">
            <number>0</number>
           </attribute>
@@ -1017,6 +1023,11 @@
           <column>
            <property name="text">
             <string>ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>ID_AVP</string>
            </property>
           </column>
          </widget>
@@ -1139,6 +1150,9 @@
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
           <attribute name="horizontalHeaderMinimumSectionSize">
            <number>0</number>
           </attribute>
@@ -1258,6 +1272,120 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Экспертиза</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0" colspan="2">
+         <widget class="QTableWidget" name="tableWidgetAudit">
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>0</number>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Название АВП</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>URL</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>ФИО, оператора</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Дата назначения</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Приоритет</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Статус</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>% заверш.</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Нарушения</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Комментарии</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>ID_AVP</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>1035</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButtonEditAuditor">
+          <property name="minimumSize">
+           <size>
+            <width>170</width>
+            <height>33</height>
+           </size>
+          </property>
+          <property name="text">
+           <string> Редактировать задачу</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -1278,7 +1406,7 @@
     <addaction name="actionExcel"/>
     <addaction name="actionKinopoisk"/>
     <addaction name="separator"/>
-    <addaction name="action"/>
+    <addaction name="actionChangeUser"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -1290,6 +1418,7 @@
     <addaction name="separator"/>
     <addaction name="actionAddAVP"/>
     <addaction name="actionViolation"/>
+    <addaction name="actionStatus"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -1427,13 +1556,22 @@
     <string>Ctrl+K</string>
    </property>
   </action>
-  <action name="action">
+  <action name="actionChangeUser">
    <property name="icon">
     <iconset resource="resource.qrc">
      <normaloff>:/icons/icons/group1.ico</normaloff>:/icons/icons/group1.ico</iconset>
    </property>
    <property name="text">
     <string>Смена пользователя</string>
+   </property>
+  </action>
+  <action name="actionStatus">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/icons/category.ico</normaloff>:/icons/icons/category.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Справочник статусов</string>
    </property>
   </action>
  </widget>

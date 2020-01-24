@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QCheckBox>
+#include <QSpinBox>
 
 extern QSqlDatabase db;
 //=========================================================
@@ -16,8 +18,8 @@ DEditTaskUser::DEditTaskUser(QWidget *parent)
     query = new QSqlQuery(db);
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    ui->label_6->hide();
-    ui->comboBoxViolation->hide();
+    ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+    ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
 }
 
 //=========================================================
@@ -116,34 +118,66 @@ void DEditTaskUser::initComboBoxStatus(QString currentStatus)
 }
 
 //=========================================================
-void DEditTaskUser::initComboBoxViolation(QString currentViolation)
+void DEditTaskUser::initTableViolation(long id_avp)
 {
-    QString sql="";
-    m_violation = currentViolation;
+    QString sql="",tmp, str;
+    ui->tableWidgetViolation->clearContents();
+    ui->tableWidgetViolation->setRowCount(0);
+
     try
     {
-        ui->comboBoxViolation->clear();
 
         sql = "SELECT \"Violation\" FROM \"Violation\";";
 
         if(query->exec(sql))
         {
+            int row = 0;
             while(query->next())
             {
-                ui->comboBoxViolation->addItem(query->value(0).toString());
+                ui->tableWidgetViolation->setRowCount(row+1);
 
+                QCheckBox *cbItem = new QCheckBox(this);
+                cbItem->setText(query->value(0).toString());
+                ui->tableWidgetViolation->setCellWidget(row,0, cbItem);//Название нарушения
+
+                QSpinBox *sbItem = new QSpinBox(this);
+                sbItem->setMaximum(100);
+                ui->tableWidgetViolation->setCellWidget(row,1, sbItem);//Процент обнаружения
+
+                row++;
             }
         }
         else
             qDebug()<<query->lastError().text();
-        ui->comboBoxViolation->setEnabled(false);
-//        ui->comboBoxViolation->setCurrentText(currentViolation);
+
+        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\" FROM \"AnalysisResult\" ar "
+              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+";";
+
+//        qDebug()<<"sql = "<<sql;
+        if(query->exec(sql))
+        {
+            int row = 0;
+            while(query->next())
+            {
+                for(int i=0; i<ui->tableWidgetViolation->rowCount();i++)
+                {
+                    if(reinterpret_cast<QCheckBox*>(ui->tableWidgetViolation->cellWidget(i,0))->text() == query->value(0).toString())
+                    {
+                        reinterpret_cast<QCheckBox*>(ui->tableWidgetViolation->cellWidget(i,0))->setChecked(true);
+                        reinterpret_cast<QSpinBox*>(ui->tableWidgetViolation->cellWidget(i,1))->setValue(query->value(1).toString().toInt());
+                    }
+                }
+                row++;
+            }
+
+        }
+        else
+            qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
         qDebug()<<e.what();
     }
-
 }
 
 //=========================================================
@@ -197,6 +231,12 @@ const QString DEditTaskUser::getPercent() const
 const QString DEditTaskUser::getComment() const
 {
     return ui->textEditComment->toPlainText();
+}
+
+//=========================================================
+QTableWidget* DEditTaskUser::getViolations() const
+{
+    return ui->tableWidgetViolation;
 }
 
 //=========================================================
