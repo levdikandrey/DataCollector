@@ -243,7 +243,7 @@ void CPageParserIVI::parsePageExt(const QString &fileName)
 //=========================================================
 void CPageParserIVI::parsePage(const QString &page)
 {
-    qDebug()<<"\nPAGE="<<page;
+//    qDebug()<<"\nPAGE="<<page;
     m_nameRus = "";
     m_nameOriginal = "";
     m_URL = "";
@@ -298,10 +298,14 @@ void CPageParserIVI::parsePage(const QString &page)
             {
                 int index = line.indexOf(s_findYearCountryRubric);
                 QString s_tmp = line;
+                int iter = 0;
                 while( line.indexOf("</div>") == -1 )
                 {
+                    if(iter >10)
+                        break;
                     line = file.readLine();
                     s_tmp += line;
+                    iter++;
                 }
                 //                qDebug()<<"s_tmp = "<<s_tmp;
                 if((s_tmp.indexOf("минут") != -1)  && (m_URL != "")) // Duration
@@ -338,7 +342,8 @@ void CPageParserIVI::parsePage(const QString &page)
                     }
                 }
             }
-            if((m_URL !="") && (m_nameRus != "") && (m_yearOfRelease !="") && (m_nameOriginal !=""))
+//            if((m_URL !="") && (m_nameRus != "") && (m_yearOfRelease !="") && (m_nameOriginal !=""))
+            if((m_URL !="") && (m_nameRus != "") && (m_yearOfRelease !=""))
             {
 //                qDebug()<<"addSaveInDB";
                 addSaveInDB();

@@ -17,32 +17,12 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label_11">
      <property name="text">
-      <string>Наименование АВС: *</string>
+      <string>Наименование АВС:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="0" column="2">
     <widget class="QComboBox" name="comboBoxNameAVS"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Наименование АВП на русском: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="lineEditName"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Наименование АВП на языке оригинала:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="lineEditNameOriginal"/>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_3">
@@ -51,58 +31,25 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="lineEditURL_AVS"/>
+   <item row="8" column="2">
+    <widget class="QLineEdit" name="lineEditAge"/>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_6">
+   <item row="5" column="2">
+    <widget class="QLineEdit" name="lineEditFormAVP"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>URL АВП: *</string>
+      <string>Наименование АВП на языке оригинала:</string>
      </property>
     </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="lineEditURL_AVP"/>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Форма АВП: *</string>
+      <string>Форма АВП:</string>
      </property>
     </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QLineEdit" name="lineEditFormAVP"/>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Рубрика: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QLineEdit" name="lineEditRubric"/>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>Режиссер/Автор: *</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QLineEdit" name="lineEditFilmMaker"/>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Возраст:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QLineEdit" name="lineEditAge"/>
    </item>
    <item row="9" column="0">
     <widget class="QLabel" name="label_9">
@@ -111,8 +58,28 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
-    <widget class="QDateEdit" name="dateEditYearOfRelease"/>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="lineEditName"/>
+   </item>
+   <item row="7" column="2">
+    <widget class="QLineEdit" name="lineEditFilmMaker"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Рубрика: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>URL АВП: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="lineEditNameOriginal"/>
    </item>
    <item row="10" column="0">
     <widget class="QLabel" name="label_10">
@@ -121,14 +88,44 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="lineEditURL_AVP"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Возраст:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Наименование АВП на русском: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QLineEdit" name="lineEditRubric"/>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="lineEditURL_AVS"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Режиссер/Автор: *</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2">
     <widget class="QSpinBox" name="spinBoxDuration">
      <property name="maximum">
       <number>10000</number>
      </property>
     </widget>
    </item>
-   <item row="11" column="0" colspan="2">
+   <item row="11" column="0" colspan="3">
     <widget class="QFrame" name="frame">
      <property name="maximumSize">
       <size>
@@ -228,9 +225,23 @@
      </layout>
     </widget>
    </item>
+   <item row="9" column="2">
+    <widget class="QSpinBox" name="spinBoxYearOfRelease">
+     <property name="minimum">
+      <number>1800</number>
+     </property>
+     <property name="maximum">
+      <number>3000</number>
+     </property>
+     <property name="value">
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>comboBoxNameAVS</tabstop>
   <tabstop>lineEditName</tabstop>
   <tabstop>lineEditNameOriginal</tabstop>
   <tabstop>lineEditURL_AVS</tabstop>
@@ -239,7 +250,7 @@
   <tabstop>lineEditRubric</tabstop>
   <tabstop>lineEditFilmMaker</tabstop>
   <tabstop>lineEditAge</tabstop>
-  <tabstop>dateEditYearOfRelease</tabstop>
+  <tabstop>spinBoxYearOfRelease</tabstop>
   <tabstop>spinBoxDuration</tabstop>
   <tabstop>pushButtonApply</tabstop>
   <tabstop>pushButtonCancel</tabstop>
@@ -297,10 +308,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboBoxNameAVS</sender>
+   <signal>activated(int)</signal>
+   <receiver>D_AddAVP</receiver>
+   <slot>slotActivated(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>558</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>604</x>
+     <y>45</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotApply()</slot>
   <slot>slotCancel()</slot>
   <slot>slotExit()</slot>
+  <slot>slotActivated(int)</slot>
  </slots>
 </ui>

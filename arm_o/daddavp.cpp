@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QSpinBox>
 
 extern QSqlDatabase db;
 extern QString currentUserName;
@@ -36,15 +37,20 @@ void DAddAVP::initAVS()
     try
     {
        ui->comboBoxNameAVS->clear();
-//       ui->comboBoxNameAVS->addItem("Все");
+       listAVS.clear();
        sql="SELECT \"ID\",\"URL\",\"NameAVS\" FROM avs;";
        if(query->exec(sql))
        {
+           int i=0;
            while(query->next())
            {
                itemAVS = query->value(2).toString();itemAVS +=" (";
                itemAVS += query->value(1).toString();itemAVS +=" )";
                ui->comboBoxNameAVS->addItem(itemAVS);
+               if(i==0)
+                    ui->lineEditURL_AVS->setText(query->value(1).toString());
+               listAVS.insert(std::make_pair(i,query->value(1).toString()));
+               i++;
            }
        }
        else
@@ -113,7 +119,8 @@ const QString DAddAVP::getAge() const
 //=========================================================
 const QString DAddAVP::getYearOfRelease() const
 {
-    return ui->dateEditYearOfRelease->date().toString("yyyy-MM-dd");
+    QString tmp;
+    return tmp.setNum(ui->spinBoxYearOfRelease->value());
 }
 
 //=========================================================
@@ -121,6 +128,14 @@ const QString DAddAVP::getDuration() const
 {
     QString tmp;
     return tmp.setNum(ui->spinBoxDuration->value());
+}
+
+//=========================================================
+void DAddAVP::slotActivated(int item)
+{
+    QString sql="";
+    QString itemAVS;
+    ui->lineEditURL_AVS->setText(listAVS.find(item)->second);
 }
 
 //=========================================================
@@ -154,7 +169,7 @@ void DAddAVP::slotCancel()
     ui->lineEditRubric->setText("");
     ui->lineEditFilmMaker->setText("");
     ui->lineEditAge->setText("");
-    ui->dateEditYearOfRelease->setDate(QDate(2000,1,1));
+    ui->spinBoxDuration->setValue(2000);
     ui->spinBoxDuration->setValue(0);
 }
 
@@ -175,7 +190,7 @@ bool DAddAVP::addAVP()
         m_cImportData->m_sDataAVP.rubric = ui->lineEditRubric->text();
         m_cImportData->m_sDataAVP.filmMaker = ui->lineEditFilmMaker->text();
         m_cImportData->m_sDataAVP.age = ui->lineEditAge->text();
-        m_cImportData->m_sDataAVP.yearOfRelease = ui->dateEditYearOfRelease->date().toString("dd.MM.yyyy");
+        m_cImportData->m_sDataAVP.yearOfRelease = tmp.setNum(ui->spinBoxYearOfRelease->value());
         m_cImportData->m_sDataAVP.duration = tmp.setNum(ui->spinBoxDuration->value());
         m_cImportData->m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
         m_cImportData->m_sDataAVP.userSaveInDB = currentUserName;

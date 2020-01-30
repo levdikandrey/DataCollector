@@ -22,10 +22,23 @@
 #include "duser.h"
 #include "dviolation.h"
 #include "denter.h"
+#include "requestsender.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+using namespace Network;
+
+struct SDownloadAVP
+{
+    int ID;
+    QString ResourceName;
+    QString URL;
+    QString DownloadStatus;
+    QString DownloadDate;
+    QString PathOnDisk;
+    int ID_AVP;
+};
 
 /**
 *  Класс главного окна программы
@@ -227,6 +240,10 @@ private:
     DEnter *dEnter1;
     DEditAudit *dEditAudit;
 
+    RequestSender *m_requestSender;
+    Request m_request;
+    SDownloadAVP m_sDownloadAVP;
+
     int progress;
     int stepProgress;
     int m_countAVP;
@@ -248,5 +265,9 @@ private:
     void initComboBoxUser(QComboBox *comboBox);
     void initComboBoxStatus(QComboBox *comboBox);
     void initComboBoxPriority(QComboBox *comboBox);
+
+    // Метод инициализации запроса на получение данных
+    bool getData(const QString &url_path, const QString &fileName);
+    bool changeSaveInDB(SDownloadAVP &avp, QString &currentFileName);
 };
 #endif // MAINWINDOW_H

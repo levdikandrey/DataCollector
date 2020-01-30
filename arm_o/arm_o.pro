@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,6 +21,8 @@ PSQL_INCDIR = C:\PostgreSQL\10\include
 PSQL_LIBDIR = C:\PostgreSQL\10\lib
 
 SOURCES += \
+    request.cpp \
+    requestsender.cpp \
     cimportdata.cpp \
     cimportdatakinopoisk.cpp \
     d_addgroup.cpp \
@@ -42,6 +44,8 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    request.h \
+    requestsender.h \
     cimportdata.h \
     cimportdatakinopoisk.h \
     d_addgroup.h \

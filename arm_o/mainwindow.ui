@@ -1209,6 +1209,16 @@
             <string>ID_AVP</string>
            </property>
           </column>
+          <column>
+           <property name="text">
+            <string>Рецензии</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Путь к файлу</string>
+           </property>
+          </column>
          </widget>
         </item>
         <item row="1" column="0">

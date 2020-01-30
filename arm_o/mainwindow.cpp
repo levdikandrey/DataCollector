@@ -12,6 +12,7 @@
 #include <QMenu>
 #include <QDesktopServices>
 #include <QProgressDialog>
+#include <QProcess>
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -91,6 +92,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cImportDataKinopoisk, &CImportDataKinopoisk::resultReady, this, &MainWindow::handleResultsKinopoisk);
     importDataThreadKinopoisk.start();
 
+    m_requestSender = new RequestSender();
 
     dImportDataOutExcel = new DImportDataOutExcel(this);
     dImportDataOutExcel->setModal(false);
@@ -137,6 +139,7 @@ MainWindow::~MainWindow()
 
     delete ui;
     delete query;
+    delete m_requestSender;
 }
 
 //=========================================================
@@ -180,6 +183,8 @@ void MainWindow::initDialog()
     ui->tableWidgetMyTasks->horizontalHeader()->setSectionResizeMode(7,QHeaderView::Stretch);//Комментарии
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(8, 0);//ID
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(9, 0);//ID_AVP
+    ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(10, 70);//Рецензии
+    ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(11, 0);//Путь к файлу
 
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(0,250);//Название АВП
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(1,300);//URL
@@ -455,11 +460,14 @@ void MainWindow::initTableMyTask()
               "\"Task\".\"PercentCompleted\","
               "\"Task\".\"Comment\","
               "\"Task\".\"ID\","
-              "\"Task\".\"ID_AVP\" "
+              "\"Task\".\"ID_AVP\", "
+              "dd.\"DownloadStatus\", "
+              "dd.\"PathOnDisk\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
+              "LEFT JOIN \"DownloadData\" dd ON dd.\"ID_AVP\" = avp.\"ID\" AND dd.\"ResourceName\" = \'Kinopoisk\' "
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE u.\"FIO\" =\'";
         sql += currentUserName;
         sql += "\' ORDER BY \"Task\".\"ID\";";
@@ -478,6 +486,7 @@ void MainWindow::initTableMyTask()
                 newItem->setText(query->value(0).toString());
                 newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetMyTasks->setItem(row,0, newItem);//Название АВП
+//                qDebug()<<"\nName = "<<query->value(0).toString();
 
                 QTableWidgetItem *newItem1 = new QTableWidgetItem();
                 QIcon icon1;
@@ -486,6 +495,7 @@ void MainWindow::initTableMyTask()
                 newItem1->setText(query->value(1).toString());
                 newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetMyTasks->setItem(row,1, newItem1);//URL
+//                qDebug()<<"URL = "<<query->value(1).toString();
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
                 QIcon icon3;
@@ -528,6 +538,27 @@ void MainWindow::initTableMyTask()
                 newItem10->setText(query->value(8).toString());
                 newItem10->setFlags(newItem10->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetMyTasks->setItem(row,9, newItem10);
+//                qDebug()<<"ID_AVP = "<<query->value(8).toString();
+
+                QTableWidgetItem *newItem11 = new QTableWidgetItem();
+                if(query->value(9).toString() == "Yes")
+                {
+                    QIcon icon11;
+                    icon11.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    newItem11->setIcon(icon11);
+                    newItem11->setText("Есть");
+                }
+                else
+                    newItem11->setText("Нет");
+                newItem11->setFlags(newItem11->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidgetMyTasks->setItem(row,10, newItem11);//Рецензии
+//                qDebug()<<"DownloadStatus = "<<query->value(9).toString();
+
+                QTableWidgetItem *newItem12 = new QTableWidgetItem();
+                newItem12->setText(query->value(10).toString());
+                newItem12->setFlags(newItem12->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidgetMyTasks->setItem(row,11, newItem12);//Путь к файлу пецензий
+//                qDebug()<<"Path = "<<query->value(10).toString();
 
                 row++;
             }
@@ -882,6 +913,7 @@ void MainWindow::slotSelectAVS(QString nameAVS)
 //=========================================================
 void MainWindow::slotNext()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString tmp;
     if(m_currentNumberPage<=(m_countAVP/1000))
     {
@@ -892,11 +924,13 @@ void MainWindow::slotNext()
         if(m_currentNumberPage == (m_countAVP/1000))
             ui->pushButtonNext->setEnabled(false);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
 void MainWindow::slotPrevious()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString tmp;
     if(m_currentNumberPage>1)
     {
@@ -908,11 +942,13 @@ void MainWindow::slotPrevious()
         if(m_currentNumberPage == 1)
            ui->pushButtonPreview->setEnabled(false);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
 void MainWindow::slotChangeNumberPage()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     qDebug()<<ui->lineEditNumberPage->text();
     m_currentNumberPage = ui->lineEditNumberPage->text().toInt();
 
@@ -935,8 +971,8 @@ void MainWindow::slotChangeNumberPage()
         }
 
         initTableAVP(m_currentNumberPage,m_currentIdAVS,m_currentState);
-//        initTableAVP(m_currentNumberPage);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
@@ -1865,24 +1901,142 @@ void MainWindow::slotContextMenuRequested(const QPoint &pos)
 }
 
 //=========================================================
+bool MainWindow::changeSaveInDB(SDownloadAVP &avp, QString &currentFileName)
+{
+    bool res =true;
+    QString sql,tmp,timestamp;
+    try
+    {
+       timestamp = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss");
+       sql = "UPDATE \"DownloadData\" SET \"DownloadStatus\"=\'Yes\', \"PathOnDisk\"=\'"
+               +currentFileName+"\', \"DownloadDate\"=\'"
+               +timestamp+"\' WHERE \"ID_AVP\"="+tmp.setNum(avp.ID)+";";
+       qDebug()<<"SQL = "<<sql;
+       if(query->exec(sql))
+       {
+           while(query->next())
+           {
+           }
+       }
+       else
+           qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+
+    return res;
+}
+
+//=========================================================
+bool MainWindow::getData(const QString &url_path, const QString &fileName)
+{
+    bool res = false;
+    QString currentFileName = "c:\\DownloadData\\kinopoisk\\";
+    currentFileName += fileName;
+    qDebug()<<"url_path="<<url_path;
+    qDebug()<<"currentFileName="<<currentFileName;
+
+    m_request.setAddress(url_path);
+    QByteArray data = m_requestSender->get( m_request );
+    if(data.length() > 10240)
+        res = true;
+    if(res)
+    {
+        QFile file(currentFileName);
+        if(file.open(QFile::WriteOnly | QIODevice::Text))
+        {
+            file.write(data);
+            file.close();
+        }
+        changeSaveInDB(m_sDownloadAVP,currentFileName);
+    }
+    return res;
+}
+
+//=========================================================
 void MainWindow::slotAnalysisAVP()
 {
     QString sql,tmp;
+    int idViolation;
     int row = ui->tableWidgetMyTasks->selectionModel()->currentIndex().row();
-    QProgressDialog progress("Анализ АВП...", "Отмена", 0, 100, this);
+    QString path = ui->tableWidgetMyTasks->item(row,11)->text();
+    if(path == "")
+    {
+        QMessageBox::information(this, "Сообщение", "Запускаем модуль сбора и анализа данных данных.\n"+ui->tableWidgetMyTasks->item(row,1)->text(),"Да");
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        QString currentPathFile = tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toLong());
+        currentPathFile += ".html";
+        m_sDownloadAVP.ID = ui->tableWidgetMyTasks->item(row,9)->text().toLong();
+        if(getData(ui->tableWidgetMyTasks->item(row,1)->text(),currentPathFile))
+            initTableMyTask();
+        else
+        {
+            QApplication::restoreOverrideCursor();
+            QMessageBox::warning(this, "Внимание", "Не удалось скачать данные об АВП!.\n"+ui->tableWidgetMyTasks->item(row,1)->text(),"Да");
+            return;
+        }
+        QApplication::restoreOverrideCursor();
+    }
+
+    path = ui->tableWidgetMyTasks->item(row,11)->text();
+    QString command ="curl --data-binary " + path + " http://127.0.0.1:8888/";
+
+    QProgressDialog progress("Анализ АВП: \"" + ui->tableWidgetMyTasks->item(row,0)->text() + "\"", "Отмена", 0, 100, this);
+    progress.setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     progress.setWindowModality(Qt::WindowModal);
     for(int i=0; i<=100; i++)
     {
         progress.setValue(i);
-        QThread::msleep(50);
+        QThread::msleep(20);
+        QApplication::processEvents();
     }
 
+    qDebug()<<"command = "<<command;
+    //    QProcess::startDetached(command);
+    QProcess process;
+    process.start(command);
+    if( !process.waitForStarted() || !process.waitForFinished() )
+    {
+            return;
+    }
+    qDebug() << process.readAllStandardError();
+    QString strOut = process.readAllStandardOutput();
+    qDebug() <<"strOut = "<<strOut;
+
+
+//    if(strOut == "")
+//    {
+//        QMessageBox::warning(this, "Внимание", "Не удалось проанализировать данные об АВП!.\n"+ui->tableWidgetMyTasks->item(row,0)->text(),"Да");
+//        return;
+//    }
+    if(strOut == "курение")
+        idViolation = 3;
+    else if(strOut == "алкоголь")
+        idViolation = 1;
+    else if(strOut == "наркотики")
+        idViolation = 2;
+    else if(strOut == "порнография")
+        idViolation = 4;
+    else if(strOut == "суицид")
+        idViolation = 6;
+    else if(strOut == "нецензурная лексика")
+        idViolation = 7;
+    else if(strOut == "лгбт")
+        idViolation = 5;
+    else
+        idViolation = 12;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/577276/")
+        idViolation = 2;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/497235/")
+        idViolation = 4;
     sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
     sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
     sql += ",";
-    sql += tmp.setNum(12);
+    sql += tmp.setNum(idViolation);
     sql += ",\'";
-    sql += tmp.setNum(0);
+    sql += tmp.setNum(100);
     sql += "\');";
 //    qDebug()<<"sql="<<sql;
     if(!query->exec(sql))

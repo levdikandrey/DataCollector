@@ -7,6 +7,8 @@
 #include <QTableWidget>
 #include <QDebug>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QObject>
 
 extern QSqlDatabase db;
 //=========================================================
@@ -42,6 +44,8 @@ DAddTask::DAddTask(QWidget *parent)
     connect(ui->radioButtonAll,SIGNAL(toggled(bool)), SLOT(slotRBAll(bool)));
     connect(ui->lineEditFindString,SIGNAL(textChanged(const QString&)),SLOT(slotTextChanged(const QString&)));
     connect(ui->lineEditFindString,SIGNAL(returnPressed()),SLOT(slotFindAVP()));
+
+    disconnect(ui->pushButton_4, SIGNAL(pressed()),this, SLOT(slotNext()));
 
     m_timer.setInterval(1000);
     m_timer.setSingleShot(true);
@@ -299,36 +303,41 @@ int DAddTask::countAVP(long idAVS)
 //=========================================================
 void DAddTask::slotPrevious()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString tmp;
     if(m_currentNumberPage>1)
     {
         ui->pushButtonNext->setEnabled(true);
         m_currentNumberPage--;
-        initTableListAVP(m_currentNumberPage);
+        initTableListAVP(m_currentNumberPage,m_currentIdAVS, m_currentState);
         ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
         if(m_currentNumberPage == 1)
            ui->pushButtonPreview->setEnabled(false);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
 void DAddTask::slotNext()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString tmp;
     if(m_currentNumberPage<=(m_countAVP/1000))
     {
         ui->pushButtonPreview->setEnabled(true);
         m_currentNumberPage++;
-        initTableListAVP(m_currentNumberPage);
+        initTableListAVP(m_currentNumberPage,m_currentIdAVS, m_currentState);
         ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
         if(m_currentNumberPage == (m_countAVP/1000))
             ui->pushButtonNext->setEnabled(false);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
 void DAddTask::slotChangeNumberPage()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     qDebug()<<ui->lineEditNumberPage->text();
     m_currentNumberPage = ui->lineEditNumberPage->text().toInt();
 
@@ -350,8 +359,9 @@ void DAddTask::slotChangeNumberPage()
             ui->pushButtonPreview->setEnabled(true);
         }
 
-        initTableListAVP(m_currentNumberPage);
+        initTableListAVP(m_currentNumberPage,m_currentIdAVS, m_currentState);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 
@@ -370,9 +380,12 @@ void DAddTask::slotFindAVP()
               "avp.\"URL\","
               "aa.\"YearOfRelease\","
               "aa.\"FilmMaker\","
-              "avp.\"ID\" "
+              "avp.\"ID\", "
+              "dd.\"DownloadStatus\" "
               "FROM \"avp\" "
-              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" ";
+              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
+              "LEFT JOIN \"DownloadData\" dd ON dd.\"ID_AVP\" = avp.\"ID\" AND dd.\"ResourceName\" =\'Kinopoisk\' ";
+
         if(!ui->lineEditFindString->text().isEmpty())
             sql += " WHERE avp.\"NameRus\" LIKE \'"+ui->lineEditFindString->text()+"%\';";
         else
@@ -430,6 +443,20 @@ void DAddTask::slotFindAVP()
                     QTableWidgetItem *newItem5 = new QTableWidgetItem();
                     newItem5->setText(query->value(4).toString());
                     ui->tableWidget->setItem(row,5, newItem5);
+
+                    QTableWidgetItem *newItem11 = new QTableWidgetItem();
+                    if(query->value(5).toString() == "Yes")
+                    {
+                        QIcon icon11;
+                        icon11.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                        newItem11->setIcon(icon11);
+                        newItem11->setText("Есть");
+                    }
+                    else
+                        newItem11->setText("Нет");
+                    newItem11->setFlags(newItem11->flags() ^ Qt::ItemIsEditable);
+                    ui->tableWidget->setItem(row,6, newItem11);//Рецензии
+//                    qDebug()<<"DownloadStatus = "<<query->value(5).toString();
 
                     row++;
                 }
@@ -524,8 +551,10 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
               "avp.\"URL\","
               "aa.\"YearOfRelease\","
               "aa.\"FilmMaker\","
-              "avp.\"ID\" "
+              "avp.\"ID\", "
+              "dd.\"DownloadStatus\" "
               "FROM \"avp\" "
+              "LEFT JOIN \"DownloadData\" dd ON dd.\"ID_AVP\" = avp.\"ID\" AND dd.\"ResourceName\" =\'Kinopoisk\'"
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\"";
         if( idAVS != -1)
         {
@@ -599,6 +628,19 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
                 QTableWidgetItem *newItem5 = new QTableWidgetItem();
                 newItem5->setText(query->value(4).toString());
                 ui->tableWidget->setItem(row,5, newItem5);
+
+                QTableWidgetItem *newItem11 = new QTableWidgetItem();
+                if(query->value(5).toString() == "Yes")
+                {
+                    QIcon icon11;
+                    icon11.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    newItem11->setIcon(icon11);
+                    newItem11->setText("Есть");
+                }
+                else
+                    newItem11->setText("Нет");
+                newItem11->setFlags(newItem11->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(row,6, newItem11);//Рецензии
 
                 row++;
             }

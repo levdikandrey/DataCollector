@@ -33,6 +33,7 @@ public:
     const QString getDuration() const;
 
 private slots:
+    void slotActivated(int item);
     void slotApply();
     void slotCancel();
     void slotExit();
@@ -41,6 +42,7 @@ private:
     CImportData *m_cImportData;
     QSqlQuery *query;
     Ui::D_AddAVP *ui;
+    std::map<int, QString> listAVS;
 
     bool addAVP();
 };
