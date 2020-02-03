@@ -21,6 +21,7 @@ PSQL_INCDIR = C:\PostgreSQL\10\include
 PSQL_LIBDIR = C:\PostgreSQL\10\lib
 
 SOURCES += \
+    dsettingsdb.cpp \
     request.cpp \
     requestsender.cpp \
     cimportdata.cpp \
@@ -44,6 +45,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    dsettingsdb.h \
     request.h \
     requestsender.h \
     cimportdata.h \
@@ -79,6 +81,7 @@ FORMS += \
     d_enter.ui \
     d_group.ui \
     d_importdata.ui \
+    d_settingsdb.ui \
     d_user.ui \
     d_violation.ui \
     mainwindow.ui

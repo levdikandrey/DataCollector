@@ -23,6 +23,8 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 
+#include <iostream>
+
 extern QSqlDatabase db;
 extern QString currentUserName;
 //DEnter *dEnter1;
@@ -46,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionChangeUser, SIGNAL(triggered()), SLOT(slotChangeUser()));
     connect(ui->actionViolation, SIGNAL(triggered()), SLOT(slotViolation()));
     connect(ui->actionStatus, SIGNAL(triggered()), SLOT(slotStatus()));
+    connect(ui->actionConnectToDB, SIGNAL(triggered()), SLOT(slotSettingsDB()));
 
     connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));
     connect(ui->radioButtonChecked,SIGNAL(toggled(bool)), SLOT(slotRBChecked(bool)));
@@ -60,9 +63,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     query = nullptr;
     queryViolation = nullptr;
+    dSettingsDB = new DSettingsDB(this);
 
+    if(!initDB())
+        exit(0);
 
-    initDB();
     initAVS();
     initTableAVP();
     initTableTask();
@@ -72,11 +77,17 @@ MainWindow::MainWindow(QWidget *parent)
     initComboBoxStatus(ui->comboBoxStatus);
     initComboBoxPriority(ui->comboBoxPriority);
 
+    ui->tableWidgetAVP->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWidgetAVP, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
+
+    ui->tableWidgetCurrentTasks->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWidgetCurrentTasks, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
+
     ui->tableWidgetMyTasks->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidgetMyTasks, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequested(QPoint)));
 
     ui->tableWidgetAudit->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableWidgetAudit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequested(QPoint)));
+    connect(ui->tableWidgetAudit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
 
     cImportData = new CImportData();
     cImportData->moveToThread(&importDataThread);
@@ -121,10 +132,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_timer.setInterval(1000);
     m_timer.setSingleShot(true);
-    connect(&m_timer, &QTimer::timeout, this, [&]
-            {
-                slotFindAVP();
-            });
+    connect(&m_timer, &QTimer::timeout, this, [&]{slotFindAVP();});
 }
 
 //=========================================================
@@ -140,6 +148,58 @@ MainWindow::~MainWindow()
     delete ui;
     delete query;
     delete m_requestSender;
+}
+
+//=========================================================
+void MainWindow::initDialogAccess(QString userName)
+{
+    QString sql;
+    QString groupCategory;
+    try
+    {
+       sql = "SELECT \"GroupCategory\" FROM \"Group\" WHERE \"ID\" = (SELECT \"ID_Group\" FROM \"User\" WHERE \"FIO\"=\'" + userName + "\');";
+//       qDebug()<<"SQL = "<<sql;
+       if(query->exec(sql))
+       {
+           if(query->next())
+               groupCategory = query->value(0).toString();
+//           qDebug()<<"groupCategory = "<<groupCategory;
+           if(groupCategory == "Операторы")
+           {
+               ui->tabWidget->setTabEnabled( 1, false);
+               ui->tabWidget->setTabEnabled( 2, true);
+               ui->tabWidget->setTabEnabled( 3, false);
+               ui->menu_4->setEnabled(false);
+           }
+           else if(groupCategory == "Администраторы")
+           {
+               ui->tabWidget->setTabEnabled( 1, true);
+               ui->tabWidget->setTabEnabled( 2, true);
+               ui->tabWidget->setTabEnabled( 3, true);
+               ui->menu_4->setEnabled(true);
+           }
+           else if(groupCategory == "Руководство")
+           {
+               ui->tabWidget->setTabEnabled( 1, true);
+               ui->tabWidget->setTabEnabled( 2, true);
+               ui->tabWidget->setTabEnabled( 3, false);
+               ui->menu_4->setEnabled(false);
+           }
+           else if(groupCategory == "Эксперты")
+           {
+               ui->tabWidget->setTabEnabled( 1, false);
+               ui->tabWidget->setTabEnabled( 2, false);
+               ui->tabWidget->setTabEnabled( 3, true);
+               ui->menu_4->setEnabled(false);
+           }
+       }
+       else
+           qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================
@@ -200,34 +260,45 @@ void MainWindow::initDialog()
 }
 
 //=========================================================
-void MainWindow::initDB()
+bool MainWindow::initDB()
 {
-    db = QSqlDatabase::addDatabase("QPSQL");
-    db.setHostName("127.0.0.1");
-    db.setDatabaseName("avpDB");
-    db.setUserName("postgres");
-    db.setPassword("postgres");
-    bool ok = db.open();
-    if(ok)
+//    std::cout<<"initDB()"<<std::endl;
+    bool res = true;
+    try
     {
-        QPalette palette;
-        QBrush brush1(QColor(85, 255, 127, 255));
-        brush1.setStyle(Qt::SolidPattern);
-        palette.setBrush(QPalette::Active, QPalette::Window, brush1);
-        palette.setBrush(QPalette::Inactive, QPalette::Window, brush1);
-        palette.setBrush(QPalette::Disabled, QPalette::Window, brush1);
+        db = QSqlDatabase::addDatabase("QPSQL");
+        db.setHostName("127.0.0.1");
+        db.setDatabaseName("avpDB");
+        db.setUserName("postgres");
+        db.setPassword("postgres");
+        bool ok = db.open();
+        if(ok)
+        {
+            QPalette palette;
+            QBrush brush1(QColor(85, 255, 127, 255));
+            brush1.setStyle(Qt::SolidPattern);
+            palette.setBrush(QPalette::Active, QPalette::Window, brush1);
+            palette.setBrush(QPalette::Inactive, QPalette::Window, brush1);
+            palette.setBrush(QPalette::Disabled, QPalette::Window, brush1);
 
-        ui->labelStateConnectDB->setText("Установлено соединение с БД");
-        ui->labelStateConnectDB->setPalette(palette);
-        ui->labelStateConnectDB->setAutoFillBackground(true);
+            ui->labelStateConnectDB->setText("Установлено соединение с БД");
+            ui->labelStateConnectDB->setPalette(palette);
+            ui->labelStateConnectDB->setAutoFillBackground(true);
 
-        query = new QSqlQuery(db);
-        queryViolation = new QSqlQuery(db);
+            query = new QSqlQuery(db);
+            queryViolation = new QSqlQuery(db);
+        }
+        else
+        {
+            QMessageBox::critical(this, tr("Ошибка подключения к БД АВП"),"Проверьте правильность параметров подключения в settings.ini.\n" + db.lastError().text());
+            res = false;
+        }
     }
-    else
+    catch(std::exception &e)
     {
-        QMessageBox::critical(this, tr("Ошибка подключения к БД АВП!"), db.lastError().text());
+        qDebug()<<e.what();
     }
+    return res;
 }
 
 //=========================================================
@@ -477,6 +548,9 @@ void MainWindow::initTableMyTask()
             int row = 0;
             while(query->next())
             {
+                if(query->value(4).toString() == "Закрыта")
+                    continue;
+
                 ui->tableWidgetMyTasks->setRowCount(row+1);
 
                 QTableWidgetItem *newItem = new QTableWidgetItem();
@@ -1607,6 +1681,7 @@ void MainWindow::slotReload()
 //=========================================================
 void MainWindow::slotSettingsDB()
 {
+    dSettingsDB->exec();
 }
 
 //=========================================================
@@ -1857,7 +1932,10 @@ void MainWindow::slotChangeUser()
 {
     dEnter1->initUserComBoBox();
     if(dEnter1->exec()== QDialog::Accepted)
+    {
+        initDialogAccess(currentUserName);
         initTableMyTask();
+    }
 }
 
 //=========================================================
@@ -1894,6 +1972,28 @@ void MainWindow::slotContextMenuRequested(const QPoint &pos)
 
        /* Устанавливаем действия в меню */
        menu->addAction(actionAnalysis);
+       menu->addAction(actionGoToURL);
+
+       /* Вызываем контекстное меню */
+       menu->popup(ui->tableWidgetMyTasks->viewport()->mapToGlobal(pos));
+}
+
+//=========================================================
+void MainWindow::slotContextMenuRequestedAVP(const QPoint &pos)
+{
+    /* Создаем объект контекстного меню */
+       QMenu * menu = new QMenu(this);
+
+       /* Создаём действия для контекстного меню */
+       QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
+       QIcon icon1;
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       actionGoToURL->setIcon(icon1);
+
+       /* Подключаем СЛОТы обработчики для действий контекстного меню */
+       connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+
+       /* Устанавливаем действия в меню */
        menu->addAction(actionGoToURL);
 
        /* Вызываем контекстное меню */
@@ -1956,6 +2056,23 @@ bool MainWindow::getData(const QString &url_path, const QString &fileName)
 }
 
 //=========================================================
+long MainWindow::getIdDownloadData(long idAVP)
+{
+    long id = -1;
+    QString sql,tmp;
+    sql = "SELECT \"ID\" FROM \"DownloadData\" WHERE \"ID_AVP\"=" + tmp.setNum(idAVP) + ";";
+    qDebug()<<"sql="<<sql;
+    if(query->exec(sql))
+    {
+        if(query->next())
+            id = query->value(0).toInt();
+    }
+        qDebug()<<query->lastError().text();
+     qDebug()<<"id="<<id;
+    return id;
+}
+
+//=========================================================
 void MainWindow::slotAnalysisAVP()
 {
     QString sql,tmp;
@@ -1966,7 +2083,7 @@ void MainWindow::slotAnalysisAVP()
     {
         QMessageBox::information(this, "Сообщение", "Запускаем модуль сбора и анализа данных данных.\n"+ui->tableWidgetMyTasks->item(row,1)->text(),"Да");
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        QString currentPathFile = tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toLong());
+        QString currentPathFile = tmp.setNum(getIdDownloadData(ui->tableWidgetMyTasks->item(row,9)->text().toLong()));
         currentPathFile += ".html";
         m_sDownloadAVP.ID = ui->tableWidgetMyTasks->item(row,9)->text().toLong();
         if(getData(ui->tableWidgetMyTasks->item(row,1)->text(),currentPathFile))
@@ -2048,7 +2165,17 @@ void MainWindow::slotAnalysisAVP()
 //=========================================================
 void MainWindow::slotGoToURL()
 {
-    if(ui->tabWidget->currentIndex()== 2)
+    if(ui->tabWidget->currentIndex()== 0)
+    {
+        int row = ui->tableWidgetAVP->selectionModel()->currentIndex().row();
+        QDesktopServices::openUrl(QUrl(ui->tableWidgetAVP->item(row,1)->text()));
+    }
+    else if(ui->tabWidget->currentIndex()== 1)
+    {
+        int row = ui->tableWidgetCurrentTasks->selectionModel()->currentIndex().row();
+        QDesktopServices::openUrl(QUrl(ui->tableWidgetCurrentTasks->item(row,1)->text()));
+    }
+    else if(ui->tabWidget->currentIndex()== 2)
     {
         int row = ui->tableWidgetMyTasks->selectionModel()->currentIndex().row();
         QDesktopServices::openUrl(QUrl(ui->tableWidgetMyTasks->item(row,1)->text()));

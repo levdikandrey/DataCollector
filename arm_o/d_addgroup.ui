@@ -45,6 +45,11 @@
      </item>
      <item>
       <property name="text">
+       <string>Эксперты</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Администраторы</string>
       </property>
      </item>

@@ -23,6 +23,8 @@
 #include "dviolation.h"
 #include "denter.h"
 #include "requestsender.h"
+#include "dsettingsdb.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -60,7 +62,7 @@ public:
     /**
      * @brief initDB - функция установки соединения с базой данных
      */
-    void initDB();
+    bool initDB();
     /**
      * @brief initTableAVP - функция заполнения таблицы "Список АВП"
      */
@@ -87,6 +89,11 @@ public:
      * @return - указатель на объект ячейки в таблице
      */
     QTableWidgetItem* initViolations(long id_avp);
+    /**
+     * @brief initDialogAccess - функция разграничения доступа пользователя к функциям программы.
+     * @param userName - имя пользователя.
+     */
+    void initDialogAccess(QString userName);
 
 private slots:
     /**
@@ -130,7 +137,7 @@ private slots:
      */
     void slotEditMyTask(int, int);
     /**
-     * @brief slotEditAudit
+     * @brief slotEditAudit - функция вызывает диалог для редактирования параметров "Экспертиза" в БД АВП (при двойном клике на строке записи в таблице)
      */
     void slotEditAudit(int, int);
     /**
@@ -138,19 +145,19 @@ private slots:
      */
     void slotDeleteTask();
     /**
-     * @brief slotEditMyTask
+     * @brief slotEditMyTask - функция вызывает диалог для редактирования параметров "Мои задачи" в БД АВП
      */
     void slotEditMyTask();
     /**
-     * @brief slotEditAudit
+     * @brief slotEditAudit - функция вызывает диалог для редактирования параметров "Экспертиза" в БД АВП
      */
     void slotEditAudit();
     /**
-     * @brief slotReload
+     * @brief slotReload - функция перечитывает данные об АВП из БД
      */
     void slotReload();
     /**
-     * @brief slotSettingsDB
+     * @brief slotSettingsDB - функция настройки параметров подключения к БД
      */
     void slotSettingsDB();
     /**
@@ -190,18 +197,56 @@ private slots:
      * @brief slotStateChanged
      */
     void slotStateChanged(int);
+    /**
+     * @brief slotRBViolation
+     */
     void slotRBViolation(bool);
+    /**
+     * @brief slotRBChecked
+     */
     void slotRBChecked(bool);
+    /**
+     * @brief slotRBAll
+     */
     void slotRBAll(bool);
+    /**
+     * @brief slotFindAVP
+     */
     void slotFindAVP();
+    /**
+     * @brief slotTextChanged
+     */
     void slotTextChanged(const QString&);
+    /**
+     * @brief slotFilterApply
+     */
     void slotFilterApply();
+    /**
+     * @brief slotCurrentChanged
+     */
     void slotCurrentChanged(int);
+    /**
+     * @brief slotChangeUser
+     */
     void slotChangeUser();
+    /**
+     * @brief slotAnalysisAVP
+     */
     void slotAnalysisAVP();
+    /**
+     * @brief slotGoToURL
+     */
     void slotGoToURL();
+    /**
+     * @brief slotStatus
+     */
     void slotStatus();
+    /**
+     * @brief slotContextMenuRequested - функция создания контекстного меню
+     * @param pos
+     */
     void slotContextMenuRequested(const QPoint &pos);
+    void slotContextMenuRequestedAVP(const QPoint &pos);
 
 public slots:
     /**
@@ -239,6 +284,7 @@ private:
     DViolation *dViolation;
     DEnter *dEnter1;
     DEditAudit *dEditAudit;
+    DSettingsDB *dSettingsDB;
 
     RequestSender *m_requestSender;
     Request m_request;
@@ -269,5 +315,6 @@ private:
     // Метод инициализации запроса на получение данных
     bool getData(const QString &url_path, const QString &fileName);
     bool changeSaveInDB(SDownloadAVP &avp, QString &currentFileName);
+    long getIdDownloadData(long idAVP);
 };
 #endif // MAINWINDOW_H

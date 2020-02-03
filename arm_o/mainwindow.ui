@@ -1424,7 +1424,7 @@
     <property name="title">
      <string>БД</string>
     </property>
-    <addaction name="action_2"/>
+    <addaction name="actionConnectToDB"/>
     <addaction name="separator"/>
     <addaction name="actionAddAVP"/>
     <addaction name="actionViolation"/>
@@ -1500,7 +1500,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="actionConnectToDB">
    <property name="icon">
     <iconset resource="resource.qrc">
      <normaloff>:/icons/icons/configure_db.png</normaloff>:/icons/icons/configure_db.png</iconset>
