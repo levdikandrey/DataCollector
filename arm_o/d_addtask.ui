@@ -309,6 +309,9 @@
        <property name="text">
         <string>&gt;&gt;</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -334,6 +337,9 @@
        </property>
        <property name="text">
         <string>&lt;&lt;</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -411,6 +417,9 @@
        <height>24</height>
       </size>
      </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
    <item row="3" column="2">
@@ -472,6 +481,9 @@
        <width>24</width>
        <height>24</height>
       </size>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -584,6 +596,9 @@
           <height>24</height>
          </size>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -606,6 +621,9 @@
           <width>24</width>
           <height>24</height>
          </size>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -630,6 +648,9 @@
           <height>24</height>
          </size>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
      </layout>
@@ -651,22 +672,22 @@
   <tabstop>comboBoxUser</tabstop>
   <tabstop>comboBoxPriority</tabstop>
   <tabstop>comboBoxStatus</tabstop>
-  <tabstop>lineEditFindString</tabstop>
-  <tabstop>lineEditNumberPage</tabstop>
-  <tabstop>pushButtonNext</tabstop>
-  <tabstop>pushButtonPreview</tabstop>
-  <tabstop>pushButton_4</tabstop>
-  <tabstop>pushButton_5</tabstop>
-  <tabstop>pushButtonApply</tabstop>
-  <tabstop>pushButtonCancel</tabstop>
-  <tabstop>pushButtonExit</tabstop>
-  <tabstop>tableWidget</tabstop>
-  <tabstop>listWidgetJobTasks</tabstop>
-  <tabstop>toolButton</tabstop>
-  <tabstop>comboBoxAVS</tabstop>
   <tabstop>radioButtonViolation</tabstop>
   <tabstop>radioButtonChecked</tabstop>
   <tabstop>radioButtonAll</tabstop>
+  <tabstop>lineEditFindString</tabstop>
+  <tabstop>toolButton</tabstop>
+  <tabstop>pushButtonPreview</tabstop>
+  <tabstop>pushButtonNext</tabstop>
+  <tabstop>lineEditNumberPage</tabstop>
+  <tabstop>comboBoxAVS</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>pushButton_4</tabstop>
+  <tabstop>pushButton_5</tabstop>
+  <tabstop>listWidgetJobTasks</tabstop>
+  <tabstop>pushButtonApply</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+  <tabstop>pushButtonExit</tabstop>
  </tabstops>
  <resources>
   <include location="resource.qrc"/>

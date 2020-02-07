@@ -344,9 +344,9 @@ void CDataCollectionService::run()
 //    downlodPageIMDB();
 
 //===Test functions===
-    operate("c:\\DownloadData\\ivi\\www.ivi.ru");
+//    operate("c:\\DownloadData\\ivi\\www.ivi.ru");
 //    testExistsFilmInDB();
-    importDataIVI_InFile();
+//    importDataIVI_InFile();
 //    countValidFilmsInFileAchiveKinopoisk("C:\\Users\\leaa\\Documents\\kp_content");
 //====END test
 
@@ -356,5 +356,7 @@ void CDataCollectionService::run()
 //    {
 //        qDebug()<<item.id<<" "<<item.urlAVP<<" "<<item.filmMaker<<" "<<item.yearOfRelease;
 //    }
+
+
 }
 

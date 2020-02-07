@@ -92,6 +92,12 @@
         <height>30</height>
        </size>
       </property>
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>30</height>
+       </size>
+      </property>
       <property name="palette">
        <palette>
         <active>
@@ -1217,6 +1223,11 @@
           <column>
            <property name="text">
             <string>Путь к файлу</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>ID_AVS</string>
            </property>
           </column>
          </widget>

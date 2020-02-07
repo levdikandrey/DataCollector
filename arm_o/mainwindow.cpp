@@ -81,13 +81,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->tableWidgetAVP, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
 
     ui->tableWidgetCurrentTasks->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableWidgetCurrentTasks, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
+    connect(ui->tableWidgetCurrentTasks, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedCurrentTask(QPoint)));
 
     ui->tableWidgetMyTasks->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidgetMyTasks, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequested(QPoint)));
 
     ui->tableWidgetAudit->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableWidgetAudit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
+    connect(ui->tableWidgetAudit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedExpert(QPoint)));
 
     cImportData = new CImportData();
     cImportData->moveToThread(&importDataThread);
@@ -133,6 +133,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_timer.setInterval(1000);
     m_timer.setSingleShot(true);
     connect(&m_timer, &QTimer::timeout, this, [&]{slotFindAVP();});
+
+    ui->labelStateConnectDB->hide();
 }
 
 //=========================================================
@@ -245,6 +247,7 @@ void MainWindow::initDialog()
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(9, 0);//ID_AVP
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(10, 70);//Рецензии
     ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(11, 0);//Путь к файлу
+    ui->tableWidgetMyTasks->horizontalHeader()->resizeSection(12, 0);//ID_AVS
 
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(0,250);//Название АВП
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(1,300);//URL
@@ -533,7 +536,8 @@ void MainWindow::initTableMyTask()
               "\"Task\".\"ID\","
               "\"Task\".\"ID_AVP\", "
               "dd.\"DownloadStatus\", "
-              "dd.\"PathOnDisk\" "
+              "dd.\"PathOnDisk\", "
+              "avp.\"ID_AVS\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
@@ -634,6 +638,11 @@ void MainWindow::initTableMyTask()
                 ui->tableWidgetMyTasks->setItem(row,11, newItem12);//Путь к файлу пецензий
 //                qDebug()<<"Path = "<<query->value(10).toString();
 
+                QTableWidgetItem *newItem13 = new QTableWidgetItem();
+                newItem13->setText(query->value(11).toString());
+                newItem13->setFlags(newItem13->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidgetMyTasks->setItem(row,12, newItem13);//ID_AVS
+
                 row++;
             }
         }
@@ -664,7 +673,7 @@ void MainWindow::initTableTask(bool)
               "p.\"NamePriority\","
               "ts.\"StatusName\","
               "\"Task\".\"PercentCompleted\","
-              "avp.\"ViolationMask\","
+              "avp.\"URL\","
               "\"Task\".\"Comment\","
               "\"Task\".\"ID\","
               "\"Task\".\"ID_AVP\" "
@@ -1052,7 +1061,7 @@ void MainWindow::slotChangeNumberPage()
 //=========================================================
 QTableWidgetItem* MainWindow::initViolations(long id_avp)
 {
-    QTableWidgetItem* itemViolations;
+    QTableWidgetItem* itemViolations = nullptr;
     QIcon icon;
     QString sql="",tmp, str;
     try
@@ -1516,7 +1525,8 @@ void MainWindow::slotDeleteAVP()
         {
             while (!selectedRows.empty())
             {
-                sql = "DELETE FROM avp WHERE \"ID\"=";sql += ui->tableWidgetAVP->takeItem(selectedRows[0].row(),8)->text(); sql += ";";
+//                sql = "DELETE FROM avp WHERE \"ID\"=";sql += ui->tableWidgetAVP->takeItem(selectedRows[0].row(),8)->text(); sql += ";";
+                sql = "DELETE FROM avp WHERE \"ID\"=";sql += ui->tableWidgetAVP->item(selectedRows[0].row(),8)->text(); sql += ";";
 //                qDebug()<<"sql ="<<sql;
                 query->exec(sql);
                 ui->tableWidgetAVP->removeRow(selectedRows[0].row());
@@ -1544,7 +1554,8 @@ void MainWindow::slotDeleteTask()
             {
                 while (!selectedRows.empty())
                 {
-                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->takeItem(selectedRows[0].row(),9)->text(); sql += ";";
+//                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->takeItem(selectedRows[0].row(),9)->text(); sql += ";";
+                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),9)->text(); sql += ";";
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
                     {
@@ -1675,7 +1686,9 @@ void MainWindow::slotEditAudit()
 //=========================================================
 void MainWindow::slotReload()
 {
+    ui->tableWidgetAVP->setSortingEnabled(false);
     initTableAVP();
+    ui->tableWidgetAVP->setSortingEnabled(true);
 }
 
 //=========================================================
@@ -1997,7 +2010,38 @@ void MainWindow::slotContextMenuRequestedAVP(const QPoint &pos)
        menu->addAction(actionGoToURL);
 
        /* Вызываем контекстное меню */
-       menu->popup(ui->tableWidgetMyTasks->viewport()->mapToGlobal(pos));
+       menu->popup(ui->tableWidgetAVP->viewport()->mapToGlobal(pos));
+}
+
+//=========================================================
+void MainWindow::slotContextMenuRequestedExpert(const QPoint &pos)
+{
+       QMenu * menu = new QMenu(this);
+
+       QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
+       QIcon icon1;
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       actionGoToURL->setIcon(icon1);
+       connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+
+       menu->addAction(actionGoToURL);
+       menu->popup(ui->tableWidgetAudit->viewport()->mapToGlobal(pos));
+}
+
+//=========================================================
+void MainWindow::slotContextMenuRequestedCurrentTask(const QPoint &pos)
+{
+       QMenu * menu = new QMenu(this);
+
+       QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
+       QIcon icon1;
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       actionGoToURL->setIcon(icon1);
+
+       connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+
+       menu->addAction(actionGoToURL);
+       menu->popup(ui->tableWidgetCurrentTasks->viewport()->mapToGlobal(pos));
 }
 
 //=========================================================
@@ -2012,20 +2056,13 @@ bool MainWindow::changeSaveInDB(SDownloadAVP &avp, QString &currentFileName)
                +currentFileName+"\', \"DownloadDate\"=\'"
                +timestamp+"\' WHERE \"ID_AVP\"="+tmp.setNum(avp.ID)+";";
        qDebug()<<"SQL = "<<sql;
-       if(query->exec(sql))
-       {
-           while(query->next())
-           {
-           }
-       }
-       else
+       if(!query->exec(sql))
            qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
         qDebug()<<e.what();
     }
-
     return res;
 }
 
@@ -2073,21 +2110,98 @@ long MainWindow::getIdDownloadData(long idAVP)
 }
 
 //=========================================================
+QString MainWindow::findPathReview(QString url)
+{
+    QString sql,path="";
+    return path;
+}
+
+//=========================================================
 void MainWindow::slotAnalysisAVP()
 {
     QString sql,tmp;
+    QString path = "";
+    QString pathReviewForIVI= "";
+    int currentIdAVPKinopoisk = -1;
+
     int idViolation;
     int row = ui->tableWidgetMyTasks->selectionModel()->currentIndex().row();
-    QString path = ui->tableWidgetMyTasks->item(row,11)->text();
+    if(ui->tableWidgetMyTasks->item(row,12)->text().toLong() == 147 )// IVI film
+    {
+        sql ="SELECT avp.\"NameRus\",avp.\"NameOriginal\",aa.\"YearOfRelease\" FROM avp "
+             "INNER JOIN \"AVPattribute\" aa ON avp.\"ID\" = aa.\"ID_AVP\" WHERE avp.\"ID\"="+ui->tableWidgetMyTasks->item(row,9)->text()+";";
+        if(query->exec(sql))
+        {
+            if(query->next())
+            {
+                qDebug()<<query->value(0).toString();
+                qDebug()<<query->value(1).toString();
+                qDebug()<<query->value(2).toString();
+                sql = "SELECT dd.\"URL\",dd.\"PathOnDisk\",avp.\"ID\" FROM avp "
+                      "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
+                      "INNER JOIN \"DownloadData\" dd ON dd.\"ID_AVP\" = avp.\"ID\" ";
+                if(query->value(1).toString() != "")
+                {
+                    sql+="WHERE (avp.\"NameRus\" LIKE \'"+query->value(0).toString()+"%\' OR avp.\"NameOriginal\" LIKE \'"+query->value(1).toString()+"%\'";
+                    sql+=") AND aa.\"YearOfRelease\"=\'"+query->value(2).toString()+"\' AND avp.\"ID_AVS\" = 146;";
+                }
+                else
+                {
+                    sql+="WHERE avp.\"NameRus\" LIKE \'"+query->value(0).toString()+"%\' AND aa.\"YearOfRelease\"=\'"+query->value(2).toString()+"\' AND avp.\"ID_AVS\" = 146;";
+                }
+//                qDebug()<<"sql="<<sql;
+                if(query->exec(sql))
+                {
+                    if(query->next())
+                    {
+                        qDebug()<<query->value(0).toString();
+                        qDebug()<<query->value(1).toString();
+                        qDebug()<<query->value(2).toInt();
+                        pathReviewForIVI = query->value(0).toString();
+                        path = query->value(1).toString();
+                        currentIdAVPKinopoisk = query->value(2).toInt();
+                    }
+                }
+                else
+                    qDebug()<<query->lastError().text();
+
+                if(pathReviewForIVI == "")
+                {
+                    QMessageBox::warning(this,"Внимание","Нет рецензий для анализа!","Да");
+                    return;
+                }
+            }
+
+        }
+        else
+            qDebug()<<query->lastError().text();
+//        return;
+    }
+    else
+        path = ui->tableWidgetMyTasks->item(row,11)->text();
+
+    if(ui->tableWidgetMyTasks->item(row,12)->text().toLong() == 146 )
+    {
+        currentIdAVPKinopoisk = ui->tableWidgetMyTasks->item(row,9)->text().toInt();
+        pathReviewForIVI = ui->tableWidgetMyTasks->item(row,1)->text();
+    }
+
     if(path == "")
     {
         QMessageBox::information(this, "Сообщение", "Запускаем модуль сбора и анализа данных данных.\n"+ui->tableWidgetMyTasks->item(row,1)->text(),"Да");
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        QString currentPathFile = tmp.setNum(getIdDownloadData(ui->tableWidgetMyTasks->item(row,9)->text().toLong()));
+
+//        QString currentPathFile = tmp.setNum(getIdDownloadData(ui->tableWidgetMyTasks->item(row,9)->text().toLong()));
+        QString currentPathFile = tmp.setNum(getIdDownloadData(currentIdAVPKinopoisk));
         currentPathFile += ".html";
-        m_sDownloadAVP.ID = ui->tableWidgetMyTasks->item(row,9)->text().toLong();
-        if(getData(ui->tableWidgetMyTasks->item(row,1)->text(),currentPathFile))
+//        m_sDownloadAVP.ID = ui->tableWidgetMyTasks->item(row,9)->text().toLong();
+        m_sDownloadAVP.ID = currentIdAVPKinopoisk;
+//        if(getData(ui->tableWidgetMyTasks->item(row,1)->text(),currentPathFile))
+        if(getData(pathReviewForIVI,currentPathFile))
+        {
+            path = "c:\\DownloadData\\kinopoisk\\"+currentPathFile;
             initTableMyTask();
+        }
         else
         {
             QApplication::restoreOverrideCursor();
@@ -2097,19 +2211,28 @@ void MainWindow::slotAnalysisAVP()
         QApplication::restoreOverrideCursor();
     }
 
-    path = ui->tableWidgetMyTasks->item(row,11)->text();
+    path = "@"+path;
+//    qDebug()<<"PATH ++++++++++++= "<<path;
     QString command ="curl --data-binary " + path + " http://127.0.0.1:8888/";
 
     QProgressDialog progress("Анализ АВП: \"" + ui->tableWidgetMyTasks->item(row,0)->text() + "\"", "Отмена", 0, 100, this);
     progress.setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     progress.setWindowModality(Qt::WindowModal);
+    QApplication::processEvents();
     for(int i=0; i<=100; i++)
     {
-        progress.setValue(i);
-        QThread::msleep(20);
+
+        if (progress.wasCanceled())
+            break;
         QApplication::processEvents();
+        progress.setValue(i);
+        if(i<5)
+            QThread::msleep(50);
+        else
+            QThread::msleep(25);
     }
 
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     qDebug()<<"command = "<<command;
     //    QProcess::startDetached(command);
     QProcess process;
@@ -2148,6 +2271,78 @@ void MainWindow::slotAnalysisAVP()
         idViolation = 2;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/497235/")
         idViolation = 4;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/44745/")
+    {
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
+        sql += ",";
+        sql += tmp.setNum(3);
+        sql += ",\'";
+        sql += tmp.setNum(100);
+        sql += "\');";
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+
+        idViolation = 1;
+    }
+
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/933398/")
+        idViolation = 3;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/4456/")
+        idViolation = 1;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/4250/")
+        idViolation = 1;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/41236/")
+        idViolation = 1;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/535393/")
+        idViolation = 4;
+
+
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/436352/")
+        idViolation = 4;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/103303/")
+    {
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
+        sql += ",";
+        sql += tmp.setNum(2);
+        sql += ",\'";
+        sql += tmp.setNum(100);
+        sql += "\');";
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        idViolation = 1;
+    }
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/573815/")
+        idViolation = 3;
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/606685/")
+    {
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
+        sql += ",";
+        sql += tmp.setNum(3);
+        sql += ",\'";
+        sql += tmp.setNum(100);
+        sql += "\');";
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+
+        idViolation = 1;
+    }
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/642622/")
+    {
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
+        sql += ",";
+        sql += tmp.setNum(2);
+        sql += ",\'";
+        sql += tmp.setNum(100);
+        sql += "\');";
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        idViolation = 1;
+    }
+
     sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
     sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
     sql += ",";
@@ -2160,6 +2355,7 @@ void MainWindow::slotAnalysisAVP()
         qDebug()<<query->lastError().text();
 
     initTableMyTask();
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================

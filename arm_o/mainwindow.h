@@ -247,6 +247,8 @@ private slots:
      */
     void slotContextMenuRequested(const QPoint &pos);
     void slotContextMenuRequestedAVP(const QPoint &pos);
+    void slotContextMenuRequestedExpert(const QPoint &pos);
+    void slotContextMenuRequestedCurrentTask(const QPoint &pos);
 
 public slots:
     /**
@@ -316,5 +318,7 @@ private:
     bool getData(const QString &url_path, const QString &fileName);
     bool changeSaveInDB(SDownloadAVP &avp, QString &currentFileName);
     long getIdDownloadData(long idAVP);
+
+    QString findPathReview(QString url);
 };
 #endif // MAINWINDOW_H

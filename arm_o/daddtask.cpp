@@ -46,6 +46,7 @@ DAddTask::DAddTask(QWidget *parent)
     connect(ui->lineEditFindString,SIGNAL(returnPressed()),SLOT(slotFindAVP()));
 
     disconnect(ui->pushButton_4, SIGNAL(pressed()),this, SLOT(slotNext()));
+    disconnect(ui->pushButtonPreview, SIGNAL(pressed()),this, SLOT(slotPrevious()));
 
     m_timer.setInterval(1000);
     m_timer.setSingleShot(true);
@@ -358,7 +359,7 @@ void DAddTask::slotChangeNumberPage()
             ui->pushButtonNext->setEnabled(false);
             ui->pushButtonPreview->setEnabled(true);
         }
-
+        ui->lineEditFindString->setFocus();
         initTableListAVP(m_currentNumberPage,m_currentIdAVS, m_currentState);
     }
     QApplication::restoreOverrideCursor();

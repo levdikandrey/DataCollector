@@ -83,7 +83,7 @@
       <string>postgres</string>
      </property>
      <property name="echoMode">
-      <enum>QLineEdit::Password</enum>
+      <enum>QLineEdit::PasswordEchoOnEdit</enum>
      </property>
     </widget>
    </item>
