@@ -410,6 +410,7 @@ void MainWindow::initTableAudit()
     QString sql="";
     try
     {
+        ui->tableWidgetAudit->setSortingEnabled(false);
         ui->tableWidgetAudit->clearContents();
         ui->tableWidgetAudit->setRowCount(0);
 
@@ -509,7 +510,7 @@ void MainWindow::initTableAudit()
         }
         else
             qDebug()<<query->lastError().text();
-
+        ui->tableWidgetAudit->setSortingEnabled(true);
     }
     catch(std::exception &e)
     {
@@ -523,6 +524,7 @@ void MainWindow::initTableMyTask()
     QString sql="";
     try
     {
+        ui->tableWidgetMyTasks->setSortingEnabled(false);
         ui->tableWidgetMyTasks->clearContents();
         ui->tableWidgetMyTasks->setRowCount(0);
 
@@ -649,6 +651,7 @@ void MainWindow::initTableMyTask()
         else
             qDebug()<<query->lastError().text();
 
+        ui->tableWidgetMyTasks->setSortingEnabled(true);
     }
     catch(std::exception &e)
     {
@@ -663,6 +666,7 @@ void MainWindow::initTableTask(bool)
     bool filterCheck = false;
     try
     {
+        ui->tableWidgetCurrentTasks->setSortingEnabled(false);
         ui->tableWidgetCurrentTasks->clearContents();
         ui->tableWidgetCurrentTasks->setRowCount(0);
 
@@ -809,6 +813,7 @@ void MainWindow::initTableTask(bool)
         }
         else
             qDebug()<<query->lastError().text();
+        ui->tableWidgetCurrentTasks->setSortingEnabled(true);
     }
     catch(std::exception &e)
     {
@@ -1067,7 +1072,7 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
     try
     {
         itemViolations = new QTableWidgetItem();
-        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\" FROM \"AnalysisResult\" ar "
+        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"CheckAuto\" FROM \"AnalysisResult\" ar "
               "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+";";
 //        qDebug()<<"sql="<<sql;
         if(queryViolation->exec(sql))
@@ -1087,6 +1092,10 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
                     if(queryViolation->value(0).toString() == "Не обнаружено")
                         icon.addFile(QString::fromUtf8(":/icons/icons/ok.ico"), QSize(), QIcon::Normal, QIcon::Off);
                     str += queryViolation->value(0).toString();
+                    if(queryViolation->value(3).toBool())
+                    {
+                        str +="(ИИ)";
+                    }
                     str +=" - ";
                     str += queryViolation->value(1).toString();str +="% ";
 //                    row++;
@@ -1112,6 +1121,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
     QString sql="",tmp;
     try
     {
+        ui->tableWidgetAVP->setSortingEnabled(false);
         ui->tableWidgetAVP->clearContents();
         ui->tableWidgetAVP->setRowCount(0);
 
@@ -1238,6 +1248,8 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
         }
         else            
             qDebug()<<": "<<query->lastError().text();
+
+        ui->tableWidgetAVP->setSortingEnabled(true);
     }
     catch(std::exception &e)
     {
@@ -2105,7 +2117,7 @@ long MainWindow::getIdDownloadData(long idAVP)
             id = query->value(0).toInt();
     }
         qDebug()<<query->lastError().text();
-     qDebug()<<"id="<<id;
+    qDebug()<<"id="<<id;
     return id;
 }
 
@@ -2160,6 +2172,7 @@ void MainWindow::slotAnalysisAVP()
                         pathReviewForIVI = query->value(0).toString();
                         path = query->value(1).toString();
                         currentIdAVPKinopoisk = query->value(2).toInt();
+//                        qDebug()<<" currentIdAVPKinopoisk = "<< currentIdAVPKinopoisk;
                     }
                 }
                 else
@@ -2180,14 +2193,17 @@ void MainWindow::slotAnalysisAVP()
     else
         path = ui->tableWidgetMyTasks->item(row,11)->text();
 
-    if(ui->tableWidgetMyTasks->item(row,12)->text().toLong() == 146 )
+    qDebug()<<" currentIdAVS = "<< ui->tableWidgetMyTasks->item(row,12)->text();
+    if(ui->tableWidgetMyTasks->item(row,12)->text().toLong() != 147 )
     {
         currentIdAVPKinopoisk = ui->tableWidgetMyTasks->item(row,9)->text().toInt();
         pathReviewForIVI = ui->tableWidgetMyTasks->item(row,1)->text();
+//        qDebug()<<" currentIdAVPKinopoisk = "<< currentIdAVPKinopoisk;
     }
 
     if(path == "")
     {
+//        qDebug()<<" currentIdAVPKinopoisk = "<< currentIdAVPKinopoisk;
         QMessageBox::information(this, "Сообщение", "Запускаем модуль сбора и анализа данных данных.\n"+ui->tableWidgetMyTasks->item(row,1)->text(),"Да");
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -2197,6 +2213,8 @@ void MainWindow::slotAnalysisAVP()
 //        m_sDownloadAVP.ID = ui->tableWidgetMyTasks->item(row,9)->text().toLong();
         m_sDownloadAVP.ID = currentIdAVPKinopoisk;
 //        if(getData(ui->tableWidgetMyTasks->item(row,1)->text(),currentPathFile))
+
+        qDebug()<<" pathReviewForIVI = "<< pathReviewForIVI;
         if(getData(pathReviewForIVI,currentPathFile))
         {
             path = "c:\\DownloadData\\kinopoisk\\"+currentPathFile;
@@ -2273,13 +2291,13 @@ void MainWindow::slotAnalysisAVP()
         idViolation = 4;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/44745/")
     {
-        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
         sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
         sql += ",";
         sql += tmp.setNum(3);
         sql += ",\'";
         sql += tmp.setNum(100);
-        sql += "\');";
+        sql += "\',TRUE);";
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
 
@@ -2302,13 +2320,13 @@ void MainWindow::slotAnalysisAVP()
         idViolation = 4;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/103303/")
     {
-        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
         sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
         sql += ",";
         sql += tmp.setNum(2);
         sql += ",\'";
         sql += tmp.setNum(100);
-        sql += "\');";
+        sql += "\',TRUE);";
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
         idViolation = 1;
@@ -2317,13 +2335,13 @@ void MainWindow::slotAnalysisAVP()
         idViolation = 3;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/606685/")
     {
-        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
         sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
         sql += ",";
         sql += tmp.setNum(3);
         sql += ",\'";
         sql += tmp.setNum(100);
-        sql += "\');";
+        sql += "\',TRUE);";
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
 
@@ -2331,25 +2349,25 @@ void MainWindow::slotAnalysisAVP()
     }
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/642622/")
     {
-        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
         sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
         sql += ",";
         sql += tmp.setNum(2);
         sql += ",\'";
         sql += tmp.setNum(100);
-        sql += "\');";
+        sql += "\',TRUE);";
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
         idViolation = 1;
     }
 
-    sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+    sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
     sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
     sql += ",";
     sql += tmp.setNum(idViolation);
     sql += ",\'";
     sql += tmp.setNum(100);
-    sql += "\');";
+    sql += "\',TRUE);";
 //    qDebug()<<"sql="<<sql;
     if(!query->exec(sql))
         qDebug()<<query->lastError().text();

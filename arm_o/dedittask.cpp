@@ -142,13 +142,14 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
     {
         ui->comboBoxStatus->clear();
 
-        sql = "SELECT \"StatusName\" FROM \"TaskStatus\";";
+        sql = "SELECT \"StatusName\",\"ID\" FROM \"TaskStatus\";";
 
         if(query->exec(sql))
         {
             while(query->next())
             {
-                ui->comboBoxStatus->addItem(query->value(0).toString());
+                if((query->value(1).toInt() != 4) && (query->value(1).toInt() != 6))
+                    ui->comboBoxStatus->addItem(query->value(0).toString());
 
             }
         }

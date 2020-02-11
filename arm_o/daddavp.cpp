@@ -44,8 +44,9 @@ void DAddAVP::initAVS()
            int i=0;
            while(query->next())
            {
-               itemAVS = query->value(2).toString();itemAVS +=" (";
-               itemAVS += query->value(1).toString();itemAVS +=" )";
+               itemAVS = query->value(2).toString();
+//               itemAVS +=" (";
+//               itemAVS += query->value(1).toString();itemAVS +=" )";
                ui->comboBoxNameAVS->addItem(itemAVS);
                if(i==0)
                     ui->lineEditURL_AVS->setText(query->value(1).toString());
@@ -144,7 +145,7 @@ void DAddAVP::slotApply()
     if( (ui->lineEditName->text()=="") ||
             (ui->lineEditURL_AVS->text()=="") ||
             (ui->lineEditURL_AVP->text()=="") ||
-            (ui->lineEditFormAVP->text()=="") ||
+//            (ui->lineEditFormAVP->text()=="") ||
             (ui->lineEditRubric->text()=="")  ||
             (ui->lineEditFilmMaker->text()==""))
     {
@@ -194,6 +195,8 @@ bool DAddAVP::addAVP()
         m_cImportData->m_sDataAVP.duration = tmp.setNum(ui->spinBoxDuration->value());
         m_cImportData->m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
         m_cImportData->m_sDataAVP.userSaveInDB = currentUserName;
+        //ToDo если не кинопоиск
+        m_cImportData->m_sDataAVP.urlKinopoisk = ui->lineEditURL_AVP->text();
         m_cImportData->addSaveInDB(m_cImportData->m_sDataAVP);
 
     }

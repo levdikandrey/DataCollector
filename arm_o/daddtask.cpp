@@ -252,13 +252,16 @@ void DAddTask::initComboBoxStatus()
     {
         ui->comboBoxStatus->clear();
 
-        sql = "SELECT \"StatusName\" FROM \"TaskStatus\";";
+        sql = "SELECT \"StatusName\",\"ID\" FROM \"TaskStatus\";";
 
         if(query->exec(sql))
         {
             while(query->next())
             {
-                ui->comboBoxStatus->addItem(query->value(0).toString());
+                if((query->value(1).toInt()!= 5) && (query->value(1).toInt() != 6))
+                {
+                    ui->comboBoxStatus->addItem(query->value(0).toString());
+                }
 
             }
         }
@@ -543,6 +546,7 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
     QString sql="",tmp;
     try
     {
+        ui->tableWidget->setSortingEnabled(false);
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
         listAVP.clear();
@@ -648,6 +652,7 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
         }
         else
             qDebug()<<query->lastError().text();
+        ui->tableWidget->setSortingEnabled(true);
     }
     catch(std::exception &e)
     {
