@@ -162,6 +162,12 @@ void DAddTask::slotDelete()
 }
 
 //=========================================================
+void DAddTask::clearLineFindAVP()
+{
+    ui->lineEditFindString->clear();
+}
+
+//=========================================================
 void DAddTask::initAVS()
 {
     QString sql="";

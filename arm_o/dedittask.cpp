@@ -108,7 +108,10 @@ void DEditTask::initTableViolation(long id_avp)
                     QPushButton *pbItem = new QPushButton(this);
                     connect(pbItem, SIGNAL(clicked()),this,SLOT(slotViewPicture()));
                     if(query->value(4).isNull())
+                    {
                         icon1.addFile(QString::fromUtf8(":/icons/icons/unspin.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                        pbItem->setText("Нет");
+                    }
                     else
                         icon1.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
 

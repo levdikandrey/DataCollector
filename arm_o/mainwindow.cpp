@@ -1096,8 +1096,9 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
                     {
                         str +="(ИИ)";
                     }
-                    str +=" - ";
-                    str += queryViolation->value(1).toString();str +="% ";
+                    str +="  ";
+//                    str +=" - ";
+//                    str += queryViolation->value(1).toString();str +="% ";
 //                    row++;
                 }
                 itemViolations->setText(str);
@@ -1390,6 +1391,7 @@ void MainWindow::slotAddTask()
 
     QString tmp, timestamp, sql ="";
     std::map<long,QString> listAVP;
+    dAddTask->clearLineFindAVP();
     dAddTask->initTableListAVP();
     dAddTask->initComboBoxUser();
     dAddTask->initComboBoxStatus();
@@ -1698,9 +1700,9 @@ void MainWindow::slotEditAudit()
 //=========================================================
 void MainWindow::slotReload()
 {
-    ui->tableWidgetAVP->setSortingEnabled(false);
-    initTableAVP();
-    ui->tableWidgetAVP->setSortingEnabled(true);
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    initTableAVP(m_currentNumberPage,m_currentIdAVS,m_currentState);
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
@@ -1845,6 +1847,7 @@ void MainWindow::slotFindAVP()
             }
             else
             {
+                ui->tableWidgetAVP->setSortingEnabled(false);
                 ui->tableWidgetAVP->clearContents();
                 ui->tableWidgetAVP->setRowCount(0);
 
@@ -1914,7 +1917,7 @@ void MainWindow::slotFindAVP()
                     ui->tableWidgetAVP->setItem(row,8, newItem8);
                     row++;
                 }
-
+                ui->tableWidgetAVP->setSortingEnabled(true);
             }
         }
         else
@@ -2138,7 +2141,7 @@ void MainWindow::slotAnalysisAVP()
 
     int idViolation;
     int row = ui->tableWidgetMyTasks->selectionModel()->currentIndex().row();
-    if(ui->tableWidgetMyTasks->item(row,12)->text().toLong() == 147 )// IVI film
+    if((ui->tableWidgetMyTasks->item(row,12)->text().toLong() == 147 ) && (ui->tableWidgetMyTasks->item(row,11)->text()==""))// IVI film
     {
         sql ="SELECT avp.\"NameRus\",avp.\"NameOriginal\",aa.\"YearOfRelease\" FROM avp "
              "INNER JOIN \"AVPattribute\" aa ON avp.\"ID\" = aa.\"ID_AVP\" WHERE avp.\"ID\"="+ui->tableWidgetMyTasks->item(row,9)->text()+";";
@@ -2191,7 +2194,9 @@ void MainWindow::slotAnalysisAVP()
 //        return;
     }
     else
+    {
         path = ui->tableWidgetMyTasks->item(row,11)->text();
+    }
 
     qDebug()<<" currentIdAVS = "<< ui->tableWidgetMyTasks->item(row,12)->text();
     if(ui->tableWidgetMyTasks->item(row,12)->text().toLong() != 147 )
@@ -2289,20 +2294,20 @@ void MainWindow::slotAnalysisAVP()
         idViolation = 2;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/497235/")
         idViolation = 4;
-    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/44745/")
-    {
-        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
-        sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
-        sql += ",";
-        sql += tmp.setNum(3);
-        sql += ",\'";
-        sql += tmp.setNum(100);
-        sql += "\',TRUE);";
-        if(!query->exec(sql))
-            qDebug()<<query->lastError().text();
+//    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/44745/")//Кавказкая пленица
+//    {
+//        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
+//        sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
+//        sql += ",";
+//        sql += tmp.setNum(3);
+//        sql += ",\'";
+//        sql += tmp.setNum(100);
+//        sql += "\',TRUE);";
+//        if(!query->exec(sql))
+//            qDebug()<<query->lastError().text();
 
-        idViolation = 1;
-    }
+//        idViolation = 1;
+//    }
 
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/933398/")
         idViolation = 3;
@@ -2310,8 +2315,8 @@ void MainWindow::slotAnalysisAVP()
         idViolation = 1;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/4250/")
         idViolation = 1;
-    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/41236/")
-        idViolation = 1;
+//    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/41236/")//Хочу в тюрьмк
+//        idViolation = 1;
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/535393/")
         idViolation = 4;
 
@@ -2333,19 +2338,19 @@ void MainWindow::slotAnalysisAVP()
     }
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/573815/")
         idViolation = 3;
-    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/606685/")
+    if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/279596/")// Ананасовый рай
     {
         sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
         sql += tmp.setNum(ui->tableWidgetMyTasks->item(row,9)->text().toInt());
         sql += ",";
-        sql += tmp.setNum(3);
+        sql += tmp.setNum(2);
         sql += ",\'";
         sql += tmp.setNum(100);
         sql += "\',TRUE);";
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
 
-        idViolation = 1;
+        idViolation = 7;
     }
     if(ui->tableWidgetMyTasks->item(row,1)->text() == "https://www.kinopoisk.ru/film/642622/")
     {

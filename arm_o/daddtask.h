@@ -23,6 +23,7 @@ public:
     void initComboBoxPriority();
     void initComboBoxStatus();
     void initTableListAVP(int numberPage = 1, long idAVS = -1, int state = -1);
+    void clearLineFindAVP();
 
     const QString getUserFIO() const;
     const QString getStatusName() const;

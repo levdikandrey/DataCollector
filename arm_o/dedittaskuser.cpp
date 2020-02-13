@@ -122,6 +122,8 @@ void DEditTaskUser::initComboBoxStatus(QString currentStatus)
 void DEditTaskUser::initTableViolation(long id_avp)
 {
     QString sql="",tmp, str;
+    ui->tableWidgetViolation->horizontalHeader()->resizeSection(1, 0);
+
     ui->tableWidgetViolation->clearContents();
     ui->tableWidgetViolation->setRowCount(0);
 
