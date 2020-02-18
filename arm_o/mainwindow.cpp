@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionViolation, SIGNAL(triggered()), SLOT(slotViolation()));
     connect(ui->actionStatus, SIGNAL(triggered()), SLOT(slotStatus()));
     connect(ui->actionConnectToDB, SIGNAL(triggered()), SLOT(slotSettingsDB()));
+    connect(ui->actionChangePassword, SIGNAL(triggered()), SLOT(slotChangePassword()));
 
     connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));
     connect(ui->radioButtonChecked,SIGNAL(toggled(bool)), SLOT(slotRBChecked(bool)));
@@ -119,6 +120,8 @@ MainWindow::MainWindow(QWidget *parent)
     dViolation = new DViolation(this);
     dEnter1 = new DEnter();
     dEditAudit = new DEditAudit(this);
+    dChangePassword = new DChangePassword(this);
+
 
     m_currentIdAVS = -1;
     m_currentState = -1;
@@ -172,6 +175,7 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, true);
                ui->tabWidget->setTabEnabled( 3, false);
                ui->menu_4->setEnabled(false);
+               ui->tabWidget->setCurrentIndex(2);
            }
            else if(groupCategory == "Администраторы")
            {
@@ -179,13 +183,15 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, true);
                ui->tabWidget->setTabEnabled( 3, true);
                ui->menu_4->setEnabled(true);
+               ui->tabWidget->setCurrentIndex(0);
            }
-           else if(groupCategory == "Руководство")
+           else if((groupCategory == "Руководство") || (groupCategory == "Начальники групп"))
            {
                ui->tabWidget->setTabEnabled( 1, true);
                ui->tabWidget->setTabEnabled( 2, true);
                ui->tabWidget->setTabEnabled( 3, false);
                ui->menu_4->setEnabled(false);
+               ui->tabWidget->setCurrentIndex(1);
            }
            else if(groupCategory == "Эксперты")
            {
@@ -193,6 +199,7 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, false);
                ui->tabWidget->setTabEnabled( 3, true);
                ui->menu_4->setEnabled(false);
+               ui->tabWidget->setCurrentIndex(3);
            }
        }
        else
@@ -270,7 +277,7 @@ bool MainWindow::initDB()
     try
     {
         db = QSqlDatabase::addDatabase("QPSQL");
-        db.setHostName("127.0.0.1");
+        db.setHostName("192.168.28.96");
         db.setDatabaseName("avpDB");
         db.setUserName("postgres");
         db.setPassword("postgres");
@@ -1708,7 +1715,19 @@ void MainWindow::slotReload()
 //=========================================================
 void MainWindow::slotSettingsDB()
 {
-    dSettingsDB->exec();
+    QFile fileSettings(QDir::toNativeSeparators(QApplication::applicationDirPath()) + "/settings.ini");
+    if(fileSettings.exists())
+        dSettingsDB->exec();
+    else
+        QMessageBox::warning(this,"Внимание","Нет файла конфигурации settings.ini!","Да");
+    fileSettings.close();
+}
+
+//=========================================================
+void MainWindow::slotChangePassword()
+{
+    dChangePassword->clear();
+    dChangePassword->exec();
 }
 
 //=========================================================
@@ -2236,7 +2255,7 @@ void MainWindow::slotAnalysisAVP()
 
     path = "@"+path;
 //    qDebug()<<"PATH ++++++++++++= "<<path;
-    QString command ="curl --data-binary " + path + " http://127.0.0.1:8888/";
+    QString command ="curl --data-binary " + path + " http://192.168.28.96:8888/";
 
     QProgressDialog progress("Анализ АВП: \"" + ui->tableWidgetMyTasks->item(row,0)->text() + "\"", "Отмена", 0, 100, this);
     progress.setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

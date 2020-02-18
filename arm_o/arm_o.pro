@@ -21,6 +21,7 @@ PSQL_INCDIR = C:\PostgreSQL\10\include
 PSQL_LIBDIR = C:\PostgreSQL\10\lib
 
 SOURCES += \
+    dchangepassword.cpp \
     dsettingsdb.cpp \
     request.cpp \
     requestsender.cpp \
@@ -45,6 +46,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    dchangepassword.h \
     dsettingsdb.h \
     request.h \
     requestsender.h \
@@ -73,6 +75,7 @@ FORMS += \
     d_addtask.ui \
     d_adduser.ui \
     d_addviolation.ui \
+    d_changepassword.ui \
     d_editaudit.ui \
     d_editgroup.ui \
     d_edittask.ui \

@@ -334,10 +334,15 @@ QString CImportData::decode(QString str)
     QString newString="";
     for(int i=0; i<str.length();++i)
     {
-        if((str[i]=="'") || (str[i]=="\"")|| (str[i]=="'"))
+        if((str[i]=="'") || (str[i]=="\"") || (str[i]=="\\"))
         {
-            newString += "\\";
-            newString += str[i];
+//            if(str[i]=="'")
+//            {
+                newString += "\\";
+                newString += str[i];
+//            }
+//            else if(str[i]=="'")
+
         }
         else
         {

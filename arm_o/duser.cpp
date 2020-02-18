@@ -22,6 +22,9 @@ DUser::DUser(QWidget *parent) :
     ui->tableWidgetUser->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     ui->tableWidgetUser->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
     ui->tableWidgetUser->horizontalHeader()->resizeSection(3, 0);
+    ui->tableWidgetUser->horizontalHeader()->resizeSection(4, 0);
+    ui->tableWidgetUser->horizontalHeader()->resizeSection(5, 0);
+    ui->tableWidgetUser->horizontalHeader()->resizeSection(6, 0);
     connect(ui->tableWidgetUser, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEdit(int, int)));
 
 //    initTableUser();
@@ -64,13 +67,22 @@ void DUser::initTableUser()
     QString sql="";
     try
     {
+        ui->tableWidgetUser->setSortingEnabled(false);
         ui->tableWidgetUser->clearContents();
         ui->tableWidgetUser->setRowCount(0);
 
-        sql = "SELECT \"User\".\"ID\",\"User\".\"FIO\",\"User\".\"Position\",\"Group\".\"GroupName\" FROM \"User\" LEFT JOIN \"Group\" ON \"User\".\"ID_Group\" = \"Group\".\"ID\";";
+        sql = "SELECT \"User\".\"ID\","
+              "\"User\".\"FIO\","
+              "\"User\".\"Position\","
+              "\"Group\".\"GroupName\","
+              "\"User\".\"LastName\","
+              "\"User\".\"FirstName\","
+              "\"User\".\"MiddleName\" "
+              "FROM \"User\" LEFT JOIN \"Group\" ON \"User\".\"ID_Group\" = \"Group\".\"ID\";";
 
         if(query->exec(sql))
         {
+
             int row=0;
             while(query->next())
             {
@@ -104,9 +116,22 @@ void DUser::initTableUser()
                 newItem3->setText(query->value(0).toString());
                 ui->tableWidgetUser->setItem(row,3, newItem3);
 
+                QTableWidgetItem *newItem4 = new QTableWidgetItem();
+                newItem4->setText(query->value(4).toString());
+                ui->tableWidgetUser->setItem(row,4, newItem4);
+
+                QTableWidgetItem *newItem5 = new QTableWidgetItem();
+                newItem5->setText(query->value(5).toString());
+                ui->tableWidgetUser->setItem(row,5, newItem5);
+
+                QTableWidgetItem *newItem6 = new QTableWidgetItem();
+                newItem6->setText(query->value(6).toString());
+                ui->tableWidgetUser->setItem(row,6, newItem6);
+
                 row++;
             }
         }
+        ui->tableWidgetUser->setSortingEnabled(true);
     }
     catch(std::exception &e)
     {
@@ -119,18 +144,24 @@ void DUser::initTableUser()
 void DUser::slotAdd()
 {
     QString sql = "";
-    QString tmp;
+    QString tmp,fio;
     initGroupList();
     m_dAddUser->addGroup(m_groups);
+    m_dAddUser->clear();
     if(m_dAddUser->exec() == QDialog::Accepted)
     {
         try
         {
-            sql = "INSERT INTO \"User\"(\"FIO\",\"Position\",\"ID_Group\") VALUES(\'";
-            sql +=  m_dAddUser->userName(); sql += "\',\'";
+            fio = m_dAddUser->lastName(); fio += " "; fio += m_dAddUser->firstName().mid(0,1);fio += "."; fio += m_dAddUser->middleName().mid(0,1);fio += ".";
+            sql = "INSERT INTO \"User\"(\"LastName\",\"FirstName\",\"MiddleName\",\"FIO\",\"Position\",\"ID_Group\",\"Password\") VALUES(\'";
+            sql +=  m_dAddUser->lastName(); sql += "\',\'";
+            sql +=  m_dAddUser->firstName(); sql += "\',\'";
+            sql +=  m_dAddUser->middleName(); sql += "\',\'";
+            sql +=  fio; sql += "\',\'";
             sql +=  m_dAddUser->range(); sql += "\',";
-            sql +=  tmp.setNum(m_dAddUser->idGroup()); sql += ");";
-            qDebug()<<"sql="<<sql;
+            sql +=  tmp.setNum(m_dAddUser->idGroup());
+            sql += ",\'123\');";
+//            qDebug()<<"sql="<<sql;
             if(query->exec(sql))
                 initTableUser();
             else
@@ -194,25 +225,28 @@ void DUser::slotEdit()
     QModelIndexList selectedRows = ui->tableWidgetUser->selectionModel()->selectedRows();
     if(selectedRows.empty())
     {
-        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали группу для редактирования!"),tr("Да"));
+        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали пользователя для редактирования!"),tr("Да"));
         return;
     }
     else
     {
         initGroupList();
-        m_dEditUser->setUserName(ui->tableWidgetUser->item(selectedRows[0].row(),0)->text());
+        m_dEditUser->setLastName(ui->tableWidgetUser->item(selectedRows[0].row(),4)->text());
+        m_dEditUser->setFirstName(ui->tableWidgetUser->item(selectedRows[0].row(),5)->text());
+        m_dEditUser->setMiddleName(ui->tableWidgetUser->item(selectedRows[0].row(),6)->text());
         m_dEditUser->setPosition(ui->tableWidgetUser->item(selectedRows[0].row(),1)->text());
         m_dEditUser->addGroup(m_groups,ui->tableWidgetUser->item(selectedRows[0].row(),2)->text());
 
         if(m_dEditUser->exec() == QDialog::Accepted)
         {
-            sql = "UPDATE \"User\" SET \"FIO\"=\'";
-            sql += m_dEditUser->userName(); sql += "\',\"Position\"=\'";
-            sql += m_dEditUser->position(); sql += "\', \"ID_Group\"=";
-            sql += tmp.setNum(m_dEditUser->idGroup()); sql += " WHERE \"ID\"=";
+            sql = "UPDATE \"User\" SET \"LastName\"=\'"; sql += m_dEditUser->lastName();
+            sql += "\',\"FirstName\"=\'"; sql += m_dEditUser->firstName();
+            sql += "\',\"MiddleName\"=\'"; sql += m_dEditUser->middleName();
+            sql += "\',\"Position\"=\'"; sql += m_dEditUser->position();
+            sql += "\', \"ID_Group\"="; sql += tmp.setNum(m_dEditUser->idGroup()); sql += " WHERE \"ID\"=";
             sql += ui->tableWidgetUser->item(selectedRows[0].row(),3)->text();
             sql += ";";
-            qDebug()<<"sql ="<<sql;
+//            qDebug()<<"sql ="<<sql;
             if(query->exec(sql))
                 initTableUser();
             else

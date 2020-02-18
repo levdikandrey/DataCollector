@@ -21,6 +21,7 @@ private slots:
     void slotCancel();
 
 private:
+    bool checkPassword(QString fio);
     Ui::D_Enter *ui;
     QSqlQuery *query;
 };

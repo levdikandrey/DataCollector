@@ -17,9 +17,21 @@ DEditUser::~DEditUser()
 }
 
 //=========================================================
-void DEditUser::setUserName(QString name)
+void DEditUser::setLastName(QString name)
 {
-    ui->lineEditName->setText(name);
+    ui->lineEditLastName->setText(name);
+}
+
+//=========================================================
+void DEditUser::setFirstName(QString name)
+{
+    ui->lineEditFirstName->setText(name);
+}
+
+//=========================================================
+void DEditUser::setMiddleName(QString name)
+{
+    ui->lineEditMiddleName->setText(name);
 }
 
 //=========================================================
@@ -41,9 +53,21 @@ int DEditUser::idGroup()
 }
 
 //=========================================================
-const QString DEditUser::userName() const
+const QString DEditUser::lastName() const
 {
-    return ui->lineEditName->text();
+    return ui->lineEditLastName->text();
+}
+
+//=========================================================
+const QString DEditUser::firstName() const
+{
+    return ui->lineEditFirstName->text();
+}
+
+//=========================================================
+const QString DEditUser::middleName() const
+{
+    return ui->lineEditMiddleName->text();
 }
 
 //=========================================================

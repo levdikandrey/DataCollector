@@ -6,6 +6,8 @@
 #include <QTableWidget>
 #include <QDebug>
 #include <QMessageBox>
+#include <QSettings>
+#include <QDir>
 
 extern QSqlDatabase db;
 extern QString currentUserName;
@@ -15,17 +17,10 @@ DEnter::DEnter(QWidget *parent)
     , ui(new Ui::D_Enter)
 {
     ui->setupUi(this);
-
-//    db = QSqlDatabase::addDatabase("QPSQL");
-//    db.setHostName("127.0.0.1");
-//    db.setDatabaseName("avpDB");
-//    db.setUserName("postgres");
-//    db.setPassword("postgres");
-
     query = new QSqlQuery(db);
-
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     initUserComBoBox();
+    ui->comboBoxUsers->model()->sort(0);
 }
 
 //=========================================================
@@ -51,6 +46,7 @@ void DEnter::initUserComBoBox()
         }
         else
             qDebug()<<query->lastError().text();
+        ui->comboBoxUsers->setCurrentText(currentUserName);
     }
     catch(std::exception &e)
     {
@@ -59,10 +55,41 @@ void DEnter::initUserComBoBox()
 }
 
 //=========================================================
+bool DEnter::checkPassword(QString fio)
+{
+    bool res = false;
+    QString sql;
+    sql = "SELECT \"Password\" FROM \"User\" WHERE \"FIO\"=\'";
+    sql += fio; sql += "\';";
+    if(query->exec(sql))
+    {
+        if(query->next())
+        {
+            if(query->value(0).toString() == ui->lineEditPassword->text())
+                res = true;
+        }
+    }
+    else
+        qDebug()<<query->lastError().text();
+    return res;
+}
+
+//=========================================================
 void DEnter::slotEnter()
 {
-    currentUserName = ui->comboBoxUsers->currentText();
-    accept();
+    if(checkPassword(ui->comboBoxUsers->currentText()))
+    {
+        currentUserName = ui->comboBoxUsers->currentText();
+        QSettings settings(QDir::toNativeSeparators(QApplication::applicationDirPath()) + "/settings.ini",QSettings::IniFormat);
+//    qDebug()<<"settings.value(USER/NAME).toString()="<<settings.value("USER/NAME").toString();
+        settings.setValue("USER/NAME",ui->comboBoxUsers->currentText());
+        accept();
+    }
+    else
+    {
+        QMessageBox::critical(this,"Ошибка...","Не правильный пароль!","Да");
+        return;
+    }
 }
 
 //=========================================================

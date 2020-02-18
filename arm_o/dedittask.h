@@ -8,6 +8,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class D_EditTask; }
 QT_END_NAMESPACE
 
+/**
+ * @brief The DEditTask class - класс для редактирования поставленной задачи
+ */
 class DEditTask: public QDialog
 {
         Q_OBJECT

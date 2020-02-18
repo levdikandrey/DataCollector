@@ -67,6 +67,7 @@ private:
     QString sql;
     QSqlDatabase db;
     QSqlQuery *query;
+    QSqlQuery *query1;
     /**
      * @brief initDB - функция установки соединения с базой данных
      */
@@ -81,6 +82,7 @@ private:
     void testExistsFilmInDB();
     void importDataIVI_InFile();
     void countValidFilmsInFileAchiveKinopoisk(QString fileName);
+    void renamePathView();
 
 private slots:
     void readFile();

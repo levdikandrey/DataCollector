@@ -381,11 +381,12 @@ void DEditTask::slotApplyViolation()
                 + ui->textEditViolation->toPlainText();
         sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\", \"ID_Violation\",\"TextViolation\",\"Percent\") VALUES(";
         sql += tmp.setNum(m_idAVP); sql += ",";
-        sql += tmp.setNum(idViolation(ui->comboBoxViolation->currentText())); sql += ",\'";
-        sql += s_comment; sql += "\',\'100\');";
+        sql += tmp.setNum(idViolation(ui->comboBoxViolation->currentText())); sql += ",E\'";
+        sql += ((MainWindow*)parent())->cImportData->decode(s_comment); sql += "\',\'100\');";
 
         if(!query->exec(sql))
         {
+            QApplication::restoreOverrideCursor();
             QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
             qDebug()<<query->lastError().text();
             return;

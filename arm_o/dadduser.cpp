@@ -19,9 +19,30 @@ DAddUser::~DAddUser()
 }
 
 //=========================================================
-const QString DAddUser::userName() const
+void DAddUser::clear()
 {
-    return ui->lineEditName->text();
+    ui->lineEditLastName->clear();
+    ui->lineEditFirstName->clear();
+    ui->lineEditMiddleName->clear();
+    ui->lineEditRange->clear();
+}
+
+//=========================================================
+const QString DAddUser::lastName() const
+{
+    return ui->lineEditLastName->text();
+}
+
+//=========================================================
+const QString DAddUser::firstName() const
+{
+    return ui->lineEditFirstName->text();
+}
+
+//=========================================================
+const QString DAddUser::middleName() const
+{
+    return ui->lineEditMiddleName->text();
 }
 
 //=========================================================
@@ -56,9 +77,19 @@ int DAddUser::idGroup()
 //=========================================================
 void DAddUser::slotApply()
 {
-    if(ui->lineEditName->text()=="")
+    if(ui->lineEditLastName->text()=="")
     {
-        QMessageBox::warning(this, tr("Внимание"),tr("Введите ФИО пользователя!"),tr("Да"));
+        QMessageBox::warning(this, tr("Внимание"),tr("Введите фамилию пользователя!"),tr("Да"));
+        return;
+    }
+    if(ui->lineEditFirstName->text()=="")
+    {
+        QMessageBox::warning(this, tr("Внимание"),tr("Введите имя пользователя!"),tr("Да"));
+        return;
+    }
+    if(ui->lineEditMiddleName->text()=="")
+    {
+        QMessageBox::warning(this, tr("Внимание"),tr("Введите отчество пользователя!"),tr("Да"));
         return;
     }
     if(ui->lineEditRange->text()=="")

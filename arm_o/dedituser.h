@@ -15,10 +15,14 @@ public:
     explicit DEditUser(QWidget *parent = nullptr);
     ~DEditUser();
 
-    const QString userName() const;
+    const QString lastName() const;
+    const QString firstName() const;
+    const QString middleName() const;
     const QString position() const;
 
-    void setUserName(QString name);
+    void setLastName(QString name);
+    void setFirstName(QString name);
+    void setMiddleName(QString name);
     void setPosition(QString position);
 
     int idGroup();

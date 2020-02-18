@@ -14,10 +14,13 @@ class DAddUser : public QDialog
 public:
     explicit DAddUser(QWidget *parent = nullptr);
     ~DAddUser();
-    const QString userName() const;
+    const QString lastName() const;
+    const QString firstName() const;
+    const QString middleName() const;
     const QString range() const;
     int idGroup();
     void addGroup(std::map<int,QString> groups);
+    void clear();
 
 public slots:
     void slotApply();

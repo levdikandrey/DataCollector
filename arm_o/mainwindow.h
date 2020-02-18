@@ -24,6 +24,7 @@
 #include "denter.h"
 #include "requestsender.h"
 #include "dsettingsdb.h"
+#include "dchangepassword.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -94,6 +95,7 @@ public:
      * @param userName - имя пользователя.
      */
     void initDialogAccess(QString userName);
+    CImportData *cImportData;
 
 private slots:
     /**
@@ -250,6 +252,8 @@ private slots:
     void slotContextMenuRequestedExpert(const QPoint &pos);
     void slotContextMenuRequestedCurrentTask(const QPoint &pos);
 
+    void slotChangePassword();
+
 public slots:
     /**
      * @brief handleResults
@@ -269,7 +273,6 @@ signals:
 
 private:
     Ui::MainWindow *ui;
-    CImportData *cImportData;
     CImportDataKinopoisk  *cImportDataKinopoisk;
     QThread importDataThread;
     QThread importDataThreadKinopoisk;
@@ -287,6 +290,7 @@ private:
     DEnter *dEnter1;
     DEditAudit *dEditAudit;
     DSettingsDB *dSettingsDB;
+    DChangePassword *dChangePassword;
 
     RequestSender *m_requestSender;
     Request m_request;

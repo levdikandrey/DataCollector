@@ -69,7 +69,7 @@ void CDataCollectionService::initDB()
 {
     qDebug()<<"initDB()";
     db = QSqlDatabase::addDatabase("QPSQL");
-    db.setHostName("127.0.0.1");
+    db.setHostName("192.168.28.96");
     db.setDatabaseName("avpDB");
     db.setUserName("postgres");
     db.setPassword("postgres");
@@ -77,6 +77,7 @@ void CDataCollectionService::initDB()
     if(ok)
     {
         query = new QSqlQuery(db);
+        query1 = new QSqlQuery(db);
         qDebug()<<"Успешное подключения к БД АВП!";
     }
     else
@@ -338,9 +339,58 @@ void CDataCollectionService::importDataIVI_InFile()
 }
 
 //=========================================================
+void CDataCollectionService::renamePathView()
+{
+    qDebug()<<"START rename path on view";
+    QString sql,path,tmp;
+    try
+    {
+        int i=0;
+        sql="SELECT * FROM \"DownloadData\" WHERE \"ResourceName\" = \'IMDB\' AND \"PathOnDisk\"!=\'\';";
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                path = "/mnt/Data/DownloadData/imdb/";
+                tmp = query->value(5).toString();
+                qDebug()<<"\nOld path = "<<tmp;
+                auto parts = tmp.split('\\');
+                qDebug()<<"parts.at(parts.size()) = "<<parts.at(parts.size()-1);
+                tmp = parts.at(parts.size()-1);
+                tmp = tmp.mid(0,tmp.indexOf('.'));
+                tmp +=".html";
+                path += tmp;
+                qDebug()<<"ID = "<<query->value(0).toInt();
+                qDebug()<<"New path = "<<path;
+
+                sql ="UPDATE \"DownloadData\" SET \"PathOnDisk\"=\'"+path+"\' WHERE \"ID\"="+tmp.setNum(query->value(0).toInt())+";";
+                qDebug()<<"SQL = "<<sql;
+                if(query1->exec(sql))
+                {
+                    i++;
+                }
+                else
+                    qDebug()<<query1->lastError().text();
+//                i++;
+//                if(i == 10)
+//                    break;
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+        qDebug()<<"Change save ="<<i;
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 void CDataCollectionService::run()
 {
     qDebug()<<"CDataCollectionService::run getpid()="<<getpid();
+//    renamePathView();
 //    downlodPageIMDB();
 
 //===Test functions===
