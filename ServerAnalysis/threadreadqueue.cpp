@@ -21,7 +21,7 @@ ThreadReadQueue::ThreadReadQueue()
 //=========================================================
 void ThreadReadQueue::doWork()
 {
-//    qDebug()<<__PRETTY_FUNCTION__;
+    //    qDebug()<<__PRETTY_FUNCTION__;
     while(true)
     {
         while(!listAVP.empty())
@@ -38,13 +38,15 @@ void ThreadReadQueue::doWork()
 //=========================================================
 void ThreadReadQueue::analysisAVP(uint64_t idAVP)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QString sql, tmp;
     QString pathOnDisk = "";
     QString command;
     try
     {
-        sql = "SELECT \"PathOnDisk\" FROM \"DownloadData\" WHERE \"ID_AVP=\" = ";
+        sql = "SELECT \"PathOnDisk\" FROM \"DownloadData\" WHERE \"ResourceName\" ='Kinopoisk' AND \"ID_AVP\" = ";
         sql += tmp.setNum(idAVP); sql += ";";
+        qDebug()<<"sql = "<<sql;
         if(query->exec(sql))
         {
             if(query->next())

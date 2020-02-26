@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/wait.ico</file>
+    <file>icons/wait1.ico</file>
     <file>icons/changepassword.ico</file>
     <file>icons/attach.ico</file>
     <file>icons/minus.ico</file>

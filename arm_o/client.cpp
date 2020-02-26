@@ -169,14 +169,14 @@ void Client::slotTimerTimeout()
     //Активировать новое сетевое соединение, при условии что оно не активно.
     if(tcpSocket->state() == QAbstractSocket::UnconnectedState)
     {
-        qDebug()<<__PRETTY_FUNCTION__<<" установка соединения ";
+//        qDebug()<<__PRETTY_FUNCTION__<<" установка соединения ";
         tcpSocket->connectToHost(serverIPAddress, serverIPPort);
-        usleep(250000);
+//        usleep(250000);
     }
-    else
-    {
-//        ((MainWindow*)parent())->sendCommandAnalysisAVP(123);
-    }
+//    else if(tcpSocket->state() == QAbstractSocket::ConnectedState)
+//    {
+//        qDebug()<<__PRETTY_FUNCTION__<<" Соединение установлено!";
+//    }
 }
 
 //=========================================================

@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
     AServer server(threads);
 
-    if (!server.listen(QHostAddress::LocalHost, port))
+    if (!server.listen(QHostAddress::Any, port))
     {
         qCritical() << server.errorString();
         exit(1);

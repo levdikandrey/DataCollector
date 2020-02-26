@@ -2214,6 +2214,11 @@ void MainWindow::slotAnalysisAVP()
         {
             row = selectedRows[0].row();
             m_client->sendCommandAnalysisAVP(ui->tableWidgetMyTasks->item(row,9)->text().toLongLong());
+
+            QIcon icon1;
+            icon1.addFile(QString::fromUtf8(":/icons/icons/wait.ico"), QSize(), QIcon::Normal, QIcon::Off);
+            ui->tableWidgetMyTasks->item(row,6)->setIcon(icon1);
+            ui->tableWidgetMyTasks->item(row,6)->setText("АВП анализируется...");
         }
         else if(selectedRows.count() > 1)
         {
@@ -2221,7 +2226,12 @@ void MainWindow::slotAnalysisAVP()
             {
                 row = selectedRows[i].row();
                 m_client->sendCommandAnalysisAVP(ui->tableWidgetMyTasks->item(row,9)->text().toLongLong());
-                usleep(10000);
+
+                QIcon icon1;
+                icon1.addFile(QString::fromUtf8(":/icons/icons/wait.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                ui->tableWidgetMyTasks->item(row,6)->setIcon(icon1);
+                ui->tableWidgetMyTasks->item(row,6)->setText("АВП анализируется...");
+//                usleep(10000);
             }
         }
     }
@@ -2229,7 +2239,7 @@ void MainWindow::slotAnalysisAVP()
     {
         qDebug()<<e.what();
     }
-//    return;
+    return;
 
 
 //=========старый вариант
