@@ -21,6 +21,8 @@ PSQL_INCDIR = C:\PostgreSQL\10\include
 PSQL_LIBDIR = C:\PostgreSQL\10\lib
 
 SOURCES += \
+    aprotocol.cpp \
+    client.cpp \
     dchangepassword.cpp \
     dsettingsdb.cpp \
     request.cpp \
@@ -46,6 +48,8 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    aprotocol.h \
+    client.h \
     dchangepassword.h \
     dsettingsdb.h \
     request.h \

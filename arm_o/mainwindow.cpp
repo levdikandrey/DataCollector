@@ -24,9 +24,14 @@
 #include <QSqlError>
 
 #include <iostream>
+#include <unistd.h>
 
 extern QSqlDatabase db;
 extern QString currentUserName;
+
+constexpr const char* DEFAULT_HOST = "192.168.28.96";
+constexpr int DEFAULT_PORT = 8080;
+
 //DEnter *dEnter1;
 //=========================================================
 MainWindow::MainWindow(QWidget *parent)
@@ -122,7 +127,6 @@ MainWindow::MainWindow(QWidget *parent)
     dEditAudit = new DEditAudit(this);
     dChangePassword = new DChangePassword(this);
 
-
     m_currentIdAVS = -1;
     m_currentState = -1;
     m_currentNumberPage = 1;
@@ -138,6 +142,33 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&m_timer, &QTimer::timeout, this, [&]{slotFindAVP();});
 
     ui->labelStateConnectDB->hide();
+
+    initNetClient();
+}
+
+//=========================================================
+bool MainWindow::initNetClient()
+{
+    bool state = true;
+    QString host;
+    int port;
+    QSettings settings(QDir::toNativeSeparators(QApplication::applicationDirPath()) + "/settings.ini",QSettings::IniFormat);
+    qDebug()<<"settings.value(SERVER/HOST).toString()="<<settings.value("SERVER/HOST").toString();
+    qDebug()<<"settings.value(SERVER/PORT).toInt()="<<settings.value("SERVER/PORT").toString();
+
+    host = settings.value("SERVER/HOST").toString();
+    if (host == "")
+    {
+        host = DEFAULT_HOST;
+    }
+    port = settings.value("SERVER/PORT").toInt();
+    if (port == 0)
+    {
+        port = DEFAULT_PORT;
+    }
+
+    m_client = new Client(host, port, this);
+    return state;
 }
 
 //=========================================================
@@ -2144,10 +2175,26 @@ long MainWindow::getIdDownloadData(long idAVP)
 }
 
 //=========================================================
-QString MainWindow::findPathReview(QString url)
+QString MainWindow::findPathReview(QString )
 {
     QString sql,path="";
     return path;
+}
+
+//=========================================================
+QString MainWindow::sendCommandAnalysisAVP(uint64_t idAVP)
+{
+    QString command;
+    AProtocol::commandAnalysis m_commandAnalysis;
+    m_commandAnalysis.command = 1;
+    m_commandAnalysis.length = sizeof(uint64_t);
+    m_commandAnalysis.idAVP = idAVP;
+//    m_client->write(reinterpret_cast<char*>(&ans), sizeof(ans));
+
+//    memcpy(&command, &m_commandAnalysis,sizeof(m_commandAnalysis));
+    return command;
+//    &command = reinterpret_cast<QString*>(&m_commandAnalysis);
+//    m_client->sendMessage(command);
 }
 
 //=========================================================
@@ -2157,9 +2204,36 @@ void MainWindow::slotAnalysisAVP()
     QString path = "";
     QString pathReviewForIVI= "";
     int currentIdAVPKinopoisk = -1;
-
     int idViolation;
-    int row = ui->tableWidgetMyTasks->selectionModel()->currentIndex().row();
+    int row;
+
+    QModelIndexList selectedRows = ui->tableWidgetMyTasks->selectionModel()->selectedRows();
+    try
+    {
+        if(selectedRows.count() == 1)
+        {
+            row = selectedRows[0].row();
+            m_client->sendCommandAnalysisAVP(ui->tableWidgetMyTasks->item(row,9)->text().toLongLong());
+        }
+        else if(selectedRows.count() > 1)
+        {
+            for(int i=0; i<selectedRows.count(); ++i)
+            {
+                row = selectedRows[i].row();
+                m_client->sendCommandAnalysisAVP(ui->tableWidgetMyTasks->item(row,9)->text().toLongLong());
+                usleep(10000);
+            }
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+//    return;
+
+
+//=========старый вариант
+    row = selectedRows[0].row();
     if((ui->tableWidgetMyTasks->item(row,12)->text().toLong() == 147 ) && (ui->tableWidgetMyTasks->item(row,11)->text()==""))// IVI film
     {
         sql ="SELECT avp.\"NameRus\",avp.\"NameOriginal\",aa.\"YearOfRelease\" FROM avp "

@@ -25,7 +25,8 @@
 #include "requestsender.h"
 #include "dsettingsdb.h"
 #include "dchangepassword.h"
-
+#include "client.h"
+#include "aprotocol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -292,6 +293,8 @@ private:
     DSettingsDB *dSettingsDB;
     DChangePassword *dChangePassword;
 
+    Client *m_client;
+
     RequestSender *m_requestSender;
     Request m_request;
     SDownloadAVP m_sDownloadAVP;
@@ -324,5 +327,11 @@ private:
     long getIdDownloadData(long idAVP);
 
     QString findPathReview(QString url);
+
+    bool initNetClient();
+
+public:
+    QString sendCommandAnalysisAVP(uint64_t idAVP);
+
 };
 #endif // MAINWINDOW_H
