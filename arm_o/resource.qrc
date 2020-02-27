@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/rubric1.png</file>
+    <file>icons/add.png</file>
+    <file>icons/cfDB.png</file>
+    <file>icons/rubric.png</file>
+    <file>icons/close.png</file>
+    <file>icons/enter.png</file>
     <file>icons/wait.ico</file>
     <file>icons/wait1.ico</file>
     <file>icons/changepassword.ico</file>

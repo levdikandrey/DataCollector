@@ -195,7 +195,7 @@
       </property>
       <property name="icon">
        <iconset resource="resource.qrc">
-        <normaloff>:/icons/icons/cfDB.ico</normaloff>:/icons/icons/cfDB.ico</iconset>
+        <normaloff>:/icons/icons/cfDB.png</normaloff>:/icons/icons/cfDB.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -344,7 +344,7 @@
       </property>
       <property name="icon">
        <iconset resource="resource.qrc">
-        <normaloff>:/icons/icons/rubric.ico</normaloff>:/icons/icons/rubric.ico</iconset>
+        <normaloff>:/icons/icons/rubric1.png</normaloff>:/icons/icons/rubric1.png</iconset>
       </property>
       <property name="iconSize">
        <size>

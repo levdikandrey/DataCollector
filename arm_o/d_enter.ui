@@ -166,7 +166,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/enter.ico</normaloff>:/icons/icons/enter.ico</iconset>
+          <normaloff>:/icons/icons/enter.png</normaloff>:/icons/icons/enter.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -196,7 +196,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/close.ico</normaloff>:/icons/icons/close.ico</iconset>
+          <normaloff>:/icons/icons/close.png</normaloff>:/icons/icons/close.png</iconset>
         </property>
         <property name="iconSize">
          <size>

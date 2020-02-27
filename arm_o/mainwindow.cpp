@@ -308,6 +308,7 @@ bool MainWindow::initDB()
     try
     {
         db = QSqlDatabase::addDatabase("QPSQL");
+        db.setHostName("127.0.0.1");
         db.setHostName("192.168.28.96");
         db.setDatabaseName("avpDB");
         db.setUserName("postgres");
@@ -2208,7 +2209,7 @@ void MainWindow::slotAnalysisAVP()
     int row;
 
     QModelIndexList selectedRows = ui->tableWidgetMyTasks->selectionModel()->selectedRows();
-    try
+/*    try
     {
         if(selectedRows.count() == 1)
         {
@@ -2239,7 +2240,7 @@ void MainWindow::slotAnalysisAVP()
     {
         qDebug()<<e.what();
     }
-    return;
+    return;*/
 
 
 //=========старый вариант
@@ -2298,7 +2299,8 @@ void MainWindow::slotAnalysisAVP()
     }
     else
     {
-        path = ui->tableWidgetMyTasks->item(row,11)->text();
+        QString path_tmp = ui->tableWidgetMyTasks->item(row,11)->text();
+        path = "Z:\\DownloadData\\kinopoisk\\"+path_tmp.mid(path_tmp.lastIndexOf("/")+1,path_tmp.length()-path_tmp.lastIndexOf("/")-1);
     }
 
     qDebug()<<" currentIdAVS = "<< ui->tableWidgetMyTasks->item(row,12)->text();
@@ -2325,7 +2327,7 @@ void MainWindow::slotAnalysisAVP()
         qDebug()<<" pathReviewForIVI = "<< pathReviewForIVI;
         if(getData(pathReviewForIVI,currentPathFile))
         {
-            path = "c:\\DownloadData\\kinopoisk\\"+currentPathFile;
+            path = "Z:\\DownloadData\\kinopoisk\\"+currentPathFile;
             initTableMyTask();
         }
         else
@@ -2339,7 +2341,7 @@ void MainWindow::slotAnalysisAVP()
 
     path = "@"+path;
 //    qDebug()<<"PATH ++++++++++++= "<<path;
-    QString command ="curl --data-binary " + path + " http://192.168.28.96:8888/";
+    QString command ="curl --data-binary " + path + " http://127.0.0.1:8888/";
 
     QProgressDialog progress("Анализ АВП: \"" + ui->tableWidgetMyTasks->item(row,0)->text() + "\"", "Отмена", 0, 100, this);
     progress.setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

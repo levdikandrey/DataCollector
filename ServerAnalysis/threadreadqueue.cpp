@@ -21,6 +21,8 @@ ThreadReadQueue::ThreadReadQueue()
 //=========================================================
 void ThreadReadQueue::doWork()
 {
+    analysisAVP(92116);
+    return;
     //    qDebug()<<__PRETTY_FUNCTION__;
     while(true)
     {
@@ -55,18 +57,19 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
         else
             qDebug()<<query->lastError().text();
 
-        command = "python3 /usr/local/module_analysis/t.py " + pathOnDisk;
+        command = "python3.6 /usr/local/module_analysis/t.py " + pathOnDisk;
         qDebug()<<"command = "<<command;
 
         //    QProcess::startDetached(command);
-        QProcess process;
-        process.start(command);
-        if( !process.waitForStarted() || !process.waitForFinished() )
-        {
-                return;
-        }
-        qDebug() << process.readAllStandardError();
-        QString strOut = process.readAllStandardOutput();
+//        QProcess process;
+//        process.start(command);
+//        if( !process.waitForStarted() || !process.waitForFinished() )
+//        {
+//                return;
+//        }
+//        qDebug() << process.readAllStandardError();
+//        QString strOut = process.readAllStandardOutput();
+        QString strOut = "Для файла: /mnt/Data/DownloadData/kinopoisk/100001.html Найдено по темам: {'ЛГБТ': 4, 'Порнография': 5, 'Суицид': 1}";
         qDebug() <<"strOut = "<<strOut;
     }
     catch(std::exception &e)

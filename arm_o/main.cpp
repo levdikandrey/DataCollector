@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
+#include <QResource>
 
 #include <iostream>
 
@@ -20,6 +21,7 @@ QString currentUserName;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QResource::registerResource("resource.rcc");
 
     QFile fileSettings(QDir::toNativeSeparators(QApplication::applicationDirPath()) + "/settings.ini");
     if(!fileSettings.exists())
