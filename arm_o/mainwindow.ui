@@ -35,7 +35,7 @@
       </property>
       <property name="icon">
        <iconset resource="resource.qrc">
-        <normaloff>:/icons/icons/add.ico</normaloff>:/icons/icons/add.ico</iconset>
+        <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -471,7 +471,7 @@
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/icons/icons/find.ico</normaloff>:/icons/icons/find.ico</iconset>
+              <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
             </property>
            </widget>
           </item>
@@ -565,7 +565,7 @@
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/icons/icons/add.ico</normaloff>:/icons/icons/add.ico</iconset>
+              <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -591,7 +591,7 @@
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/icons/icons/delete.ico</normaloff>:/icons/icons/delete.ico</iconset>
+              <normaloff>:/icons/icons/delete_png.png</normaloff>:/icons/icons/delete_png.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -636,7 +636,7 @@
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/icons/icons/previous.ico</normaloff>:/icons/icons/previous.ico</iconset>
+              <normaloff>:/icons/icons/previous.png</normaloff>:/icons/icons/previous.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -698,7 +698,7 @@
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/icons/icons/next.ico</normaloff>:/icons/icons/next.ico</iconset>
+              <normaloff>:/icons/icons/next.png</normaloff>:/icons/icons/next.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -1057,7 +1057,7 @@
           </property>
           <property name="icon">
            <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/add.ico</normaloff>:/icons/icons/add.ico</iconset>
+            <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1089,7 +1089,7 @@
           </property>
           <property name="icon">
            <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+            <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1245,7 +1245,7 @@
           </property>
           <property name="icon">
            <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+            <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1268,7 +1268,7 @@
           </property>
           <property name="icon">
            <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/add.ico</normaloff>:/icons/icons/add.ico</iconset>
+            <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1395,7 +1395,7 @@
           </property>
           <property name="icon">
            <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+            <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1524,7 +1524,7 @@
   <action name="actionViolation">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/category.ico</normaloff>:/icons/icons/category.ico</iconset>
+     <normaloff>:/icons/icons/category.png</normaloff>:/icons/icons/category.png</iconset>
    </property>
    <property name="text">
     <string>Справочник нарушений</string>
@@ -1533,7 +1533,7 @@
   <action name="actionGroup">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/addusergroup.ico</normaloff>:/icons/icons/addusergroup.ico</iconset>
+     <normaloff>:/icons/icons/addusergroup.png</normaloff>:/icons/icons/addusergroup.png</iconset>
    </property>
    <property name="text">
     <string>Группы</string>
@@ -1542,7 +1542,7 @@
   <action name="actionUser">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/adduser.ico</normaloff>:/icons/icons/adduser.ico</iconset>
+     <normaloff>:/icons/icons/adduser.png</normaloff>:/icons/icons/adduser.png</iconset>
    </property>
    <property name="text">
     <string>Пользователи</string>
@@ -1551,7 +1551,7 @@
   <action name="actionLog">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+     <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
    </property>
    <property name="text">
     <string>Посмотреть Log - файл</string>
@@ -1569,7 +1569,7 @@
   <action name="actionKinopoisk">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/rubric.ico</normaloff>:/icons/icons/rubric.ico</iconset>
+     <normaloff>:/icons/icons/rubric.png</normaloff>:/icons/icons/rubric.png</iconset>
    </property>
    <property name="text">
     <string>Импорт АВП от kinopoisk.ru</string>
@@ -1581,7 +1581,7 @@
   <action name="actionChangeUser">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/group1.ico</normaloff>:/icons/icons/group1.ico</iconset>
+     <normaloff>:/icons/icons/group1.png</normaloff>:/icons/icons/group1.png</iconset>
    </property>
    <property name="text">
     <string>Смена пользователя</string>
@@ -1590,7 +1590,7 @@
   <action name="actionStatus">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/category.ico</normaloff>:/icons/icons/category.ico</iconset>
+     <normaloff>:/icons/icons/category.png</normaloff>:/icons/icons/category.png</iconset>
    </property>
    <property name="text">
     <string>Справочник статусов</string>
@@ -1599,7 +1599,7 @@
   <action name="actionChangePassword">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/icons/icons/changepassword.ico</normaloff>:/icons/icons/changepassword.ico</iconset>
+     <normaloff>:/icons/icons/changepassword.png</normaloff>:/icons/icons/changepassword.png</iconset>
    </property>
    <property name="text">
     <string>Смена пароля пользователя</string>

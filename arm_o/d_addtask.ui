@@ -208,7 +208,7 @@
      </property>
      <property name="icon">
       <iconset resource="resource.qrc">
-       <normaloff>:/icons/icons/find.ico</normaloff>:/icons/icons/find.ico</iconset>
+       <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
      </property>
     </widget>
    </item>
@@ -409,7 +409,7 @@
      </property>
      <property name="icon">
       <iconset resource="resource.qrc">
-       <normaloff>:/icons/icons/previous.ico</normaloff>:/icons/icons/previous.ico</iconset>
+       <normaloff>:/icons/icons/previous.png</normaloff>:/icons/icons/previous.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -474,7 +474,7 @@
      </property>
      <property name="icon">
       <iconset resource="resource.qrc">
-       <normaloff>:/icons/icons/next.ico</normaloff>:/icons/icons/next.ico</iconset>
+       <normaloff>:/icons/icons/next.png</normaloff>:/icons/icons/next.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -588,7 +588,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/ok.ico</normaloff>:/icons/icons/ok.ico</iconset>
+          <normaloff>:/icons/icons/ok.png</normaloff>:/icons/icons/ok.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -614,7 +614,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/cancel.ico</normaloff>:/icons/icons/cancel.ico</iconset>
+          <normaloff>:/icons/icons/cancel.png</normaloff>:/icons/icons/cancel.png</iconset>
         </property>
         <property name="iconSize">
          <size>

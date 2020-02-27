@@ -61,7 +61,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/add.ico</normaloff>:/icons/icons/add.ico</iconset>
+          <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -84,7 +84,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/delete.ico</normaloff>:/icons/icons/delete.ico</iconset>
+          <normaloff>:/icons/icons/delete_png.png</normaloff>:/icons/icons/delete_png.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -107,7 +107,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/edit.ico</normaloff>:/icons/icons/edit.ico</iconset>
+          <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
         </property>
         <property name="iconSize">
          <size>

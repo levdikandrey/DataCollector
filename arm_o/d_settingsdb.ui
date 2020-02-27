@@ -140,7 +140,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/ok.ico</normaloff>:/icons/icons/ok.ico</iconset>
+          <normaloff>:/icons/icons/ok.png</normaloff>:/icons/icons/ok.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -163,7 +163,7 @@
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/cancel.ico</normaloff>:/icons/icons/cancel.ico</iconset>
+          <normaloff>:/icons/icons/cancel.png</normaloff>:/icons/icons/cancel.png</iconset>
         </property>
         <property name="iconSize">
          <size>

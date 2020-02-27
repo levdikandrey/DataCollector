@@ -480,7 +480,7 @@ void MainWindow::initTableAudit()
 
                 QTableWidgetItem *newItem = new QTableWidgetItem();
                 QIcon icon;
-                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem->setIcon(icon);
                 newItem->setText(query->value(0).toString());
                 newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
@@ -488,7 +488,7 @@ void MainWindow::initTableAudit()
 
                 QTableWidgetItem *newItem1 = new QTableWidgetItem();
                 QIcon icon1;
-                icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem1->setIcon(icon1);
                 newItem1->setText(query->value(1).toString());
                 newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
@@ -496,7 +496,7 @@ void MainWindow::initTableAudit()
 
                 QTableWidgetItem *newItem2 = new QTableWidgetItem();
                 QIcon icon5;
-                icon5.addFile(QString::fromUtf8(":/icons/icons/user.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon5.addFile(QString::fromUtf8(":/icons/icons/user.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem2->setIcon(icon5);
                 newItem2->setText(query->value(2).toString());
                 newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
@@ -504,7 +504,7 @@ void MainWindow::initTableAudit()
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
                 QIcon icon3;
-                icon3.addFile(QString::fromUtf8(":/icons/icons/date2.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon3.addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem3->setIcon(icon3);
                 newItem3->setText(query->value(3).toDate().toString("yyyy-MM-dd"));
                 newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
@@ -600,7 +600,7 @@ void MainWindow::initTableMyTask()
 
                 QTableWidgetItem *newItem = new QTableWidgetItem();
                 QIcon icon;
-                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem->setIcon(icon);
                 newItem->setText(query->value(0).toString());
                 newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
@@ -609,7 +609,7 @@ void MainWindow::initTableMyTask()
 
                 QTableWidgetItem *newItem1 = new QTableWidgetItem();
                 QIcon icon1;
-                icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem1->setIcon(icon1);
                 newItem1->setText(query->value(1).toString());
                 newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
@@ -618,7 +618,7 @@ void MainWindow::initTableMyTask()
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
                 QIcon icon3;
-                icon3.addFile(QString::fromUtf8(":/icons/icons/date2.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon3.addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem3->setIcon(icon3);
                 newItem3->setText(query->value(2).toDate().toString("yyyy-MM-dd"));
                 newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
@@ -663,7 +663,7 @@ void MainWindow::initTableMyTask()
                 if(query->value(9).toString() == "Yes")
                 {
                     QIcon icon11;
-                    icon11.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon11.addFile(QString::fromUtf8(":/icons/icons/attach.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem11->setIcon(icon11);
                     newItem11->setText("Есть");
                 }
@@ -783,7 +783,7 @@ void MainWindow::initTableTask(bool)
 
                 QTableWidgetItem *newItem = new QTableWidgetItem();
                 QIcon icon;
-                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem->setIcon(icon);
                 newItem->setText(query->value(0).toString());
                 newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
@@ -791,7 +791,7 @@ void MainWindow::initTableTask(bool)
 
                 QTableWidgetItem *newItem1 = new QTableWidgetItem();
                 QIcon icon1;
-                icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem1->setIcon(icon1);
                 newItem1->setText(query->value(1).toString());
                 newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
@@ -799,7 +799,7 @@ void MainWindow::initTableTask(bool)
 
                 QTableWidgetItem *newItem2 = new QTableWidgetItem();
                 QIcon icon5;
-                icon5.addFile(QString::fromUtf8(":/icons/icons/user.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon5.addFile(QString::fromUtf8(":/icons/icons/user.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem2->setIcon(icon5);
                 newItem2->setText(query->value(2).toString());
                 newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
@@ -807,7 +807,7 @@ void MainWindow::initTableTask(bool)
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
                 QIcon icon3;
-                icon3.addFile(QString::fromUtf8(":/icons/icons/date2.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon3.addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem3->setIcon(icon3);
                 newItem3->setText(query->value(3).toDate().toString("yyyy-MM-dd"));
                 newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
@@ -1119,17 +1119,17 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
             if(queryViolation->size() == 0)
             {
                 itemViolations->setText("АВП не анализировалось");
-                icon.addFile(QString::fromUtf8(":/icons/icons/question.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/question.png"), QSize(), QIcon::Normal, QIcon::Off);
             }
             else
             {
 //                int row=0;
-                icon.addFile(QString::fromUtf8(":/icons/icons/alarm.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/alarm.png"), QSize(), QIcon::Normal, QIcon::Off);
                 str="";
                 while(queryViolation->next())
                 {
                     if(queryViolation->value(0).toString() == "Не обнаружено")
-                        icon.addFile(QString::fromUtf8(":/icons/icons/ok.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                        icon.addFile(QString::fromUtf8(":/icons/icons/ok.png"), QSize(), QIcon::Normal, QIcon::Off);
                     str += queryViolation->value(0).toString();
                     if(queryViolation->value(3).toBool())
                     {
@@ -1217,7 +1217,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
                 ui->tableWidgetAVP->setRowCount(row+1);
                 QTableWidgetItem *newItem = new QTableWidgetItem();
                 QIcon icon;
-                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem->setIcon(icon);
                 newItem->setText(query->value(0).toString());
                 newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
@@ -1225,7 +1225,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
 
                 QTableWidgetItem *newItem1 = new QTableWidgetItem();
                 QIcon icon1;
-                icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem1->setIcon(icon1);
                 newItem1->setText(query->value(1).toString());
                 newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
@@ -1233,7 +1233,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
 
                 QTableWidgetItem *newItem2 = new QTableWidgetItem();
                 QIcon icon2;
-                icon2.addFile(QString::fromUtf8(":/icons/icons/rubric.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon2.addFile(QString::fromUtf8(":/icons/icons/rubric.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem2->setIcon(icon2);
                 newItem2->setText(query->value(2).toString());
                 newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
@@ -1246,7 +1246,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
 
                 QTableWidgetItem *newItem4 = new QTableWidgetItem();
                 QIcon icon4;
-                icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem4->setIcon(icon4);
                 newItem4->setText(query->value(4).toString());
                 newItem4->setFlags(newItem4->flags() ^ Qt::ItemIsEditable);
@@ -1254,7 +1254,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
 
                 QTableWidgetItem *newItem5 = new QTableWidgetItem();
                 QIcon icon5;
-                icon5.addFile(QString::fromUtf8(":/icons/icons/user.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon5.addFile(QString::fromUtf8(":/icons/icons/user.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem5->setIcon(icon5);
                 newItem5->setText(query->value(5).toString());
                 newItem5->setFlags(newItem5->flags() ^ Qt::ItemIsEditable);
@@ -1262,7 +1262,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
 
                 QTableWidgetItem *newItem6 = new QTableWidgetItem();
                 QIcon icon6;
-                icon6.addFile(QString::fromUtf8(":/icons/icons/date2.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon6.addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem6->setIcon(icon6);
                 newItem6->setText(query->value(6).toString());
                 newItem6->setFlags(newItem6->flags() ^ Qt::ItemIsEditable);
@@ -1271,7 +1271,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
                 QTableWidgetItem *newItem7 = initViolations(query->value(9).toInt());
                 //                newItem7->setText("АВП не анализировалось");
                 //                QIcon icon7;
-                //                icon7.addFile(QString::fromUtf8(":/icons/icons/question.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                //                icon7.addFile(QString::fromUtf8(":/icons/icons/question.png"), QSize(), QIcon::Normal, QIcon::Off);
                 //                newItem7->setIcon(icon7);
                 //                newItem7->setFlags(newItem7->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetAVP->setItem(row,7, newItem7);
@@ -1908,7 +1908,7 @@ void MainWindow::slotFindAVP()
                     ui->tableWidgetAVP->setRowCount(row+1);
                     QTableWidgetItem *newItem = new QTableWidgetItem();
                     QIcon icon;
-                    icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem->setIcon(icon);
                     newItem->setText(query->value(0).toString());
                     newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
@@ -1916,7 +1916,7 @@ void MainWindow::slotFindAVP()
 
                     QTableWidgetItem *newItem1 = new QTableWidgetItem();
                     QIcon icon1;
-                    icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem1->setIcon(icon1);
                     newItem1->setText(query->value(1).toString());
                     newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
@@ -1924,7 +1924,7 @@ void MainWindow::slotFindAVP()
 
                     QTableWidgetItem *newItem2 = new QTableWidgetItem();
                     QIcon icon2;
-                    icon2.addFile(QString::fromUtf8(":/icons/icons/rubric.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon2.addFile(QString::fromUtf8(":/icons/icons/rubric.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem2->setIcon(icon2);
                     newItem2->setText(query->value(2).toString());
                     newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
@@ -1937,7 +1937,7 @@ void MainWindow::slotFindAVP()
 
                     QTableWidgetItem *newItem4 = new QTableWidgetItem();
                     QIcon icon4;
-                    icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem4->setIcon(icon4);
                     newItem4->setText(query->value(4).toString());
                     newItem4->setFlags(newItem4->flags() ^ Qt::ItemIsEditable);
@@ -1945,7 +1945,7 @@ void MainWindow::slotFindAVP()
 
                     QTableWidgetItem *newItem5 = new QTableWidgetItem();
                     QIcon icon5;
-                    icon5.addFile(QString::fromUtf8(":/icons/icons/user.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon5.addFile(QString::fromUtf8(":/icons/icons/user.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem5->setIcon(icon5);
                     newItem5->setText(query->value(5).toString());
                     newItem5->setFlags(newItem5->flags() ^ Qt::ItemIsEditable);
@@ -1953,7 +1953,7 @@ void MainWindow::slotFindAVP()
 
                     QTableWidgetItem *newItem6 = new QTableWidgetItem();
                     QIcon icon6;
-                    icon6.addFile(QString::fromUtf8(":/icons/icons/date2.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    icon6.addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem6->setIcon(icon6);
                     newItem6->setText(query->value(6).toString());
                     newItem6->setFlags(newItem6->flags() ^ Qt::ItemIsEditable);
@@ -2037,12 +2037,12 @@ void MainWindow::slotContextMenuRequested(const QPoint &pos)
        /* Создаём действия для контекстного меню */
        QAction * actionAnalysis = new QAction(tr("Анализ АВП"), this);
        QIcon icon;
-       icon.addFile(QString::fromUtf8(":/icons/icons/analysis.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       icon.addFile(QString::fromUtf8(":/icons/icons/analysis.png"), QSize(), QIcon::Normal, QIcon::Off);
        actionAnalysis->setIcon(icon);
 
        QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
        QIcon icon1;
-       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
        actionGoToURL->setIcon(icon1);
 
        /* Подключаем СЛОТы обработчики для действий контекстного меню */
@@ -2066,7 +2066,7 @@ void MainWindow::slotContextMenuRequestedAVP(const QPoint &pos)
        /* Создаём действия для контекстного меню */
        QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
        QIcon icon1;
-       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
        actionGoToURL->setIcon(icon1);
 
        /* Подключаем СЛОТы обработчики для действий контекстного меню */
@@ -2086,7 +2086,7 @@ void MainWindow::slotContextMenuRequestedExpert(const QPoint &pos)
 
        QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
        QIcon icon1;
-       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
        actionGoToURL->setIcon(icon1);
        connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
 
@@ -2101,7 +2101,7 @@ void MainWindow::slotContextMenuRequestedCurrentTask(const QPoint &pos)
 
        QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
        QIcon icon1;
-       icon1.addFile(QString::fromUtf8(":/icons/icons/web.ico"), QSize(), QIcon::Normal, QIcon::Off);
+       icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
        actionGoToURL->setIcon(icon1);
 
        connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
@@ -2209,7 +2209,7 @@ void MainWindow::slotAnalysisAVP()
     int row;
 
     QModelIndexList selectedRows = ui->tableWidgetMyTasks->selectionModel()->selectedRows();
-/*    try
+    try
     {
         if(selectedRows.count() == 1)
         {
@@ -2217,7 +2217,7 @@ void MainWindow::slotAnalysisAVP()
             m_client->sendCommandAnalysisAVP(ui->tableWidgetMyTasks->item(row,9)->text().toLongLong());
 
             QIcon icon1;
-            icon1.addFile(QString::fromUtf8(":/icons/icons/wait.ico"), QSize(), QIcon::Normal, QIcon::Off);
+            icon1.addFile(QString::fromUtf8(":/icons/icons/wait.png"), QSize(), QIcon::Normal, QIcon::Off);
             ui->tableWidgetMyTasks->item(row,6)->setIcon(icon1);
             ui->tableWidgetMyTasks->item(row,6)->setText("АВП анализируется...");
         }
@@ -2229,7 +2229,7 @@ void MainWindow::slotAnalysisAVP()
                 m_client->sendCommandAnalysisAVP(ui->tableWidgetMyTasks->item(row,9)->text().toLongLong());
 
                 QIcon icon1;
-                icon1.addFile(QString::fromUtf8(":/icons/icons/wait.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon1.addFile(QString::fromUtf8(":/icons/icons/wait.png"), QSize(), QIcon::Normal, QIcon::Off);
                 ui->tableWidgetMyTasks->item(row,6)->setIcon(icon1);
                 ui->tableWidgetMyTasks->item(row,6)->setText("АВП анализируется...");
 //                usleep(10000);
@@ -2240,7 +2240,7 @@ void MainWindow::slotAnalysisAVP()
     {
         qDebug()<<e.what();
     }
-    return;*/
+    return;
 
 
 //=========старый вариант

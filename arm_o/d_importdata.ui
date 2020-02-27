@@ -51,8 +51,8 @@
          <string>Выход</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>../icons/log_logout_door_1563.png</normaloff>../icons/log_logout_door_1563.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -81,7 +81,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButtonExit</sender>
