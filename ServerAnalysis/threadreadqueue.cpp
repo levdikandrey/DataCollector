@@ -1,4 +1,5 @@
 #include "threadreadqueue.h"
+
 #include <QDebug>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -10,7 +11,7 @@
 #include <iostream>
 #include <unistd.h>
 
-extern std::deque<uint64_t> listAVP;
+extern std::deque<SCommand> listAVP;
 extern QSqlDatabase db;
 //=========================================================
 ThreadReadQueue::ThreadReadQueue()
@@ -21,19 +22,67 @@ ThreadReadQueue::ThreadReadQueue()
 //=========================================================
 void ThreadReadQueue::doWork()
 {
-    analysisAVP(92116);
-    return;
     //    qDebug()<<__PRETTY_FUNCTION__;
     while(true)
     {
         while(!listAVP.empty())
         {
-            idAVP = listAVP.front();
+            m_sCommand = listAVP.front();
             qDebug()<<"ThreadReadQueue: idAVP = "<<idAVP;
             listAVP.pop_front();
-            analysisAVP(idAVP);
+            analysisAVP(m_sCommand.idAVP);
         }
         usleep(5000);
+    }
+}
+
+//=========================================================
+uint64_t ThreadReadQueue::idViolation(QString nameViolation)
+{
+    QString sql;
+    uint64_t idViolation = -1;
+    if(nameViolation.indexOf("Нет") != -1)
+        return 12;
+    sql = "SELECT \"ID\" FROM \"Violation\" WHERE \"Violation\" = \'" +nameViolation + "\';";
+    qDebug()<<"sql = "<<sql;
+    try
+    {
+        if(query->exec(sql))
+        {
+            if(query->next())
+                idViolation = query->value(0).toLongLong();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return idViolation;
+}
+
+//=========================================================
+void ThreadReadQueue::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, QString percent)
+{
+    QString sql,tmp;
+    try
+    {
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\",\"CheckAuto\") VALUES(";
+        sql += tmp.setNum(idAVP);
+        sql += ",";
+        sql += tmp.setNum(idViolation);
+        sql += ",\'";
+        sql += percent;
+        sql += "\',TRUE);";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
     }
 }
 
@@ -44,6 +93,9 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
     QString sql, tmp;
     QString pathOnDisk = "";
     QString command;
+    QString violation;
+    QString percentViolation;
+
     try
     {
         sql = "SELECT \"PathOnDisk\" FROM \"DownloadData\" WHERE \"ResourceName\" ='Kinopoisk' AND \"ID_AVP\" = ";
@@ -61,16 +113,37 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
         qDebug()<<"command = "<<command;
 
         //    QProcess::startDetached(command);
-//        QProcess process;
-//        process.start(command);
-//        if( !process.waitForStarted() || !process.waitForFinished() )
-//        {
-//                return;
-//        }
-//        qDebug() << process.readAllStandardError();
-//        QString strOut = process.readAllStandardOutput();
-        QString strOut = "Для файла: /mnt/Data/DownloadData/kinopoisk/100001.html Найдено по темам: {'ЛГБТ': 4, 'Порнография': 5, 'Суицид': 1}";
+        QProcess process;
+        process.start(command);
+        if( !process.waitForStarted() || !process.waitForFinished() )
+        {
+                return;
+        }
+        qDebug() << process.readAllStandardError();
+        QString strOut = process.readAllStandardOutput();
+
+//        QString strOut = "Для файла: /mnt/Data/DownloadData/kinopoisk/100001.html Найдено по темам: {'ЛГБТ': 4, 'Порнография': 5, 'Суицид': 1}";
+
         qDebug() <<"strOut = "<<strOut;
+        strOut = strOut.mid(strOut.lastIndexOf("{")+1,strOut.length()-strOut.lastIndexOf("{")-3);
+        qDebug() <<"strOut = "<<strOut;
+        QStringList listViolation = strOut.split(", ");
+        for(int i=0; i<listViolation.size();++i)
+        {
+            qDebug()<<"listViolation["<<i<<"] = "<<listViolation[i];
+            violation = listViolation[i].mid(1,listViolation[i].indexOf(":")-2);
+            qDebug()<<"violation = "<<violation;
+            if(listViolation[i].indexOf(":") != -1)
+                percentViolation = listViolation[i].mid(listViolation[i].indexOf(":")+2,listViolation[i].length()-listViolation[i].indexOf(":")-1);
+            else
+                percentViolation = "0";
+            qDebug()<<"percentViolation = "<<percentViolation;
+            uint64_t idV = idViolation(violation);
+
+            if(idV != static_cast<uint64_t>(-1))
+                addAnalysisResult(idAVP, idV, percentViolation);
+        }
+        m_sCommand.client->sendAnswerAnalysisAVP(m_sCommand.idAVP);
     }
     catch(std::exception &e)
     {

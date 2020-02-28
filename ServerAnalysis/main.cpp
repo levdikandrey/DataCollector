@@ -4,6 +4,7 @@
 #include <QSqlDatabase>
 
 #include "aserver.h"
+#include "aclient.h"
 #include <deque>
 
 #ifdef ENABLE_EPOOL
@@ -11,9 +12,9 @@
 #endif
 
 constexpr size_t DEFAULT_TREADS = 4;
-constexpr size_t DEFAULT_PORT = 8080;
+constexpr size_t DEFAULT_PORT = 50100;
 
-std::deque<uint64_t> listAVP;
+std::deque<SCommand> listAVP;
 QSqlDatabase db;
 
 int main(int argc, char** argv)
@@ -26,6 +27,7 @@ int main(int argc, char** argv)
     QCoreApplication::setApplicationVersion("0.1");
 
     qRegisterMetaType<qintptr>("qintptr");
+    setlocale(LC_ALL,"Russian");
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Multi-threaded server analysis");

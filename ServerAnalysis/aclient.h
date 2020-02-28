@@ -6,22 +6,27 @@
 #include <QObject>
 #include <QTcpSocket>
 
+class AClient;
+
+struct SCommand
+{
+    uint64_t idAVP;
+    AClient *client;
+};
+
 class AClient: public QObject
 {
 Q_OBJECT
 
 public:
     AClient(qintptr socketDescriptor, QObject* parent = 0);
+    void sendAnswerAnalysisAVP(uint64_t idAVP);
 
 public slots:
     void onReadyRead();
     void onClientDisconnected();
     void onClientConnected();
 
-    void client2world();
-    void world2client();
-    void sendAnswerAnalysisAVP(uint32_t idAVP);
-    void onWorldDisconnected();
     void receiveCommand(QString &command);
 
 signals:
@@ -40,9 +45,11 @@ private:
     uint8_t command_byte;
     QString message;
 
+    SCommand m_sCommand;
+
 private:
     QTcpSocket m_client;
-    QTcpSocket m_world;
+
 };
 
 #endif // ACLIENT_H

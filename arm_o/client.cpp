@@ -2,12 +2,13 @@
 
 #include "client.h"
 #include "mainwindow.h"
+#include "aprotocol.h"
 
 #include <unistd.h>
 #include <iostream>
 
 using namespace std;
-
+using namespace   AProtocol;
 #define TIMER_PERIOD 1500
 
 #define PrintHex(s)  for(string::iterator pos=s.begin();pos!=s.end() ;++pos ){printf(" 0x%02X", (unsigned char)(*pos));} cout<<endl;
@@ -91,13 +92,12 @@ void Client::slotDisconnected()
 //=========================================================
 void Client::slotReadyRead()
 {
-	int length;
 	qDebug()<<__PRETTY_FUNCTION__;
-	QDataStream in(tcpSocket);
-	in.setVersion(QDataStream::Qt_4_0);
+//	QDataStream in(tcpSocket);
+//	in.setVersion(QDataStream::Qt_4_0);
 	
-	length=tcpSocket->bytesAvailable();
-    qDebug()<<"length="<<tcpSocket->bytesAvailable();
+//	length=tcpSocket->bytesAvailable();
+//    qDebug()<<"length="<<tcpSocket->bytesAvailable();
 	
 
     QByteArray request = tcpSocket->readAll();
@@ -108,56 +108,63 @@ void Client::slotReadyRead()
     }
     std::cout<<std::endl;
 
+    header *headerCommand = reinterpret_cast<header*>(request.data());
+    if(headerCommand->command == 3)
+    {
+        commandAnalysis* command = reinterpret_cast<commandAnalysis*>(request.data());
+        qDebug()<<"command->command: "<<command->command<<" command->length:"<< command->length<<"command->idAVP:"<<command->idAVP;
+        ((MainWindow*)parent())->initTableMyTask();
+    }
 
 
-	//Если пришла первая часть из посланной сервером информации.
-	if(blockSize == 0)
-	{
-		message="";
-		//Если первая часть меньше того кол-ва информации что определяет размер всего сообщения...
-		if(tcpSocket->bytesAvailable() < (int)sizeof(quint16))
-			return;
-		in >> start_byte;
-	        qDebug()<<"start_byte="<<start_byte;
-		for(int j=1; j<=tcpSocket->bytesAvailable();j++)
-		{
-			if((start_byte==0xd9))
-			{
-				break;
-			}
-			else if((start_byte!=0xd9) && (length!=0))
-			{
-//				length--;
-				in >> start_byte;
-			}
-			else if((start_byte!=0xd9) && (length==j))
-			{	
-				return;
-			}
-		}
-		message+=start_byte;
+//	//Если пришла первая часть из посланной сервером информации.
+//	if(blockSize == 0)
+//	{
+//		message="";
+//		//Если первая часть меньше того кол-ва информации что определяет размер всего сообщения...
+//		if(tcpSocket->bytesAvailable() < (int)sizeof(quint16))
+//			return;
+//		in >> start_byte;
+//	        qDebug()<<"start_byte="<<start_byte;
+//		for(int j=1; j<=tcpSocket->bytesAvailable();j++)
+//		{
+//			if((start_byte==0xd9))
+//			{
+//				break;
+//			}
+//			else if((start_byte!=0xd9) && (length!=0))
+//			{
+////				length--;
+//				in >> start_byte;
+//			}
+//			else if((start_byte!=0xd9) && (length==j))
+//			{
+//				return;
+//			}
+//		}
+//		message+=start_byte;
 	
-		//Получить размер посылаемого сервером сообщения.
-		in >> blockSize;
-	        qDebug()<<"blockSize="<<blockSize;
-		message+=blockSize;
-	}
-	//Если последующие части вместе взятые меньше, чем определенное сервером кол-во...
-	if(tcpSocket->bytesAvailable() < blockSize)
-		return;
+//		//Получить размер посылаемого сервером сообщения.
+//		in >> blockSize;
+//	        qDebug()<<"blockSize="<<blockSize;
+//		message+=blockSize;
+//	}
+//	//Если последующие части вместе взятые меньше, чем определенное сервером кол-во...
+//	if(tcpSocket->bytesAvailable() < blockSize)
+//		return;
 	
-	for(int i=0; i<blockSize; i++)
-	{
-		in >> command_byte;
-	//        qDebug()<<"command_byte="<<command_byte;
-		message+=command_byte;
-	}
-	qDebug()<<"message.length()="<<message.length();
-//	PrintHexQString(message);
+//	for(int i=0; i<blockSize; i++)
+//	{
+//		in >> command_byte;
+//	//        qDebug()<<"command_byte="<<command_byte;
+//		message+=command_byte;
+//	}
+//	qDebug()<<"message.length()="<<message.length();
+////	PrintHexQString(message);
 	
-	//Обнулить параметр размера посылаемого сервером сообщения.
-	blockSize = 0;
-	emit receiveMessage(message);
+//	//Обнулить параметр размера посылаемого сервером сообщения.
+//	blockSize = 0;
+//	emit receiveMessage(message);
 }
 
 //=========================================================

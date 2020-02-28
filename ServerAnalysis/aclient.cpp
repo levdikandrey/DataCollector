@@ -9,7 +9,8 @@
 #include <QHostAddress>
 #include <QtNetwork>
 
-extern std::deque<uint64_t> listAVP;
+extern std::deque<SCommand> listAVP;
+
 namespace
 {
 #pragma pack(push, 1)
@@ -66,10 +67,6 @@ AClient::AClient(qintptr socketDescriptor, QObject* parent) :
     connect(&m_client, &QTcpSocket::disconnected, this, &AClient::onClientDisconnected);
     connect(&m_client, &QTcpSocket::connected, this, &AClient::onClientConnected);
 
-//    connect(&m_world, &QTcpSocket::connected, this, &AClient::sendSocksAnsver);
-    connect(&m_world, &QTcpSocket::readyRead, this, &AClient::world2client);
-    connect(&m_world,&QTcpSocket::disconnected, this, &AClient::onWorldDisconnected);
-
     connect(this,&AClient::receiveMessage, this, &AClient::receiveCommand);
 }
 
@@ -91,8 +88,10 @@ void AClient::onReadyRead()
     {
         commandAnalysis* command = reinterpret_cast<commandAnalysis*>(request.data());
         qDebug()<<"command->command: "<<command->command<<" command->length:"<< command->length<<"command->idAVP:"<<command->idAVP;
-        listAVP.push_back(command->idAVP);
-        sendAnswerAnalysisAVP(command->idAVP);
+        m_sCommand.idAVP = command->idAVP;
+        m_sCommand.client = this;
+        listAVP.push_back(m_sCommand);
+//        sendAnswerAnalysisAVP(command->idAVP);
     }
 
 //    int length;
@@ -167,32 +166,22 @@ void AClient::receiveCommand(QString &command)
     {
         commandAnalysis* comm = reinterpret_cast<commandAnalysis*>(command.data());
         qDebug()<<"command->command: "<<comm->command<<" command->length:"<< comm->length<<"command->idAVP:"<<comm->idAVP;
-        listAVP.push_back(comm->idAVP);
-        sendAnswerAnalysisAVP(comm->idAVP);
+        m_sCommand.idAVP = comm->idAVP;
+        m_sCommand.client = this;
+        listAVP.push_back(m_sCommand);
+//        sendAnswerAnalysisAVP(comm->idAVP);
     }
 }
 
 //=========================================================
-void AClient::sendAnswerAnalysisAVP(uint32_t idAVP)
+void AClient::sendAnswerAnalysisAVP(uint64_t idAVP)
 {
     answerAnalysis ans;
     ans.command = (uint8_t)command::answerAnalysisAVP;
-    ans.length = sizeof(uint32_t);
+    ans.length = sizeof(uint64_t);
     ans.idAVP = idAVP;
     m_client.write(reinterpret_cast<char*>(&ans), sizeof(ans));
     m_client.flush();
-}
-
-//=========================================================
-void AClient::client2world()
-{
-    m_world.write(m_client.readAll());
-}
-
-//=========================================================
-void AClient::world2client()
-{
-    m_client.write(m_world.readAll());
 }
 
 //=========================================================
@@ -202,7 +191,7 @@ void AClient::onClientDisconnected()
     QString name;
     name =  m_client.peerAddress().toString();
     qDebug()<<"Client disconnect IP = "<<name;
-    m_world.flush();
+    m_client.flush();
     done();
 }
 
@@ -216,16 +205,8 @@ void AClient::onClientConnected()
 }
 
 //=========================================================
-void AClient::onWorldDisconnected()
-{
-    m_client.flush();
-    done();
-}
-
-//=========================================================
 void AClient::done()
 {
     m_client.close();
-    m_world.close();
     deleteLater();
 }
