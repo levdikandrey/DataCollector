@@ -13,6 +13,8 @@
 #include <QDesktopServices>
 #include <QProgressDialog>
 #include <QProcess>
+#include <QRect>
+#include <QScreen>
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -1183,8 +1185,19 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
                         str +="(ИИ)";
                     }
                     str +="  ";
-//                    str +=" - ";
-//                    str += queryViolation->value(1).toString();str +="% ";
+                    str +=" - ";
+/*                    if(queryViolation->value(1).toString().toInt() > 9)
+                    {
+                        str += "100";
+                    }
+                    else if
+                    {
+                        int percent = queryViolation->value(1).toString().toInt()
+
+                    }*/
+
+                    str += tmp.setNum(queryViolation->value(1).toInt());
+                    str +="% ";
 //                    row++;
                 }
                 itemViolations->setText(str);
@@ -1486,6 +1499,11 @@ void MainWindow::slotAddTask()
     dAddTask->initAVS();
     QDateTime dt;
     QApplication::restoreOverrideCursor();
+
+//    dAddTask->showFullScreen();
+//    QRect r = QApplication::screens().at(0)->geometry();
+//    dAddTask->resize(r.width() * 95, r.height() * 90);
+    dAddTask->showMaximized();
 
     if(dAddTask->exec() == QDialog::Accepted)
     {

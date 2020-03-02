@@ -37,6 +37,8 @@ DAddTask::DAddTask(QWidget *parent)
     ui->labelCountAVP->setText(text);
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags()|Qt::WindowMaximizeButtonHint);
+
     ui->pushButtonPreview->setEnabled(false);
 
     connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));

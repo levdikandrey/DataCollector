@@ -42,7 +42,7 @@ void ThreadAnalysisAVP::initListAVP()
     QString sql;
     try
     {
-        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 5;";
+        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 3;";
         if(query->exec(sql))
         {
             while(query->next())
@@ -96,9 +96,9 @@ void ThreadAnalysisAVP::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, 
         sql += tmp.setNum(idAVP);
         sql += ",";
         sql += tmp.setNum(idViolation);
-        sql += ",\'";
+        sql += ",";
         sql += percent;
-        sql += "\',TRUE);";
+        sql += ",TRUE);";
         qDebug()<<"sql = "<<sql;
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
@@ -156,7 +156,7 @@ void ThreadAnalysisAVP::analysisAVP(uint64_t idAVP)
             violation = listViolation[i].mid(1,listViolation[i].indexOf(":")-2);
             qDebug()<<"violation = "<<violation;
             if(listViolation[i].indexOf(":") != -1)
-                percentViolation = listViolation[i].mid(listViolation[i].indexOf(":")+2,listViolation[i].length()-listViolation[i].indexOf(":")-1);
+                percentViolation = listViolation[i].mid(listViolation[i].indexOf(":")+3,listViolation[i].length()-listViolation[i].indexOf(":")-5);
             else
                 percentViolation = "0";
             qDebug()<<"percentViolation = "<<percentViolation;
