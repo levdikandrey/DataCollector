@@ -1,5 +1,4 @@
-#include "threadreadqueue.h"
-
+#include "threadanalysisavp.h"
 #include <QDebug>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -11,33 +10,58 @@
 #include <iostream>
 #include <unistd.h>
 
-extern std::deque<SCommand> listAVP;
 extern QSqlDatabase db;
 //=========================================================
-ThreadReadQueue::ThreadReadQueue()
+ThreadAnalysisAVP::ThreadAnalysisAVP()
 {
     query = new QSqlQuery(db);
+    m_listNonAnalysisAVP.clear();
 }
 
 //=========================================================
-void ThreadReadQueue::doWork()
+void ThreadAnalysisAVP::doWork()
 {
     //    qDebug()<<__PRETTY_FUNCTION__;
+    initListAVP();
     while(true)
     {
-        while(!listAVP.empty())
+        while(m_listNonAnalysisAVP.size() != 0)
         {
-            m_sCommand = listAVP.front();
-            qDebug()<<"ThreadReadQueue: idAVP = "<<idAVP;
-            listAVP.pop_front();
-            analysisAVP(m_sCommand.idAVP);
+            idAVP =  m_listNonAnalysisAVP.front();
+            analysisAVP(idAVP);
+            m_listNonAnalysisAVP.pop_front();
+            usleep(500);
         }
         usleep(5000);
     }
 }
 
 //=========================================================
-uint64_t ThreadReadQueue::idViolation(QString nameViolation)
+void ThreadAnalysisAVP::initListAVP()
+{
+    QString sql;
+    try
+    {
+        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 5;";
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                idAVP = query->value(0).toLongLong();
+                m_listNonAnalysisAVP.push_back(idAVP);
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+uint64_t ThreadAnalysisAVP::idViolation(QString nameViolation)
 {
     QString sql;
     uint64_t idViolation = -1;
@@ -63,7 +87,7 @@ uint64_t ThreadReadQueue::idViolation(QString nameViolation)
 }
 
 //=========================================================
-void ThreadReadQueue::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, QString percent)
+void ThreadAnalysisAVP::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, QString percent)
 {
     QString sql,tmp;
     try
@@ -87,7 +111,7 @@ void ThreadReadQueue::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, QS
 }
 
 //=========================================================
-void ThreadReadQueue::analysisAVP(uint64_t idAVP)
+void ThreadAnalysisAVP::analysisAVP(uint64_t idAVP)
 {
     qDebug()<<__PRETTY_FUNCTION__;
     QString sql, tmp;
@@ -141,7 +165,6 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
             if(idV != static_cast<uint64_t>(-1))
                 addAnalysisResult(idAVP, idV, percentViolation);
         }
-        m_sCommand.client->sendAnswerAnalysisAVP(m_sCommand.idAVP);
     }
     catch(std::exception &e)
     {

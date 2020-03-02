@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     aclient.cpp \
     aserver.cpp \
+    threadanalysisavp.cpp \
     threadreadqueue.cpp \
     worker.cpp
 
@@ -31,6 +32,7 @@ FORMS +=
 HEADERS += \
     aclient.h \
     aserver.h \
+    threadanalysisavp.h \
     threadreadqueue.h \
     worker.h
 

@@ -131,9 +131,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_currentState = -1;
     m_currentNumberPage = 1;
     m_countAVP = countAVP();
+    int page_count = (m_countAVP/1000);
+    if( m_countAVP%1000 > 0)
+        page_count++;
     QString tmp;
-    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
-    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    QString text="из ";text+=tmp.setNum(page_count); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
 
@@ -893,6 +896,37 @@ int MainWindow::countAVP(long idAVS)
 }
 
 //=========================================================
+int MainWindow::countAVP_Analysis(int state)
+{
+    int count = 0;
+    QString sql, tmp;
+    try
+    {
+        if(state == 1)// С нарушениями
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 ) GROUP BY \"ID\";";
+        }
+        else// Все проверенные
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" ) GROUP BY \"ID\";";
+        }
+        if(query->exec(sql))
+        {
+//            if(query->next())
+            //                count = query->value(0).toInt();
+            count = query->size();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return count;
+}
+
+//=========================================================
 long MainWindow::idAVS(QString nameAVS)
 {
     long id = -1;
@@ -1042,13 +1076,17 @@ void MainWindow::slotNext()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString tmp;
-    if(m_currentNumberPage<=(m_countAVP/1000))
+    int page_count = (m_countAVP/1000);
+    if( m_countAVP%1000 > 0)
+        page_count++;
+
+    if(m_currentNumberPage <= page_count)
     {
         ui->pushButtonPreview->setEnabled(true);
         m_currentNumberPage++;
         initTableAVP(m_currentNumberPage,m_currentIdAVS,m_currentState);
         ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
-        if(m_currentNumberPage == (m_countAVP/1000))
+        if(m_currentNumberPage == page_count)
             ui->pushButtonNext->setEnabled(false);
     }
     QApplication::restoreOverrideCursor();
@@ -1078,20 +1116,29 @@ void MainWindow::slotChangeNumberPage()
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     qDebug()<<ui->lineEditNumberPage->text();
     m_currentNumberPage = ui->lineEditNumberPage->text().toInt();
+    int page_count = (m_countAVP/1000);
+    if( m_countAVP%1000 > 0)
+        page_count++;
 
-    if(m_currentNumberPage<=(m_countAVP/1000))
+//    if(ui->lineEditNumberPage->text().toInt() > page_count)
+//    {
+//        QMessageBox::warning(this,"Внимание","Не верно введен номер страницы!","Да");
+//        return;
+//    }
+
+    if(m_currentNumberPage<=page_count)
     {
-        if( (m_currentNumberPage>1) && (m_currentNumberPage<(m_countAVP/1000)) )
+        if( (m_currentNumberPage > 1) && (m_currentNumberPage < page_count) )
         {
             ui->pushButtonPreview->setEnabled(true);
             ui->pushButtonNext->setEnabled(true);
         }
-        else if(m_currentNumberPage==1)
+        else if(m_currentNumberPage == 1)
         {
             ui->pushButtonPreview->setEnabled(false);
             ui->pushButtonNext->setEnabled(true);
         }
-        else if(m_currentNumberPage==(m_countAVP/1000))
+        else if(m_currentNumberPage == page_count)
         {
             ui->pushButtonNext->setEnabled(false);
             ui->pushButtonPreview->setEnabled(true);
@@ -1212,6 +1259,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
         {
             int row=0;
             m_countCurrentAVP = query->size();
+//            qDebug()<<"m_countCurrentAVP = "<<m_countCurrentAVP;
             while(query->next())
             {
                 ui->tableWidgetAVP->setRowCount(row+1);
@@ -1800,10 +1848,16 @@ void MainWindow::slotRBViolation(bool state)
 
     m_currentState = 1;
     m_currentNumberPage = 1;
-    m_countAVP = m_countCurrentAVP;
+    m_countAVP = countAVP_Analysis(1);
+    int page_count = m_countAVP/1000;
+    if(m_countAVP%1000 > 0)
+        page_count++;
+
+//    qDebug()<<"m_countAVP = "<<m_countAVP;
     QString tmp;
-    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
-    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    QString text="из ";text+=tmp.setNum(page_count); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
+    ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
     QApplication::restoreOverrideCursor();
@@ -1818,10 +1872,15 @@ void MainWindow::slotRBChecked(bool state)
 
     m_currentState = 2;
     m_currentNumberPage = 1;
-    m_countAVP = m_countCurrentAVP;
+    m_countAVP = countAVP_Analysis(2);
+    int page_count = m_countAVP/1000;
+    if(m_countAVP%1000 > 0)
+        page_count++;
+
     QString tmp;
-    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
-    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    QString text="из ";text+=tmp.setNum(page_count); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
+    ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
     QApplication::restoreOverrideCursor();
@@ -1838,9 +1897,14 @@ void MainWindow::slotRBAll(bool state)
     m_currentState = -1;
     m_currentNumberPage = 1;
     m_countAVP = countAVP(m_currentIdAVS);
+    int page_count = m_countAVP/1000;
+    if(m_countAVP%1000 > 0)
+        page_count++;
+
     QString tmp;
-    QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
-    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    QString text="из ";text+=tmp.setNum(page_count); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
+    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
+    ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
     QApplication::restoreOverrideCursor();

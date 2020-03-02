@@ -7,6 +7,7 @@
 #include <QDebug>
 
 #include "threadreadqueue.h"
+#include "threadanalysisavp.h"
 
 class Worker;
 class QThread;
@@ -28,12 +29,14 @@ private:
 
 signals:
     void operateReadQueue(const QString &);
+    void operateAnalysis(const QString &);
 
 public slots:
     /**
      * @brief handleResults
      */
     void handleResultsReadQueue(const QString &);
+    void handleResultsAnalysis(const QString &);
 
 private:
     size_t m_threadCount;
@@ -41,6 +44,9 @@ private:
 
     QThread *m_threadReadQueue;
     ThreadReadQueue *m_TRQ;
+
+    QThread *m_threadAnalysisAVP;
+    ThreadAnalysisAVP *m_taAVP;
 
     QVector<QThread*> m_threads;
     QVector<Worker*> m_workers;

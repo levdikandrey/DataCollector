@@ -83,7 +83,7 @@ void AServer::initThreads()
     }
 
     //Инициализируем поток для чтения из очереди ИД АВП для анализа
-    m_threadReadQueue = new QThread(this);
+    m_threadReadQueue = new QThread();
     ThreadReadQueue *m_TRQ = new ThreadReadQueue();
     m_TRQ->moveToThread(m_threadReadQueue);
     connect(m_threadReadQueue, &QThread::finished, m_TRQ, &QObject::deleteLater);
@@ -93,6 +93,18 @@ void AServer::initThreads()
     m_threadReadQueue->start();
     emit operateReadQueue("");
     qDebug()<<"The AVP list queue reading thread is started";
+
+    //Инициализируем поток для анализа АВП из БД АВП
+    m_threadAnalysisAVP = new QThread();
+    m_taAVP = new ThreadAnalysisAVP();
+    m_taAVP->moveToThread(m_threadAnalysisAVP);
+    connect(m_threadAnalysisAVP, &QThread::finished, m_taAVP, &QObject::deleteLater);
+    connect(this, &AServer::operateAnalysis, m_taAVP, &ThreadAnalysisAVP::doWork);
+    connect(m_taAVP, &ThreadAnalysisAVP::resultReady, this, &AServer::handleResultsAnalysis);
+
+    m_threadAnalysisAVP->start();
+    emit operateAnalysis("");
+    qDebug()<<"The AVP analysis thread is started";
 }
 
 //=========================================================
@@ -106,6 +118,11 @@ void AServer::incomingConnection(qintptr socketDescriptor)
 
 //=========================================================
 void AServer::handleResultsReadQueue(const QString &)
+{
+}
+
+//=========================================================
+void AServer::handleResultsAnalysis(const QString &)
 {
 }
 

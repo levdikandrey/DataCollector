@@ -178,7 +178,6 @@ void Client::slotTimerTimeout()
     {
 //        qDebug()<<__PRETTY_FUNCTION__<<" установка соединения ";
         tcpSocket->connectToHost(serverIPAddress, serverIPPort);
-//        usleep(250000);
     }
 //    else if(tcpSocket->state() == QAbstractSocket::ConnectedState)
 //    {
