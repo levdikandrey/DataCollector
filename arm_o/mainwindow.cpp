@@ -1774,6 +1774,9 @@ void MainWindow::slotEditAudit()
     QModelIndexList selectedRows = ui->tableWidgetAudit->selectionModel()->selectedRows();
 
     dEditAudit->initTableViolation(ui->tableWidgetAudit->item(selectedRows[0].row(),10)->text().toLong());
+    dEditAudit->initComboBoxViolation();
+    dEditAudit->hideViolationGroup();
+
     if(dEditAudit->exec() == QDialog::Accepted)
     {
         try

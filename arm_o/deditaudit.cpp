@@ -1,5 +1,6 @@
 #include "deditaudit.h"
 #include "ui_d_editaudit.h"
+#include "mainwindow.h"
 
 #include <QMessageBox>
 #include <QDebug>
@@ -8,6 +9,7 @@
 #include <QCheckBox>
 #include <QFile>
 #include <QProcess>
+#include <QFileDialog>
 
 extern QSqlDatabase db;
 //=========================================================
@@ -16,9 +18,12 @@ DEditAudit::DEditAudit(QWidget *parent) :
     ui(new Ui::DEditAudit)
 {
     ui->setupUi(this);
+    ui->groupBox_3->hide();
+
     query = new QSqlQuery(db);
     query_data = new QSqlQuery(db);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(0, 150);
 //    ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
@@ -70,12 +75,15 @@ void DEditAudit::initTableViolation(long id_avp)
                     QPushButton *pbItem = new QPushButton(this);
                     connect(pbItem, SIGNAL(clicked()),this,SLOT(slotViewPicture()));
                     if(query->value(4).isNull())
-                        icon1.addFile(QString::fromUtf8(":/icons/icons/unspin.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                    {
+                        icon1.addFile(QString::fromUtf8(":/icons/icons/unspin.png"), QSize(), QIcon::Normal, QIcon::Off);
+                        pbItem->setText("Нет");
+                    }
                     else
-                        icon1.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                        icon1.addFile(QString::fromUtf8(":/icons/icons/attach.png"), QSize(), QIcon::Normal, QIcon::Off);
 
                     pbItem->setIcon(icon1);
-                    connect(pbItem, SIGNAL(clicked()),this,SLOT(slotViewPicture()));
+//                    connect(pbItem, SIGNAL(clicked()),this,SLOT(slotViewPicture()));
                     ui->tableWidgetViolation->setCellWidget(row,2, pbItem);//Снимок экрана
 
                     QCheckBox *cbItem = new QCheckBox(this);
@@ -168,7 +176,7 @@ void DEditAudit::slotViewPicture()
             QMessageBox::warning(this, tr("Внимание"),tr("Нет прикрепленного изображения!"),tr("Да"));
         }
         else
-        QProcess::startDetached("mspaint ./tmp.jpg");
+            QProcess::startDetached("mspaint ./tmp.jpg");
     }
     else
     {
@@ -214,6 +222,39 @@ void DEditAudit::slotApply()
 }
 
 //=========================================================
+void DEditAudit::showViolationGroup()
+{
+    ui->groupBox_2->show();
+}
+
+//=========================================================
+void DEditAudit::hideViolationGroup()
+{
+    ui->groupBox_3->hide();
+}
+
+//=========================================================
+long DEditAudit::idViolation(QString nameViolation)
+{
+    QString sql="";
+    long id = -1;
+    sql = "SELECT \"ID\" FROM \"Violation\" WHERE \"Violation\" = \'";
+    sql += nameViolation; sql += "\';";
+//    qDebug()<<"sql="<<sql;
+    if(query->exec(sql))
+    {
+        while(query->next())
+        {
+            id = query->value(0).toInt();
+        }
+    }
+    else
+        qDebug()<<query->lastError().text();
+//    qDebug()<<"id="<<id;
+    return id;
+}
+
+//=========================================================
 void DEditAudit::slotCancel()
 {
     for(int row=0; row<ui->tableWidgetViolation->rowCount(); row++)
@@ -225,6 +266,210 @@ void DEditAudit::slotCancel()
     ui->groupBox_2->setChecked(Qt::Unchecked);
     ui->pushButtonApply->setEnabled(false);
     ui->pushButtonCancel->setEnabled(false);
+}
+
+//=========================================================
+void DEditAudit::slotApplyViolation()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QString sql="",tmp;
+    QString s_comment="";
+    try
+    {
+        s_comment ="Таймкод: с " + ui->timeEditBegin->time().toString("HH:mm:ss") + " по "
+                + ui->timeEditEnd->time().toString("HH:mm:ss") +". "
+                + ui->textEditViolation->toPlainText();
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\", \"ID_Violation\",\"TextViolation\",\"Percent\") VALUES(";
+        sql += tmp.setNum(m_idAVP); sql += ",";
+        sql += tmp.setNum(idViolation(ui->comboBoxViolation->currentText())); sql += ",E\'";
+        sql += ((MainWindow*)parent())->cImportData->decode(s_comment); sql += "\',\'100\');";
+
+        if(!query->exec(sql))
+        {
+            QApplication::restoreOverrideCursor();
+            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            qDebug()<<query->lastError().text();
+            return;
+        }
+
+        if(ui->lineEditScreenShot->text().length()>0)
+        {
+            sql = "INSERT INTO \"Content\"(\"ID_AVP\",\"ID_AR\",\"Data\") VALUES(:ID_AVP,:ID_AR,:Data);";
+            query_data->prepare(sql);
+            query_data->bindValue(":ID_AVP", m_idAVP);
+            query_data->bindValue(":ID_AR", getIdAnalysisResult());
+            query_data->bindValue(":Data", getData(ui->lineEditScreenShot->text()));
+            if(!query_data->exec())
+                qDebug()<<"ERROR:"<<query_data->lastError().text();
+        }
+        initTableViolation(m_idAVP);
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    hideViolationGroup();
+    ui->pushButtonApplyViolation->setEnabled(false);
+
+    ((MainWindow*)parent())->initTableAudit();
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DEditAudit::slotCancelViolation()
+{
+    ui->textEditViolation->clear();
+    ui->lineEditScreenShot->clear();
+    ui->pushButtonApplyViolation->setEnabled(false);
+    hideViolationGroup();
+}
+
+//=========================================================
+void DEditAudit::slotAddViolation()
+{
+    ui->timeEditBegin->setTime(QTime::fromString("00:00:00"));
+    ui->timeEditEnd->setTime(QTime::fromString("00:00:00"));
+    ui->textEditViolation->clear();
+    ui->lineEditScreenShot->clear();
+    ui->groupBox_3->show();
+    ui->pushButtonApplyViolation->setEnabled(false);
+}
+
+//=========================================================
+void DEditAudit::slotDeleteViolation()
+{
+    QString sql="";
+    QModelIndexList selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+    if(selectedRows.empty())
+    {
+        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали нарушение для удаления!"),tr("Да"));
+        return;
+    }
+    else
+    {
+        try
+        {
+            if(QMessageBox::warning(this, tr("Внимание"),tr("Вы действительно хотите удалить выбранные нарушения:?"),tr("Да"),tr("Нет")) == 0)
+            {
+                while (!selectedRows.empty())
+                {
+                    sql = "DELETE FROM \"AnalysisResult\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->takeItem(selectedRows[0].row(),5)->text(); sql += ";";
+//                    qDebug()<<"sql ="<<sql;
+                    if(query->exec(sql))
+                    {
+                        ui->tableWidgetViolation->removeRow(selectedRows[0].row());
+                        selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
+                    }
+                    else
+                        qDebug()<<query->lastError().text();
+                }
+            }
+        }
+        catch(std::exception &e)
+        {
+            qDebug()<<e.what();
+            qDebug()<<query->lastError().text();
+            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        }
+        ((MainWindow*)parent())->initTableAudit();
+    }
+}
+
+//=========================================================
+void DEditAudit::slotAtachFile()
+{
+    QString fileName ="";
+    fileName = QFileDialog::getOpenFileName(this,
+                       QString::fromUtf8("Открыть файл"),
+                       QDir::currentPath(),
+                       "Все файлы изображений (*.png *.jpeg *.jpg *.jpe *.bmp *.ico *.gif *.tif *.tiff);;Все файлы (*.*)");
+
+    if(fileName != "")
+    {
+        ui->lineEditScreenShot->setText(fileName);
+    }
+}
+
+//=========================================================
+int DEditAudit::getIdAnalysisResult()
+{
+    int id = -1;
+    QString sql;
+    sql = "SELECT MAX(\"ID\") FROM \"AnalysisResult\";";
+    if(query->exec(sql))
+    {
+        if(query->next())
+            id = query->value(0).toInt();
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        qDebug()<<query->lastError().text();
+    }
+//    qDebug()<<"idAR="<<id;
+    return id;
+}
+
+//=========================================================
+QByteArray DEditAudit::getData(QString fileName)
+{
+//    qDebug()<<"fileName="<<fileName;
+    QByteArray data;
+    QFile file(fileName);
+    if(file.open(QFile::ReadOnly))
+    {
+        data = file.readAll();
+//        qDebug()<<"data.size()="<<data.size();
+        file.close();
+    }
+    else
+        qDebug()<<"Не могу открыть файл:"<<fileName;
+    return data;
+}
+
+//=========================================================
+void DEditAudit::initComboBoxViolation()
+{
+    QString sql="";
+    try
+    {
+        ui->comboBoxViolation->clear();
+
+        sql = "SELECT \"Violation\" FROM \"Violation\";";
+
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                ui->comboBoxViolation->addItem(query->value(0).toString());
+
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditAudit::slotActivated(int)
+{
+    ui->pushButtonApplyViolation->setEnabled(true);
+}
+
+//=========================================================
+void DEditAudit::slotTextChangedViolation()
+{
+    ui->pushButtonApplyViolation->setEnabled(true);
+}
+
+//=========================================================
+void DEditAudit::slotTextChanged(QString)
+{
+    ui->pushButtonApplyViolation->setEnabled(true);
 }
 
 //=========================================================

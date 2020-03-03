@@ -6,15 +6,90 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>859</width>
-    <height>457</height>
+    <width>719</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Экспертиза</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <item row="1" column="0">
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="0" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Нарушения</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableWidgetViolation">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>0</number>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Наименование</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Описание нарушения</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Изображение</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Подтвердить</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Отклонить</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="toolButtonDelete">
+     <property name="minimumSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Удалить нарушение</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/minus.png</normaloff>:/icons/icons/minus.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -63,7 +138,240 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="1" column="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>622</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Добавление нарушения</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Тип нарушения:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboBoxViolation"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Таймкод:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>С:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="timeEditBegin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="displayFormat">
+           <string>H:mm:ss</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>По:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="timeEditEnd">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="displayFormat">
+           <string>H:mm:ss</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Описание нарушения:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QTextEdit" name="textEditViolation">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>80</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Прикрепить скриншот:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEditScreenShot">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QToolButton" name="toolButtonAttach">
+        <property name="minimumSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/attach.png</normaloff>:/icons/icons/attach.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonApplyViolation">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Применить</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/ok.png</normaloff>:/icons/icons/ok.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonCancelViolation">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Отмена</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/cancel.png</normaloff>:/icons/icons/cancel.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
@@ -163,59 +471,24 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="0">
+    <widget class="QToolButton" name="toolButtonAdd">
+     <property name="minimumSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
      </property>
-     <property name="title">
-      <string>Нарушения</string>
+     <property name="toolTip">
+      <string>Добавить нарушение</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QTableWidget" name="tableWidgetViolation">
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <attribute name="horizontalHeaderMinimumSectionSize">
-         <number>0</number>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Наименование</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Описание нарушения</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Изображение</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Подтвердить</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Отклонить</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>ID</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-     </layout>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icons/icons/plus.png</normaloff>:/icons/icons/plus.png</iconset>
+     </property>
     </widget>
    </item>
   </layout>
@@ -231,8 +504,8 @@
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>521</x>
-     <y>419</y>
+     <x>446</x>
+     <y>665</y>
     </hint>
     <hint type="destinationlabel">
      <x>669</x>
@@ -247,8 +520,8 @@
    <slot>slotCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>684</x>
-     <y>411</y>
+     <x>572</x>
+     <y>665</y>
     </hint>
     <hint type="destinationlabel">
      <x>671</x>
@@ -263,8 +536,8 @@
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>783</x>
-     <y>425</y>
+     <x>698</x>
+     <y>665</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -279,12 +552,140 @@
    <slot>slotTextChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>75</x>
-     <y>304</y>
+     <x>94</x>
+     <y>605</y>
     </hint>
     <hint type="destinationlabel">
-     <x>854</x>
+     <x>718</x>
      <y>302</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotAddViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>21</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonApplyViolation</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotApplyViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>531</x>
+     <y>459</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>718</x>
+     <y>560</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotDeleteViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>718</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonCancelViolation</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotCancelViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>663</x>
+     <y>462</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>718</x>
+     <y>591</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonAttach</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotAtachFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>682</x>
+     <y>415</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>718</x>
+     <y>455</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxViolation</sender>
+   <signal>activated(int)</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotActivated(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>620</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>348</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textEditViolation</sender>
+   <signal>textChanged()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotTextChangedViolation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>201</x>
+     <y>371</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>414</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditScreenShot</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotTextChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>419</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>484</y>
     </hint>
    </hints>
   </connection>
@@ -294,5 +695,13 @@
   <slot>slotCancel()</slot>
   <slot>slotExit()</slot>
   <slot>slotTextChanged()</slot>
+  <slot>slotAddViolation()</slot>
+  <slot>slotDeleteViolation()</slot>
+  <slot>slotApplyViolation()</slot>
+  <slot>slotCancelViolation()</slot>
+  <slot>slotAtachFile()</slot>
+  <slot>slotActivated(int)</slot>
+  <slot>slotTextChangedViolation()</slot>
+  <slot>slotTextChanged(QString)</slot>
  </slots>
 </ui>

@@ -109,11 +109,11 @@ void DEditTask::initTableViolation(long id_avp)
                     connect(pbItem, SIGNAL(clicked()),this,SLOT(slotViewPicture()));
                     if(query->value(4).isNull())
                     {
-                        icon1.addFile(QString::fromUtf8(":/icons/icons/unspin.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                        icon1.addFile(QString::fromUtf8(":/icons/icons/unspin.png"), QSize(), QIcon::Normal, QIcon::Off);
                         pbItem->setText("Нет");
                     }
                     else
-                        icon1.addFile(QString::fromUtf8(":/icons/icons/attach.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                        icon1.addFile(QString::fromUtf8(":/icons/icons/attach.png"), QSize(), QIcon::Normal, QIcon::Off);
 
                     pbItem->setIcon(icon1);
                     ui->tableWidgetViolation->setCellWidget(row,2, pbItem);//Снимок экрана
