@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_currentState = -1;
     m_currentNumberPage = 1;
     m_countAVP = countAVP();
+
     int page_count = (m_countAVP/1000);
     if( m_countAVP%1000 > 0)
         page_count++;

@@ -32,6 +32,7 @@ private:
 
     uint64_t idAVP;
     QSqlQuery *query;
+    QSqlQuery *query1;
     std::deque<uint64_t> m_listNonAnalysisAVP;
 };
 

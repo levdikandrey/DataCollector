@@ -58,6 +58,7 @@ private:
     QTimer m_timer;
 
     int countAVP(long idAVS = -1);
+    int countAVP_Analysis(int state);
     long idAVS(QString nameAVS);
     bool isExistAVP(long idAVS = -1);
 

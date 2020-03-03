@@ -15,6 +15,7 @@ extern QSqlDatabase db;
 ThreadAnalysisAVP::ThreadAnalysisAVP()
 {
     query = new QSqlQuery(db);
+    query1 = new QSqlQuery(db);
     m_listNonAnalysisAVP.clear();
 }
 
@@ -53,6 +54,39 @@ void ThreadAnalysisAVP::initListAVP()
         }
         else
             qDebug()<<query->lastError().text();
+
+//        sql = "SELECT \"URL\", string_agg(CAST(\"ID\" AS TEXT), \', \') AS ids, count(\"URL\") AS cnt from avp group by \"URL\" having count(*) > 1;";
+//        if(query->exec(sql))
+//        {
+//            int row = 0;
+//            QString tmp;
+//            while(query->next())
+//            {
+//                QString ids = query->value(1).toString();
+//                qDebug()<<"row = "<<row++<<" ids = "<<ids;
+//                int id1 = ids.split(",")[0].toInt();
+//                int id2 = ids.split(",")[1].toInt();
+//                qDebug()<<"id1 = "<<id1<<" id2 = "<<id2;
+//                if(id1 > id2)
+//                {
+//                    sql = "DELETE FROM avp WHERE \"ID\" ="; sql += tmp.setNum(id1); sql += ";";
+//                }
+//                else
+//                {
+//                    sql = "DELETE FROM avp WHERE \"ID\" ="; sql += tmp.setNum(id2); sql += ";";
+//                }
+//                qDebug()<<"sql = "<< sql;
+//                if(!query1->exec(sql))
+//                    qDebug()<<query1->lastError().text();
+////                if(row == 3)
+////                    break;
+//            }
+//        }
+//        else
+//            qDebug()<<query->lastError().text();
+//        return;
+
+
     }
     catch(std::exception &e)
     {
