@@ -21,6 +21,7 @@ DEditTask::DEditTask(QWidget *parent)
 {
     ui->setupUi(this);
     ui->groupBox_2->hide();
+    ui->groupBoxComment->hide();
 
     query = new QSqlQuery(db);
     query_data = new QSqlQuery(db);
@@ -159,6 +160,31 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
         else
             qDebug()<<query->lastError().text();
         ui->comboBoxStatus->setCurrentText(currentStatus);
+        if(currentStatus == "Одобрена экспертом")
+        {
+            ui->comboBoxStatus->clear();
+            ui->comboBoxStatus->addItem("Одобрена экспертом");
+            ui->comboBoxStatus->setCurrentText(currentStatus);
+
+            ui->spinBoxPercent->setValue(100);
+//            ui->spinBoxPercent->setEnabled(false);
+
+            ui->groupBox->hide();
+            ui->toolButtonAdd->hide();
+            ui->toolButtonDelete->hide();
+            ui->pushButtonApply->hide();
+            ui->pushButtonCancel->hide();
+            ui->groupBoxComment->show();
+        }
+        else
+        {
+            ui->groupBox->show();
+            ui->toolButtonAdd->show();
+            ui->toolButtonDelete->show();
+            ui->pushButtonApply->show();
+            ui->pushButtonCancel->show();
+            ui->groupBoxComment->hide();
+        }
     }
     catch(std::exception &e)
     {
@@ -214,7 +240,7 @@ void DEditTask::setComment(QString comment)
     ui->pushButtonApply->setEnabled(false);
     ui->pushButtonCancel->setEnabled(false);
     m_comment = comment;
-//    ui->textEditComment->setText(comment);
+    ui->textEditComment->setText(comment);
 }
 
 //=========================================================
@@ -427,6 +453,8 @@ void DEditTask::slotCancelViolation()
 //=========================================================
 void DEditTask::slotStatusActivated(int)
 {
+    if(ui->comboBoxStatus->currentText()=="Проверена оператором")
+        ui->spinBoxPercent->setValue(100);
     ui->pushButtonApply->setEnabled(true);
     ui->pushButtonCancel->setEnabled(true);
 }
@@ -434,6 +462,8 @@ void DEditTask::slotStatusActivated(int)
 //=========================================================
 void DEditTask::slotValueChanged(int)
 {
+    if(ui->comboBoxStatus->currentText()=="Проверена оператором")
+        ui->spinBoxPercent->setValue(100);
     ui->pushButtonApply->setEnabled(true);
     ui->pushButtonCancel->setEnabled(true);
 }

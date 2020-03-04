@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>682</height>
+    <width>719</width>
+    <height>684</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Редактирование задачи</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
+  <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0" colspan="3">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -380,7 +380,68 @@
     </widget>
    </item>
    <item row="6" column="0" colspan="4">
+    <widget class="QGroupBox" name="groupBoxComment">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Комментарий:</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QTextEdit" name="textEditComment">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="4">
     <widget class="QFrame" name="frame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
      </property>
@@ -572,8 +633,8 @@
    <slot>slotAtachFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>640</x>
-     <y>298</y>
+     <x>594</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>571</x>
@@ -588,8 +649,8 @@
    <slot>slotApplyViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>495</x>
-     <y>349</y>
+     <x>467</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>569</x>
@@ -604,8 +665,8 @@
    <slot>slotCancelViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>605</x>
-     <y>345</y>
+     <x>593</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>571</x>
@@ -652,8 +713,8 @@
    <slot>slotTextChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>352</x>
-     <y>307</y>
+     <x>494</x>
+     <y>306</y>
     </hint>
     <hint type="destinationlabel">
      <x>670</x>

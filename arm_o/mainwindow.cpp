@@ -1703,14 +1703,15 @@ void MainWindow::slotEditMyTask()
 //    QTableWidget *tableViolation;
     QModelIndexList selectedRows = ui->tableWidgetMyTasks->selectionModel()->selectedRows();
 
+    dEditTask->setNameAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),0)->text());
+    dEditTask->setPercent(ui->tableWidgetMyTasks->item(selectedRows[0].row(),5)->text());
+    dEditTask->setComment(ui->tableWidgetMyTasks->item(selectedRows[0].row(),7)->text());
+
     dEditTask->initTableViolation(ui->tableWidgetMyTasks->item(selectedRows[0].row(),9)->text().toLong());
     dEditTask->initComboBoxStatus(ui->tableWidgetMyTasks->item(selectedRows[0].row(),4)->text());
     dEditTask->initComboBoxViolation();
     dEditTask->hideViolationGroup();
 
-    dEditTask->setNameAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),0)->text());
-    dEditTask->setPercent(ui->tableWidgetMyTasks->item(selectedRows[0].row(),5)->text());
-    dEditTask->setComment(ui->tableWidgetMyTasks->item(selectedRows[0].row(),7)->text());
 
     if(dEditTask->exec() == QDialog::Accepted)
     {

@@ -103,7 +103,7 @@
       <string>Введите пароль</string>
      </property>
      <property name="text">
-      <string>123</string>
+      <string/>
      </property>
      <property name="echoMode">
       <enum>QLineEdit::Password</enum>
