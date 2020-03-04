@@ -474,7 +474,7 @@ void MainWindow::initTableAudit()
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusName\" =\'";
-        sql += "Проверена оператором";
+        sql += "Экпертиза";
         sql += "\' ORDER BY \"Task\".\"ID\";";
 //        qDebug()<<"sql = "<<sql;
         if(query->exec(sql))
@@ -1574,30 +1574,30 @@ void MainWindow::slotEditTask()
             if(!query->exec(sql))
                 qDebug()<<query->lastError().text();
 
-            sql = "DELETE FROM \"AnalysisResult\" WHERE \"ID_AVP\" = " + tmp.setNum(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text().toInt()) + ";";
+//            sql = "DELETE FROM \"AnalysisResult\" WHERE \"ID_AVP\" = " + tmp.setNum(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text().toInt()) + ";";
 
-//            qDebug()<<"sql="<<sql;
-            if(!query->exec(sql))
-                qDebug()<<query->lastError().text();
+////            qDebug()<<"sql="<<sql;
+//            if(!query->exec(sql))
+//                qDebug()<<query->lastError().text();
 
-            tableViolation = dEditTaskUser->getViolations();
-            for(int i=0; i<tableViolation->rowCount();i++)
-            {
-                if(reinterpret_cast<QCheckBox*>(tableViolation->cellWidget(i,0))->isChecked())
-                {
-                    qDebug()<<"nameViolation="<<reinterpret_cast<QCheckBox*>(tableViolation->cellWidget(i,0))->text();
-                    sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
-                    sql += tmp.setNum(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text().toInt());
-                    sql += ",";
-                    sql += tmp.setNum(dEditTask->idViolation(reinterpret_cast<QCheckBox*>(tableViolation->cellWidget(i,0))->text()));
-                    sql += ",\'";
-                    sql += tmp.setNum(reinterpret_cast<QSpinBox*>(tableViolation->cellWidget(i,1))->value());
-                    sql += "\');";
-//                    qDebug()<<"sql="<<sql;
-                    if(!query->exec(sql))
-                        qDebug()<<query->lastError().text();
-                }
-            }
+//            tableViolation = dEditTaskUser->getViolations();
+//            for(int i=0; i<tableViolation->rowCount();i++)
+//            {
+//                if(reinterpret_cast<QCheckBox*>(tableViolation->cellWidget(i,0))->isChecked())
+//                {
+//                    qDebug()<<"nameViolation="<<reinterpret_cast<QCheckBox*>(tableViolation->cellWidget(i,0))->text();
+//                    sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\",\"ID_Violation\",\"Percent\") VALUES(";
+//                    sql += tmp.setNum(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text().toInt());
+//                    sql += ",";
+//                    sql += tmp.setNum(dEditTask->idViolation(reinterpret_cast<QCheckBox*>(tableViolation->cellWidget(i,0))->text()));
+//                    sql += ",\'";
+//                    sql += tmp.setNum(reinterpret_cast<QSpinBox*>(tableViolation->cellWidget(i,1))->value());
+//                    sql += "\');";
+////                    qDebug()<<"sql="<<sql;
+//                    if(!query->exec(sql))
+//                        qDebug()<<query->lastError().text();
+//                }
+//            }
 
             initTableTask(true);
         }

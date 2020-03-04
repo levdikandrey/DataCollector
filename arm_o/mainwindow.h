@@ -78,7 +78,7 @@ public:
      */
     void initTableMyTask();
     /**
-     * @brief initTableMyAudit
+     * @brief initTableMyAudit - функция заполнения таблицы "Экспертиза"
      */
     void initTableAudit();
     /**

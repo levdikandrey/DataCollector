@@ -32,6 +32,7 @@ public:
     QTableWidget* getViolations() const;
 
 private slots:
+    void slotViewPicture();
     void slotApply();
     void slotCancel();
     void slotExit();
@@ -46,6 +47,8 @@ private:
     QString m_comment;
     QString m_percent;
     QString m_violation;
+
+    int m_idAVP;
 };
 
 #endif // DEDITTASKUSER_H
