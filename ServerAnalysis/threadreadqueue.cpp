@@ -28,8 +28,8 @@ void ThreadReadQueue::doWork()
         while(!listAVP.empty())
         {
             m_sCommand = listAVP.front();
-            qDebug()<<"ThreadReadQueue: idAVP = "<<idAVP;
             listAVP.pop_front();
+            client = m_sCommand.client;
             analysisAVP(m_sCommand.idAVP);
         }
         usleep(5000);
@@ -75,7 +75,7 @@ void ThreadReadQueue::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, QS
         sql += ",";
         sql += percent;
         sql += ",TRUE);";
-        qDebug()<<"sql = "<<sql;
+//        qDebug()<<"sql = "<<sql;
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
 
@@ -100,7 +100,7 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
     {
         sql = "SELECT \"PathOnDisk\" FROM \"DownloadData\" WHERE \"ResourceName\" ='Kinopoisk' AND \"ID_AVP\" = ";
         sql += tmp.setNum(idAVP); sql += ";";
-        qDebug()<<"sql = "<<sql;
+//        qDebug()<<"sql = "<<sql;
         if(query->exec(sql))
         {
             if(query->next())
@@ -109,39 +109,48 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
         else
             qDebug()<<query->lastError().text();
 
-        command = "python3.6 /usr/local/module_analysis/t.py " + pathOnDisk;
-        qDebug()<<"command = "<<command;
-
-        //    QProcess::startDetached(command);
-        QProcess process;
-        process.start(command);
-        if( !process.waitForStarted() || !process.waitForFinished() )
+        if(pathOnDisk != "")
         {
+            command = "python3.6 /usr/local/module_analysis/t.py " + pathOnDisk;
+            qDebug()<<"command = "<<command;
+
+            QProcess process;
+            process.start(command);
+            if( !process.waitForStarted() || !process.waitForFinished() )
+            {
                 return;
-        }
-        qDebug() << process.readAllStandardError();
-        QString strOut = process.readAllStandardOutput();
+            }
+            qDebug() << process.readAllStandardError();
+            QString strOut = process.readAllStandardOutput();
 
-        qDebug() <<"strOut = "<<strOut;
-        strOut = strOut.mid(strOut.lastIndexOf("{")+1,strOut.length()-strOut.lastIndexOf("{")-3);
-        qDebug() <<"strOut = "<<strOut;
-        QStringList listViolation = strOut.split(", ");
-        for(int i=0; i<listViolation.size();++i)
+//        qDebug() <<"strOut = "<<strOut;
+            strOut = strOut.mid(strOut.lastIndexOf("{")+1,strOut.length()-strOut.lastIndexOf("{")-3);
+//        qDebug() <<"strOut = "<<strOut;
+            QStringList listViolation = strOut.split(", ");
+            for(int i=0; i<listViolation.size();++i)
+            {
+            //            qDebug()<<"listViolation["<<i<<"] = "<<listViolation[i];
+                violation = listViolation[i].mid(1,listViolation[i].indexOf(":")-2);
+//            qDebug()<<"violation = "<<violation;
+                if(listViolation[i].indexOf(":") != -1)
+                    percentViolation = listViolation[i].mid(listViolation[i].indexOf(":")+3,listViolation[i].length()-listViolation[i].indexOf(":")-5);
+                else
+                    percentViolation = "0";
+//            qDebug()<<"percentViolation = "<<percentViolation;
+                qDebug()<<"violation["<<i<<"] = "<<violation<<" Percent violation = "<<percentViolation;
+                uint64_t idV = idViolation(violation);
+
+                if(idV != static_cast<uint64_t>(-1))
+                    addAnalysisResult(idAVP, idV, percentViolation);
+            }
+            m_sCommand.answerState = 0x01;
+        }
+        else
         {
-            qDebug()<<"listViolation["<<i<<"] = "<<listViolation[i];
-            violation = listViolation[i].mid(1,listViolation[i].indexOf(":")-2);
-            qDebug()<<"violation = "<<violation;
-            if(listViolation[i].indexOf(":") != -1)
-                percentViolation = listViolation[i].mid(listViolation[i].indexOf(":")+3,listViolation[i].length()-listViolation[i].indexOf(":")-5);
-            else
-                percentViolation = "0";
-            qDebug()<<"percentViolation = "<<percentViolation;
-            uint64_t idV = idViolation(violation);
-
-            if(idV != static_cast<uint64_t>(-1))
-                addAnalysisResult(idAVP, idV, percentViolation);
+            m_sCommand.answerState = 0x02;
         }
-        m_sCommand.client->sendAnswerAnalysisAVP(m_sCommand.idAVP);
+        emit sendAnswerAnalysisAVP(m_sCommand);
+//          client->sendAnswerAnalysisAVP(m_sCommand.idAVP);
     }
     catch(std::exception &e)
     {

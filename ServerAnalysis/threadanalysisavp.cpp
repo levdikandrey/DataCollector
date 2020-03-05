@@ -43,7 +43,7 @@ void ThreadAnalysisAVP::initListAVP()
     QString sql;
     try
     {
-        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 3;";
+        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 1;";
         if(query->exec(sql))
         {
             while(query->next())
@@ -166,11 +166,11 @@ void ThreadAnalysisAVP::analysisAVP(uint64_t idAVP)
         }
         else
             qDebug()<<query->lastError().text();
-
+        if(pathOnDisk == "")
+            return;
         command = "python3.6 /usr/local/module_analysis/t.py " + pathOnDisk;
         qDebug()<<"command = "<<command;
 
-        //    QProcess::startDetached(command);
         QProcess process;
         process.start(command);
         if( !process.waitForStarted() || !process.waitForFinished() )
@@ -180,20 +180,19 @@ void ThreadAnalysisAVP::analysisAVP(uint64_t idAVP)
         qDebug() << process.readAllStandardError();
         QString strOut = process.readAllStandardOutput();
 
-        qDebug() <<"strOut = "<<strOut;
+//        qDebug() <<"strOut = "<<strOut;
         strOut = strOut.mid(strOut.lastIndexOf("{")+1,strOut.length()-strOut.lastIndexOf("{")-3);
-        qDebug() <<"strOut = "<<strOut;
+//        qDebug() <<"strOut = "<<strOut;
         QStringList listViolation = strOut.split(", ");
         for(int i=0; i<listViolation.size();++i)
         {
             qDebug()<<"listViolation["<<i<<"] = "<<listViolation[i];
             violation = listViolation[i].mid(1,listViolation[i].indexOf(":")-2);
-            qDebug()<<"violation = "<<violation;
             if(listViolation[i].indexOf(":") != -1)
                 percentViolation = listViolation[i].mid(listViolation[i].indexOf(":")+3,listViolation[i].length()-listViolation[i].indexOf(":")-5);
             else
                 percentViolation = "0";
-            qDebug()<<"percentViolation = "<<percentViolation;
+            qDebug()<<"violation["<<i<<"] = "<<violation<<" Percent violation = "<<percentViolation;
             uint64_t idV = idViolation(violation);
 
             if(idV != static_cast<uint64_t>(-1))

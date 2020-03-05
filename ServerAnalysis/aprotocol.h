@@ -42,7 +42,7 @@ namespace  AProtocol
     struct answerAnalysisAPV : header
     {
         uint64_t idAVP;     // ID АВП в БД АВП
-        uint8_t status;     // ответ на команду анализа 1 - все проанализировано, 2 - нет рецензий
+        uint16_t status;     // ответ на команду анализа 1 - все проанализировано, 2 - нет рецензий
     };
 #pragma pack(pop)
 

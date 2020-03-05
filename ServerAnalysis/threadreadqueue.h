@@ -22,7 +22,8 @@ signals:
      * @brief resultReady - функция для возврата значения в вызывающий поток
      * @param result - возращаемое значение
      */
-    void resultReady(const QString &result);
+    void resultReady(const SCommand &);
+    void sendAnswerAnalysisAVP(const SCommand &);
 
 private:
     void analysisAVP(uint64_t idAVP);
@@ -31,6 +32,7 @@ private:
 
     uint64_t idAVP;
     QSqlQuery *query;
+    AClient *client;
     SCommand m_sCommand;
 };
 

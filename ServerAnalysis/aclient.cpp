@@ -1,4 +1,5 @@
 #include "aclient.h"
+#include "threadreadqueue.h"
 
 #include <cstdint>
 #include <iostream>
@@ -42,7 +43,8 @@ namespace
      */
     struct answerAnalysis : header
     {
-        uint64_t idAVP;         // ID АВП в БД АВП
+        uint64_t idAVP;      // ID АВП в БД АВП
+        uint8_t status;     // ответ на команду анализа 1 - все проанализировано, 2 - нет рецензий
     };
 #pragma pack(pop)
 
@@ -56,9 +58,10 @@ namespace
 
 #define PrintHexQString(s)  for(int i=0;i<s.length();i++){printf(" 0x%02X", (unsigned char)s[i].toAscii());} cout<<endl;
 //=========================================================
-AClient::AClient(qintptr socketDescriptor, QObject* parent) :
+AClient::AClient(qintptr socketDescriptor, ThreadReadQueue* threadReadQueue, QObject* parent) :
         QObject(parent)
 {
+//    qDebug()<<__PRETTY_FUNCTION__<<" m_TRQ = "<<threadReadQueue;
     blockSize = 0;
 
     m_client.setSocketDescriptor(socketDescriptor);
@@ -67,6 +70,7 @@ AClient::AClient(qintptr socketDescriptor, QObject* parent) :
     connect(&m_client, &QTcpSocket::disconnected, this, &AClient::onClientDisconnected);
     connect(&m_client, &QTcpSocket::connected, this, &AClient::onClientConnected);
 
+    connect(threadReadQueue, &ThreadReadQueue::sendAnswerAnalysisAVP, this, &AClient::sendAnswerAnalysisAVP);
     connect(this,&AClient::receiveMessage, this, &AClient::receiveCommand);
 }
 
@@ -91,64 +95,8 @@ void AClient::onReadyRead()
         m_sCommand.idAVP = command->idAVP;
         m_sCommand.client = this;
         listAVP.push_back(m_sCommand);
-//        sendAnswerAnalysisAVP(command->idAVP);
     }
 
-//    int length;
-//    qDebug()<<__PRETTY_FUNCTION__;
-//    QDataStream in(&m_client);
-//    in.setVersion(QDataStream::Qt_5_12);
-
-//    length=m_client.bytesAvailable();
-//    qDebug()<<"length="<<m_client.bytesAvailable();
-//    //Если пришла первая часть из посланной сервером информации.
-//    if(blockSize == 0)
-//    {
-//        message="";
-//        //Если первая часть меньше того кол-ва информации что определяет размер всего сообщения...
-//        if(m_client.bytesAvailable() < (int)sizeof(uint16_t))
-//            return;
-//        in >> start_byte;
-//            qDebug()<<"start_byte="<<start_byte;
-//        for(int j=1; j<=m_client.bytesAvailable();j++)
-//        {
-//            if((start_byte==0x01) || (start_byte==0x02))
-//            {
-//                break;
-//            }
-//            else if( ((start_byte!=0x01) || (start_byte!=0x02)) && (length!=0))
-//            {
-//                in >> start_byte;
-//            }
-//            else if(((start_byte!=0x01) || (start_byte!=0x02)) && (length==j))
-//            {
-//                return;
-//            }
-//        }
-//        message+=start_byte;
-
-//        //Получить размер посылаемого сервером сообщения.
-//        in >> blockSize;
-//        in >> blockSize;
-//            qDebug()<<"blockSize="<<blockSize;
-//        message+=blockSize;
-//    }
-//    //Если последующие части вместе взятые меньше, чем определенное сервером кол-во...
-//    if(m_client.bytesAvailable() < blockSize)
-//        return;
-
-//    for(int i=0; i<blockSize; i++)
-//    {
-//        in >> command_byte;
-//    //        qDebug()<<"command_byte="<<command_byte;
-//        message+=command_byte;
-//    }
-//    qDebug()<<"message.length()="<<message.length();
-////	PrintHexQString(message);
-
-//    //Обнулить параметр размера посылаемого сервером сообщения.
-//    blockSize = 0;
-//    emit receiveMessage(message);
 }
 
 //=========================================================
@@ -168,20 +116,29 @@ void AClient::receiveCommand(QString &command)
         qDebug()<<"command->command: "<<comm->command<<" command->length:"<< comm->length<<"command->idAVP:"<<comm->idAVP;
         m_sCommand.idAVP = comm->idAVP;
         m_sCommand.client = this;
+        m_sCommand.answerState = 0x00;
         listAVP.push_back(m_sCommand);
-//        sendAnswerAnalysisAVP(comm->idAVP);
     }
 }
 
 //=========================================================
-void AClient::sendAnswerAnalysisAVP(uint64_t idAVP)
+void AClient::sendAnswerAnalysisAVP(const SCommand &command)
 {
-    answerAnalysis ans;
-    ans.command = (uint8_t)command::answerAnalysisAVP;
-    ans.length = sizeof(uint64_t);
-    ans.idAVP = idAVP;
-    m_client.write(reinterpret_cast<char*>(&ans), sizeof(ans));
-    m_client.flush();
+    if(command.client == this)
+    {
+        qDebug()<<__PRETTY_FUNCTION__;
+        QString name;
+        name =  m_client.peerAddress().toString();
+
+        answerAnalysis ans;
+        ans.command = (uint8_t)command::answerAnalysisAVP;
+        ans.length = sizeof(uint64_t)+1;
+        ans.idAVP = command.idAVP;
+        ans.status = command.answerState;
+        qDebug()<<"Send answer Client IP = "<<name<< "length packet = "<<sizeof(ans);
+        m_client.write(reinterpret_cast<char*>(&ans), sizeof(ans));
+        m_client.flush();
+    }
 }
 
 //=========================================================

@@ -1,7 +1,7 @@
 #include "worker.h"
 #include "aclient.h"
 
-void Worker::addClient(qintptr socketDescriptor)
+void Worker::addClient(qintptr socketDescriptor,ThreadReadQueue* threadReadQueue)
 {
-    new AClient(socketDescriptor, this);
+    new AClient(socketDescriptor, threadReadQueue, this);
 }

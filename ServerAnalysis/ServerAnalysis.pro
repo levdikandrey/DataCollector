@@ -31,6 +31,7 @@ FORMS +=
 
 HEADERS += \
     aclient.h \
+    aprotocol.h \
     aserver.h \
     threadanalysisavp.h \
     threadreadqueue.h \

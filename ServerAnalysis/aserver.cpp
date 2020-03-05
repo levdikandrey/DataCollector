@@ -36,7 +36,7 @@ AServer::~AServer()
 //=========================================================
 bool AServer::initDB()
 {
-    qDebug()<<__PRETTY_FUNCTION__;
+//    qDebug()<<__PRETTY_FUNCTION__;
     bool res = true;
     try
     {
@@ -66,6 +66,30 @@ bool AServer::initDB()
 //=========================================================
 void AServer::initThreads()
 {
+        //Инициализируем поток для чтения из очереди ИД АВП для анализа
+        QThread *m_threadReadQueue = new QThread(this);
+        m_TRQ = new ThreadReadQueue();
+//        qDebug()<<"m_TRQ = "<<m_TRQ;
+        m_TRQ->moveToThread(m_threadReadQueue);
+        connect(m_threadReadQueue, &QThread::finished, m_TRQ, &QObject::deleteLater);
+        connect(this, &AServer::operateReadQueue, m_TRQ, &ThreadReadQueue::doWork);
+        connect(m_TRQ, &ThreadReadQueue::resultReady, this, &AServer::handleResultsReadQueue);
+
+        m_threadReadQueue->start();
+        emit operateReadQueue("");
+        qDebug()<<"The AVP list queue reading thread is started";
+
+        //Инициализируем поток для анализа АВП из БД АВП
+        m_threadAnalysisAVP = new QThread(this);
+        m_taAVP = new ThreadAnalysisAVP();
+        m_taAVP->moveToThread(m_threadAnalysisAVP);
+        connect(m_threadAnalysisAVP, &QThread::finished, m_taAVP, &QObject::deleteLater);
+        connect(this, &AServer::operateAnalysis, m_taAVP, &ThreadAnalysisAVP::doWork);
+        connect(m_taAVP, &ThreadAnalysisAVP::resultReady, this, &AServer::handleResultsAnalysis);
+
+        m_threadAnalysisAVP->start();
+        emit operateAnalysis("");
+
     for (size_t i = 0; i < m_threadCount; ++i)
     {
         QThread* thread = new QThread(this);
@@ -81,29 +105,6 @@ void AServer::initThreads()
 
         thread->start();
     }
-
-    //Инициализируем поток для чтения из очереди ИД АВП для анализа
-    m_threadReadQueue = new QThread();
-    ThreadReadQueue *m_TRQ = new ThreadReadQueue();
-    m_TRQ->moveToThread(m_threadReadQueue);
-    connect(m_threadReadQueue, &QThread::finished, m_TRQ, &QObject::deleteLater);
-    connect(this, &AServer::operateReadQueue, m_TRQ, &ThreadReadQueue::doWork);
-    connect(m_TRQ, &ThreadReadQueue::resultReady, this, &AServer::handleResultsReadQueue);
-
-    m_threadReadQueue->start();
-    emit operateReadQueue("");
-    qDebug()<<"The AVP list queue reading thread is started";
-
-    //Инициализируем поток для анализа АВП из БД АВП
-    m_threadAnalysisAVP = new QThread();
-    m_taAVP = new ThreadAnalysisAVP();
-    m_taAVP->moveToThread(m_threadAnalysisAVP);
-    connect(m_threadAnalysisAVP, &QThread::finished, m_taAVP, &QObject::deleteLater);
-    connect(this, &AServer::operateAnalysis, m_taAVP, &ThreadAnalysisAVP::doWork);
-    connect(m_taAVP, &ThreadAnalysisAVP::resultReady, this, &AServer::handleResultsAnalysis);
-
-    m_threadAnalysisAVP->start();
-    emit operateAnalysis("");
     qDebug()<<"The AVP analysis thread is started";
 }
 
@@ -113,12 +114,13 @@ void AServer::incomingConnection(qintptr socketDescriptor)
     qDebug()<<__PRETTY_FUNCTION__;
     Worker* worker = m_workers[m_rrcounter % m_threadCount];
     ++m_rrcounter;
-    QMetaObject::invokeMethod(worker, "addClient", Qt::QueuedConnection,Q_ARG(qintptr, socketDescriptor));
+    QMetaObject::invokeMethod(worker, "addClient", Qt::QueuedConnection,Q_ARG(qintptr, socketDescriptor),Q_ARG(ThreadReadQueue*, m_TRQ));
 }
 
 //=========================================================
-void AServer::handleResultsReadQueue(const QString &)
+void AServer::handleResultsReadQueue(const SCommand &)
 {
+//    command.client->sendAnswerAnalysisAVP(command.idAVP);
 }
 
 //=========================================================

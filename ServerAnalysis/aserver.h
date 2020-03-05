@@ -8,6 +8,7 @@
 
 #include "threadreadqueue.h"
 #include "threadanalysisavp.h"
+#include "aclient.h"
 
 class Worker;
 class QThread;
@@ -35,7 +36,7 @@ public slots:
     /**
      * @brief handleResults
      */
-    void handleResultsReadQueue(const QString &);
+    void handleResultsReadQueue(const SCommand &);
     void handleResultsAnalysis(const QString &);
 
 private:

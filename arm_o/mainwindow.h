@@ -97,6 +97,7 @@ public:
      */
     void initDialogAccess(QString userName);
     CImportData *cImportData;
+    void changeStatusAVP(uint64_t idAVP, uint8_t status);
 
 private slots:
     /**

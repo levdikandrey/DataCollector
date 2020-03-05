@@ -564,6 +564,19 @@ void MainWindow::initTableAudit()
 }
 
 //=========================================================
+void MainWindow::changeStatusAVP(uint64_t idAVP, uint8_t status)
+{
+    qDebug()<<"Nooooooooo";
+    for(int row = 0; row <ui->tableWidgetMyTasks->rowCount(); ++row)
+    {
+        if( (ui->tableWidgetMyTasks->item(row,9)->text().toLongLong() == static_cast<qlonglong>(idAVP)) && (status == 0x02) )
+        {
+            ui->tableWidgetMyTasks->item(row,6)->setText("Нет рецензий к АВП!!!");
+        }
+    }
+}
+
+//=========================================================
 void MainWindow::initTableMyTask()
 {
     QString sql="";

@@ -93,13 +93,6 @@ void Client::slotDisconnected()
 void Client::slotReadyRead()
 {
 	qDebug()<<__PRETTY_FUNCTION__;
-//	QDataStream in(tcpSocket);
-//	in.setVersion(QDataStream::Qt_4_0);
-	
-//	length=tcpSocket->bytesAvailable();
-//    qDebug()<<"length="<<tcpSocket->bytesAvailable();
-	
-
     QByteArray request = tcpSocket->readAll();
     qDebug()<<"request.length() ="<<request.length()<<" HEX: "<<request.toHex();
     for(int i=0; i<request.length(); i++)
@@ -111,60 +104,15 @@ void Client::slotReadyRead()
     header *headerCommand = reinterpret_cast<header*>(request.data());
     if(headerCommand->command == 3)
     {
-        commandAnalysis* command = reinterpret_cast<commandAnalysis*>(request.data());
-        qDebug()<<"command->command: "<<command->command<<" command->length:"<< command->length<<"command->idAVP:"<<command->idAVP;
-        ((MainWindow*)parent())->initTableMyTask();
+        answerAnalysisAPV* command = reinterpret_cast<answerAnalysisAPV*>(request.data());
+        qDebug()<<"command->command:"<<command->command<<" command->length:"<<command->length<<"command->idAVP:"<<command->idAVP<<"command->status:"<<command->status;
+        if(command->status == 0x01)
+            ((MainWindow*)parent())->initTableMyTask();
+        else if(command->status == 0x02)
+        {
+            ((MainWindow*)parent())->changeStatusAVP(command->idAVP, command->status);
+        }
     }
-
-
-//	//Если пришла первая часть из посланной сервером информации.
-//	if(blockSize == 0)
-//	{
-//		message="";
-//		//Если первая часть меньше того кол-ва информации что определяет размер всего сообщения...
-//		if(tcpSocket->bytesAvailable() < (int)sizeof(quint16))
-//			return;
-//		in >> start_byte;
-//	        qDebug()<<"start_byte="<<start_byte;
-//		for(int j=1; j<=tcpSocket->bytesAvailable();j++)
-//		{
-//			if((start_byte==0xd9))
-//			{
-//				break;
-//			}
-//			else if((start_byte!=0xd9) && (length!=0))
-//			{
-////				length--;
-//				in >> start_byte;
-//			}
-//			else if((start_byte!=0xd9) && (length==j))
-//			{
-//				return;
-//			}
-//		}
-//		message+=start_byte;
-	
-//		//Получить размер посылаемого сервером сообщения.
-//		in >> blockSize;
-//	        qDebug()<<"blockSize="<<blockSize;
-//		message+=blockSize;
-//	}
-//	//Если последующие части вместе взятые меньше, чем определенное сервером кол-во...
-//	if(tcpSocket->bytesAvailable() < blockSize)
-//		return;
-	
-//	for(int i=0; i<blockSize; i++)
-//	{
-//		in >> command_byte;
-//	//        qDebug()<<"command_byte="<<command_byte;
-//		message+=command_byte;
-//	}
-//	qDebug()<<"message.length()="<<message.length();
-////	PrintHexQString(message);
-	
-//	//Обнулить параметр размера посылаемого сервером сообщения.
-//	blockSize = 0;
-//	emit receiveMessage(message);
 }
 
 //=========================================================

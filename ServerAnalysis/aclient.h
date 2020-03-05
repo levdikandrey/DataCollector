@@ -3,15 +3,22 @@
 
 #pragma once
 
+
+//#include "aprotocol.h"
+
 #include <QObject>
 #include <QTcpSocket>
 
+//using namespace AProtocol;
+
 class AClient;
+class ThreadReadQueue;
 
 struct SCommand
 {
     uint64_t idAVP;
     AClient *client;
+    uint8_t answerState;
 };
 
 class AClient: public QObject
@@ -19,8 +26,7 @@ class AClient: public QObject
 Q_OBJECT
 
 public:
-    AClient(qintptr socketDescriptor, QObject* parent = 0);
-    void sendAnswerAnalysisAVP(uint64_t idAVP);
+    AClient(qintptr socketDescriptor, ThreadReadQueue* threadReadQueue, QObject* parent = 0);
 
 public slots:
     void onReadyRead();
@@ -28,6 +34,7 @@ public slots:
     void onClientConnected();
 
     void receiveCommand(QString &command);
+    void sendAnswerAnalysisAVP(const SCommand &command);
 
 signals:
    void connected();

@@ -22,7 +22,8 @@ signals:
      * @brief resultReady - функция для возврата значения в вызывающий поток
      * @param result - возращаемое значение
      */
-    void resultReady(const QString &result);
+    void resultReady(const QString &);
+    void sendAnswerAnalysisAVP(uint64_t &);
 
 private:
     void initListAVP();
