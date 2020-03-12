@@ -96,8 +96,9 @@ public:
      * @param userName - имя пользователя.
      */
     void initDialogAccess(QString userName);
-    CImportData *cImportData;
     void changeStatusAVP(uint64_t idAVP, uint8_t status);
+
+    CImportData *cImportData;
 
 private slots:
     /**
@@ -234,7 +235,7 @@ private slots:
      */
     void slotChangeUser();
     /**
-     * @brief slotAnalysisAVP
+     * @brief slotAnalysisAVP - функция для анализа выбранных АВП
      */
     void slotAnalysisAVP();
     /**
@@ -331,6 +332,7 @@ private:
     QString findPathReview(QString url);
 
     bool initNetClient();
+    void addComment(uint64_t idTask, QString comment);
 
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);

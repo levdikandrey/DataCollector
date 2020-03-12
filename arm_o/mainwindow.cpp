@@ -564,6 +564,27 @@ void MainWindow::initTableAudit()
 }
 
 //=========================================================
+void MainWindow::addComment(uint64_t idTask, QString comment)
+{
+    QString sql,tmp;
+    try
+    {
+        sql = "UPDATE \"Task\" SET \"Comment\"=\'";
+        sql += comment;
+        sql += "\' WHERE \"ID\"=";
+        sql += tmp.setNum(idTask);
+        sql += ";";
+
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 void MainWindow::changeStatusAVP(uint64_t idAVP, uint8_t status)
 {
     qDebug()<<"Nooooooooo";
@@ -571,7 +592,21 @@ void MainWindow::changeStatusAVP(uint64_t idAVP, uint8_t status)
     {
         if( (ui->tableWidgetMyTasks->item(row,9)->text().toLongLong() == static_cast<qlonglong>(idAVP)) && (status == 0x02) )
         {
-            ui->tableWidgetMyTasks->item(row,6)->setText("Нет рецензий к АВП!!!");
+            ui->tableWidgetMyTasks->item(row,6)->setText("Нет рецензий");
+            ui->tableWidgetMyTasks->item(row,7)->setText("Нет рецензий для АВП");
+            addComment(ui->tableWidgetMyTasks->item(row,8)->text().toLongLong(),"Нет рецензий для АВП");
+        }
+        else if( (ui->tableWidgetMyTasks->item(row,9)->text().toLongLong() == static_cast<qlonglong>(idAVP)) && (status == 0x01) )
+        {
+            ui->tableWidgetMyTasks->setItem(row,6, initViolations(idAVP));
+            ui->tableWidgetMyTasks->item(row,7)->setText("АВП проанализировано");
+            addComment(ui->tableWidgetMyTasks->item(row,8)->text().toLongLong(),"АВП проанализировано");
+        }
+        else if( (ui->tableWidgetMyTasks->item(row,9)->text().toLongLong() == static_cast<qlonglong>(idAVP)) && (status == 0x03) )
+        {
+            ui->tableWidgetMyTasks->item(row,6)->setText("Не удалось скачать рецензии для АВП!");
+            ui->tableWidgetMyTasks->item(row,7)->setText("Не удалось скачать рецензии для АВП!");
+            addComment(ui->tableWidgetMyTasks->item(row,8)->text().toLongLong(),"Не удалось скачать рецензии для АВП!");
         }
     }
 }
@@ -665,18 +700,17 @@ void MainWindow::initTableMyTask()
                 QTableWidgetItem *newItem8 = new QTableWidgetItem();
                 newItem8->setText(query->value(6).toString());
                 newItem8->setFlags(newItem8->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetMyTasks->setItem(row,7, newItem8);
+                ui->tableWidgetMyTasks->setItem(row,7, newItem8);//Комментарии
 
                 QTableWidgetItem *newItem9 = new QTableWidgetItem();
                 newItem9->setText(query->value(7).toString());
                 newItem9->setFlags(newItem9->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetMyTasks->setItem(row,8, newItem9);
+                ui->tableWidgetMyTasks->setItem(row,8, newItem9);//ID
 
                 QTableWidgetItem *newItem10 = new QTableWidgetItem();
                 newItem10->setText(query->value(8).toString());
                 newItem10->setFlags(newItem10->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetMyTasks->setItem(row,9, newItem10);
-//                qDebug()<<"ID_AVP = "<<query->value(8).toString();
+                ui->tableWidgetMyTasks->setItem(row,9, newItem10);//ID_AVP
 
                 QTableWidgetItem *newItem11 = new QTableWidgetItem();
                 if(query->value(9).toString() == "Yes")
@@ -1552,7 +1586,7 @@ void MainWindow::slotAddTask()
 void MainWindow::slotEditTask()
 {
     QString tmp, timestamp, sql ="";
-    QTableWidget *tableViolation;
+//    QTableWidget *tableViolation;
 
     QModelIndexList selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
 
@@ -1777,7 +1811,8 @@ void MainWindow::slotEditMyTask()
             qDebug()<<query->lastError().text();
             QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
         }
-        initTableMyTask();
+        changeStatusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),9)->text().toLong(),1);
+//        initTableMyTask();
     }
 }
 
@@ -2290,12 +2325,7 @@ QString MainWindow::sendCommandAnalysisAVP(uint64_t idAVP)
     m_commandAnalysis.command = 1;
     m_commandAnalysis.length = sizeof(uint64_t);
     m_commandAnalysis.idAVP = idAVP;
-//    m_client->write(reinterpret_cast<char*>(&ans), sizeof(ans));
-
-//    memcpy(&command, &m_commandAnalysis,sizeof(m_commandAnalysis));
     return command;
-//    &command = reinterpret_cast<QString*>(&m_commandAnalysis);
-//    m_client->sendMessage(command);
 }
 
 //=========================================================
@@ -2332,7 +2362,6 @@ void MainWindow::slotAnalysisAVP()
                 icon1.addFile(QString::fromUtf8(":/icons/icons/wait.png"), QSize(), QIcon::Normal, QIcon::Off);
                 ui->tableWidgetMyTasks->item(row,6)->setIcon(icon1);
                 ui->tableWidgetMyTasks->item(row,6)->setText("АВП анализируется...");
-//                usleep(10000);
             }
         }
     }

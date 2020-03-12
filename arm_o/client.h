@@ -60,6 +60,9 @@ private:
    quint8 command_byte;
    QString message;
 
+   void printHex(QByteArray request);
+   QByteArray m_request;
+
 public slots:
    /**
         Слот реагирования на сигнал о подключении к серверу.

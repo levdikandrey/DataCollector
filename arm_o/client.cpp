@@ -90,27 +90,43 @@ void Client::slotDisconnected()
 }
 
 //=========================================================
-void Client::slotReadyRead()
+void Client::printHex(QByteArray request)
 {
-	qDebug()<<__PRETTY_FUNCTION__;
-    QByteArray request = tcpSocket->readAll();
-    qDebug()<<"request.length() ="<<request.length()<<" HEX: "<<request.toHex();
     for(int i=0; i<request.length(); i++)
     {
         printf(" 0x%02X", (unsigned char)request[i]);
     }
     std::cout<<std::endl;
+}
 
-    header *headerCommand = reinterpret_cast<header*>(request.data());
-    if(headerCommand->command == 3)
+//=========================================================
+void Client::slotReadyRead()
+{
+	qDebug()<<__PRETTY_FUNCTION__;
+    m_request = tcpSocket->readAll();
+    qDebug()<<"request.length() ="<<m_request.length()<<" HEX: "<<m_request.toHex();
+    printHex(m_request);
+
+    while(static_cast<unsigned long long>(m_request.length()) >= sizeof(answerAnalysisAPV))
     {
-        answerAnalysisAPV* command = reinterpret_cast<answerAnalysisAPV*>(request.data());
-        qDebug()<<"command->command:"<<command->command<<" command->length:"<<command->length<<"command->idAVP:"<<command->idAVP<<"command->status:"<<command->status;
-        if(command->status == 0x01)
-            ((MainWindow*)parent())->initTableMyTask();
-        else if(command->status == 0x02)
+        header *headerCommand = reinterpret_cast<header*>(m_request.data());
+        if(headerCommand->command == 3)
         {
+            answerAnalysisAPV* command = reinterpret_cast<answerAnalysisAPV*>(m_request.data());
+            qDebug()<<"command->command:"<<command->command<<" command->length:"<<command->length<<"command->idAVP:"<<command->idAVP<<"command->status:"<<command->status;
             ((MainWindow*)parent())->changeStatusAVP(command->idAVP, command->status);
+//            if(command->status == 0x01)
+//            {
+//                ((MainWindow*)parent())->changeStatusAVP(command->idAVP, command->status);
+////                ((MainWindow*)parent())->initTableMyTask();
+//            }
+//            else if(command->status == 0x02)
+//            {
+//                ((MainWindow*)parent())->changeStatusAVP(command->idAVP, command->status);
+//            }
+            m_request = m_request.mid(sizeof(answerAnalysisAPV), m_request.length()-sizeof(answerAnalysisAPV));
+            qDebug()<<"request.length() ="<<m_request.length();
+            printHex(m_request);
         }
     }
 }
@@ -142,5 +158,6 @@ void Client::sendCommandAnalysisAVP(uint64_t idAVP)
     m_commandAnalysis.length = sizeof(uint64_t);
     m_commandAnalysis.idAVP = idAVP;
     tcpSocket->write(reinterpret_cast<char*>(&m_commandAnalysis), sizeof(m_commandAnalysis));
+//    usleep(100000);
 }
 

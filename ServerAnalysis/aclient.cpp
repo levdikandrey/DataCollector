@@ -62,7 +62,7 @@ AClient::AClient(qintptr socketDescriptor, ThreadReadQueue* threadReadQueue, QOb
         QObject(parent)
 {
 //    qDebug()<<__PRETTY_FUNCTION__<<" m_TRQ = "<<threadReadQueue;
-    blockSize = 0;
+    m_request = "";
 
     m_client.setSocketDescriptor(socketDescriptor);
 
@@ -75,28 +75,39 @@ AClient::AClient(qintptr socketDescriptor, ThreadReadQueue* threadReadQueue, QOb
 }
 
 //=========================================================
-void AClient::onReadyRead()
+void AClient::printHex(QByteArray request)
 {
-
-    qDebug()<<__PRETTY_FUNCTION__;
-    QByteArray request = m_client.readAll();
-    qDebug()<<"request.length() ="<<request.length()<<" HEX: "<<request.toHex();
     for(int i=0; i<request.length(); i++)
     {
         printf(" 0x%02X", (unsigned char)request[i]);
     }
     std::cout<<std::endl;
+}
 
-    header *headerCommand = reinterpret_cast<header*>(request.data());
-    if(headerCommand->command == 1)
+//=========================================================
+void AClient::onReadyRead()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    m_request += m_client.readAll();
+    qDebug()<<"request.length() ="<<m_request.length()<<" HEX: "<<m_request.toHex();
+    printHex(m_request);
+
+    while(static_cast<unsigned long long>(m_request.length()) >= sizeof(commandAnalysis))
     {
-        commandAnalysis* command = reinterpret_cast<commandAnalysis*>(request.data());
-        qDebug()<<"command->command: "<<command->command<<" command->length:"<< command->length<<"command->idAVP:"<<command->idAVP;
-        m_sCommand.idAVP = command->idAVP;
-        m_sCommand.client = this;
-        listAVP.push_back(m_sCommand);
+        header *headerCommand = reinterpret_cast<header*>(m_request.data());
+        if(headerCommand->command == 1)
+        {
+            commandAnalysis* command = reinterpret_cast<commandAnalysis*>(m_request.data());
+            qDebug()<<"command->command: "<<command->command<<" command->length:"<< command->length<<"command->idAVP:"<<command->idAVP;
+            m_sCommand.idAVP = command->idAVP;
+            m_sCommand.client = this;
+            listAVP.push_back(m_sCommand);
+            qDebug()<<"sizeof(commandAnalysis)="<<sizeof(commandAnalysis);
+            m_request = m_request.mid(sizeof(commandAnalysis), m_request.length()-sizeof(commandAnalysis));
+            qDebug()<<"request.length() ="<<m_request.length();
+            printHex(m_request);
+        }
     }
-
 }
 
 //=========================================================

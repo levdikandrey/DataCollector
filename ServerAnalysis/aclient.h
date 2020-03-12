@@ -21,42 +21,77 @@ struct SCommand
     uint8_t answerState;
 };
 
+/**
+ * @brief The AClient class
+ */
 class AClient: public QObject
 {
 Q_OBJECT
 
 public:
+    /**
+     * @brief AClient
+     * @param socketDescriptor
+     * @param threadReadQueue
+     * @param parent
+     */
     AClient(qintptr socketDescriptor, ThreadReadQueue* threadReadQueue, QObject* parent = 0);
 
 public slots:
+    /**
+     * @brief onReadyRead
+     */
     void onReadyRead();
+    /**
+     * @brief onClientDisconnected
+     */
     void onClientDisconnected();
+    /**
+     * @brief onClientConnected
+     */
     void onClientConnected();
-
+    /**
+     * @brief receiveCommand
+     * @param command
+     */
     void receiveCommand(QString &command);
+    /**
+     * @brief sendAnswerAnalysisAVP
+     * @param command
+     */
     void sendAnswerAnalysisAVP(const SCommand &command);
 
 signals:
+    /**
+    * @brief connected
+    */
    void connected();
+   /**
+    * @brief disconnected
+    */
    void disconnected();
+   /**
+    * @brief receiveMessage
+    * @param mess
+    */
    void receiveMessage(QString &mess);
 
 private:
+   /**
+     * @brief done
+     */
     void done();
-
     /**
-         Размер посылаемого сервером сообщения.
-    */
-    uint8_t start_byte;
-    uint16_t blockSize;
-    uint8_t command_byte;
+     * @brief printHex
+     * @param request
+     */
+    void printHex(QByteArray request);
+
     QString message;
-
-    SCommand m_sCommand;
-
-private:
+    QByteArray m_request;
     QTcpSocket m_client;
 
+    SCommand m_sCommand;
 };
 
 #endif // ACLIENT_H
