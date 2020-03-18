@@ -77,12 +77,15 @@ private:
     void downlodPageIMDB();
     int getMaxID();
     QString analysisURL(const QString &url);
+    QString decode(QString );
 
     //================ utils for test
     void testExistsFilmInDB();
     void importDataIVI_InFile();
     void countValidFilmsInFileAchiveKinopoisk(QString fileName);
     void renamePathView();
+    void makeDB_IMBD();
+    //=============== end list test utils
 
 private slots:
     void readFile();

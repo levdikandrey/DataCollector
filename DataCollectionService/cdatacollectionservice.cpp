@@ -4,6 +4,8 @@
 #include <QThread>
 #include <QDebug>
 
+#include <unistd.h>
+
 CDataCollectionService * CDataCollectionService::p_instance = nullptr;
 CDataCollectionServiceDestroyer CDataCollectionService::destroyer;
 
@@ -339,6 +341,107 @@ void CDataCollectionService::importDataIVI_InFile()
 }
 
 //=========================================================
+QString CDataCollectionService::decode(QString str)
+{
+    QString newString="";
+    for(int i=0; i<str.length();++i)
+    {
+        if((str[i]=="'") || (str[i]=="\"") || (str[i]=="\\"))
+        {
+            newString += "\\";
+            newString += str[i];
+        }
+        else
+        {
+            newString += str[i];
+        }
+    }
+    return newString;
+}
+
+//=========================================================
+void CDataCollectionService::makeDB_IMBD()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QFile file("D:\\Program\\IMBD\\title.basics.tsv\\data.txt");
+    QString sql,path,tmp;
+    QString tconst, tvMovie, primaryTitle,originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres;
+    QString line;
+    QStringList list;
+
+    try
+    {
+        if(file.open(QFile::ReadOnly | QIODevice::Text))
+        {
+
+            int i=0;
+            while (!file.atEnd())
+            {
+                i++;
+                line = file.readLine();
+                if( i <= 402494 )
+                    continue;
+                if( i%1000 == 0 )
+                {
+                    qDebug()<<"i = "<<i;
+                }
+                list = line.split('\t');
+                tconst = list.at(0);
+                tvMovie = list.at(1);
+                primaryTitle = list.at(2);
+                originalTitle = list.at(3);
+                isAdult = list.at(4);
+                startYear = list.at(5);
+                endYear = list.at(6);
+                runtimeMinutes = list.at(7);
+                genres = list.at(8);
+
+//                qDebug()<<"tconst = "<<tconst;
+//                qDebug()<<"tvMovie = "<<tvMovie;
+//                qDebug()<<"primaryTitle = "<<primaryTitle;
+//                qDebug()<<"originalTitle = "<<originalTitle;
+//                qDebug()<<"isAdult = "<<isAdult;
+//                qDebug()<<"startYear = "<<startYear;
+//                qDebug()<<"endYear = "<<endYear;
+//                qDebug()<<"runtimeMinutes = "<<runtimeMinutes;
+//                qDebug()<<"genres = "<<genres;
+                //                qDebug()<<"";
+
+                sql = "INSERT INTO \"imdbBasics\"(tconst,\"tvMovie\",\"primaryTitle\",\"originalTitle\",\"isAdult\",\"startYear\",\"endYear\",\"runtimeMinutes\",genres) VALUES(\'";
+                sql += tconst; sql += "\',\'";
+                sql += tvMovie; sql += "\',E\'";
+                sql += decode(primaryTitle); sql += "\',E\'";
+                sql += decode(originalTitle); sql += "\',\'";
+                sql += isAdult; sql += "\',\'";
+                sql += startYear; sql += "',\'";
+                sql += endYear; sql += "',";
+                if(runtimeMinutes == "\\N")
+                    sql += "-1";
+                else
+                    sql += runtimeMinutes;
+                sql += ",\'";
+                sql += genres; sql += "\');";
+
+                if(!query->exec(sql))
+                {
+                   qDebug()<<query->lastError().text();
+                   qDebug()<<sql;
+//                   break;
+                }
+//                usleep(5);
+            }
+            file.close();
+        }
+        else
+            qDebug()<<"Не могу открыть файл";
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 void CDataCollectionService::renamePathView()
 {
     qDebug()<<"START rename path on view";
@@ -390,6 +493,7 @@ void CDataCollectionService::renamePathView()
 void CDataCollectionService::run()
 {
     qDebug()<<"CDataCollectionService::run getpid()="<<getpid();
+    makeDB_IMBD();
 //    renamePathView();
 //    downlodPageIMDB();
 
