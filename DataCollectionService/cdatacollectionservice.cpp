@@ -25,7 +25,7 @@ void CDataCollectionServiceDestroyer::initialize( CDataCollectionService* p )
 CDataCollectionService::CDataCollectionService(QObject *parent) : QObject(parent)
 {
     initDB();
-    makeListAVP_IMDB();
+//    makeListAVP_IMDB();
 
     m_downloader = new CDownLoader();
     connect(m_downloader, &CDownLoader::onReady, this, &CDataCollectionService::readFile);
@@ -360,6 +360,145 @@ QString CDataCollectionService::decode(QString str)
 }
 
 //=========================================================
+void CDataCollectionService::remakeColumnYearOfRelease()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString sql, yearOfRelease, tmp;
+    bool ok;
+    try
+    {
+        sql="SELECT aa.\"ID\", aa.\"YearOfRelease\" FROM \"AVPattribute\" aa WHERE aa.\"YearOfRelease\"!=\'\';";
+        if(query->exec(sql))
+        {
+            int i = 0;
+            while(query->next())
+            {
+                yearOfRelease = query->value(1).toString();
+                yearOfRelease = yearOfRelease.mid(0,4);
+                yearOfRelease.toInt(&ok);
+                if(ok == false)
+                {
+                    i++;
+                    qDebug()<<"ID="<<tmp.setNum(query->value(0).toLongLong())<<" yearOfRelease = "<<yearOfRelease<< "i = "<<i;
+                    sql = "UPDATE \"AVPattribute\" SET \"YearOfRelease\"=\'\' WHERE \"ID\"=";
+                    sql += tmp.setNum(query->value(0).toLongLong()); sql += ";";
+                    qDebug()<<"sql = "<<sql;
+                    if(query1->exec(sql))
+                        qDebug()<<query->lastError().text();
+                }
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+        qDebug()<<"End function = "<<sql;
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void CDataCollectionService::makeRefIMBD_ForAVP()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString sql,tmp;
+    try
+    {
+        sql="SELECT avp.\"NameRus\", avp.\"NameOriginal\", aa.\"YearOfRelease\" FROM avp "
+            "INNER JOIN \"AVPattribute\" aa ON avp.\"ID\" = aa.\"ID_AVP\" "
+            "WHERE avp.\"URL_imdb\"=\'\' AND aa.\"YearOfRelease\"!=\'\' ORDER BY avp.\"ID\" LIMIT 2;";
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void CDataCollectionService::makeDB_IMBD_AKAS()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QFile file("D:\\Program\\IMBD\\title.akas.tsv\\data.txt");
+    QString sql,tmp;
+    QString titleId, ordering, title, region, language, types, attributes, isOriginalTitle;
+    QString line;
+    QStringList list;
+
+    try
+    {
+        if(file.open(QFile::ReadOnly | QIODevice::Text))
+        {
+
+            int i=0;
+            int col=0;
+            while (!file.atEnd())
+            {
+                i++;
+                line = file.readLine();
+                if( i <= 1 )
+                    continue;
+                list = line.split('\t');
+
+                titleId = list.at(0);
+                ordering = list.at(1);
+                title = list.at(2);
+                region = list.at(3);
+                language = list.at(4);
+                types = list.at(5);
+                attributes = list.at(6);
+                isOriginalTitle = list.at(7);
+
+//                qDebug()<<"titleID = "<<titleId;
+//                qDebug()<<"ordering = "<<ordering;
+//                qDebug()<<"title = "<<title;
+//                qDebug()<<"region = "<<region;
+//                qDebug()<<"language = "<<language;
+//                qDebug()<<"types = "<<types;
+//                qDebug()<<"attributes = "<<attributes;
+//                qDebug()<<"isOriginalTitle = "<<isOriginalTitle;
+//                qDebug()<<"";
+
+                if(( region == "RU" ) && (types != "alternative"))
+                {
+                    sql = "INSERT INTO \"imdbAkas\"(\"titleId\",\"ordering\",\"title\",\"types\",\"isOriginalTitle\") VALUES(\'";
+                    sql += titleId; sql += "\',";
+                    sql += ordering; sql += ",E\'";
+                    sql += decode(title); sql += "\',E\'";
+                    sql += decode(types); sql += "\',\'";
+                    if(isOriginalTitle == "\\N\n")
+                        sql += "0";
+                    else
+                        sql += isOriginalTitle;
+                    sql += "\');";
+
+//                    qDebug()<<sql;
+                    if(!query->exec(sql))
+                    {
+                       qDebug()<<query->lastError().text();
+                       qDebug()<<sql;
+                       qDebug()<<"isOriginalTitle = "<<isOriginalTitle;
+//                       break;
+                    }
+                    col++;
+                    if( col%1000 == 0 )
+                    {
+                        qDebug()<<"col = "<<col<<" i = "<<i;
+                    }
+                }
+            }
+            file.close();
+        }
+        else
+            qDebug()<<"Не могу открыть файл";
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 void CDataCollectionService::makeDB_IMBD()
 {
     qDebug()<<__PRETTY_FUNCTION__;
@@ -493,7 +632,14 @@ void CDataCollectionService::renamePathView()
 void CDataCollectionService::run()
 {
     qDebug()<<"CDataCollectionService::run getpid()="<<getpid();
-    makeDB_IMBD();
+    //=====================================IMDB make DB
+//    makeDB_IMBD();
+//    makeDB_IMBD_AKAS();
+//    makeRefIMBD_ForAVP();
+    remakeColumnYearOfRelease();
+    //=====================================IMDB end make DB
+
+
 //    renamePathView();
 //    downlodPageIMDB();
 

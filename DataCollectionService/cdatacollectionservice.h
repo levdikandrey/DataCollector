@@ -85,6 +85,9 @@ private:
     void countValidFilmsInFileAchiveKinopoisk(QString fileName);
     void renamePathView();
     void makeDB_IMBD();
+    void makeDB_IMBD_AKAS();
+    void makeRefIMBD_ForAVP();
+    void remakeColumnYearOfRelease();
     //=============== end list test utils
 
 private slots:

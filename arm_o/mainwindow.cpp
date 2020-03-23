@@ -1812,7 +1812,7 @@ void MainWindow::slotEditMyTask()
             QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
         }
         changeStatusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),9)->text().toLong(),1);
-//        initTableMyTask();
+        initTableMyTask();
     }
 }
 
