@@ -153,10 +153,10 @@ void DAddAVP::slotApply()
         return;
     }
 
-    if(addAVP())
+//    if(addAVP())
         accept();
-    else
-    {}
+//    else
+//    {}
 }
 
 //=========================================================

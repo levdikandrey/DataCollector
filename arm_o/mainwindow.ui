@@ -360,7 +360,7 @@
        <string>Добавить задачу</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -1457,6 +1457,7 @@
     <addaction name="separator"/>
     <addaction name="actionLog"/>
     <addaction name="actionClearDB"/>
+    <addaction name="actionMakeReport"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -1603,6 +1604,11 @@
    </property>
    <property name="text">
     <string>Смена пароля пользователя</string>
+   </property>
+  </action>
+  <action name="actionMakeReport">
+   <property name="text">
+    <string>Отчет о задачах</string>
    </property>
   </action>
  </widget>

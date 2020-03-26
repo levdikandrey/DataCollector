@@ -61,6 +61,7 @@ public:
      * @return
      */
     bool addSaveInDB(SDataAVP &sDataAVP);
+    bool existAVP(const QString &url);
 
 signals:
     /**
@@ -82,7 +83,6 @@ private:
     QXlsx::Document xlsx;
 
     bool existAVS(QString &url,QString name = "");
-    bool existAVP(QString &url);
     bool existUser(QString &fio);
 
     bool addAVP(SDataAVP &sDataAVP);

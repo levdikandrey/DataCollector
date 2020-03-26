@@ -256,6 +256,7 @@ private slots:
     void slotContextMenuRequestedCurrentTask(const QPoint &pos);
 
     void slotChangePassword();
+    void slotMakeReport();
 
 public slots:
     /**

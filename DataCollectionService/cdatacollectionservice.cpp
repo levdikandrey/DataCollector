@@ -403,11 +403,69 @@ void CDataCollectionService::makeRefIMBD_ForAVP()
 {
     qDebug()<<__PRETTY_FUNCTION__;
     QString sql,tmp;
+    QString nameRus, nameOriginal, yearOfRelease;
+    uint64_t avpID;
+    QString urlIMDB;
+
     try
     {
-        sql="SELECT avp.\"NameRus\", avp.\"NameOriginal\", aa.\"YearOfRelease\" FROM avp "
+        sql="SELECT avp.\"NameRus\", avp.\"NameOriginal\", aa.\"YearOfRelease\",avp.\"ID\" FROM avp "
             "INNER JOIN \"AVPattribute\" aa ON avp.\"ID\" = aa.\"ID_AVP\" "
-            "WHERE avp.\"URL_imdb\"=\'\' AND aa.\"YearOfRelease\"!=\'\' ORDER BY avp.\"ID\" LIMIT 2;";
+            "WHERE avp.\"URL_imdb\"=\'\' AND aa.\"YearOfRelease\"!=\'\' AND avp.\"NameOriginal\" !=\'\' ORDER BY avp.\"ID\";";
+//        "WHERE avp.\"URL_imdb\"=\'\' AND aa.\"YearOfRelease\"!=\'\' AND avp.\"NameOriginal\" !=\'\' ORDER BY avp.\"ID\" LIMIT 1000;";
+//        qDebug()<<"SQL = "<<sql;
+        if(query->exec(sql))
+        {
+            int i = 0;
+            while(query->next())
+            {
+                nameRus = query->value(0).toString();
+                nameOriginal = query->value(1).toString();
+                yearOfRelease = query->value(2).toString();
+                avpID = query->value(3).toLongLong();
+                yearOfRelease = yearOfRelease.mid(0,4);
+//                qDebug()<<"nameRus = "<<nameRus;
+//                qDebug()<<"nameOriginal = "<<nameOriginal;
+//                qDebug()<<"yearOfRelease = "<<yearOfRelease;
+
+                sql = "SELECT \"imdbBasics\".tconst, \"imdbBasics\".\"originalTitle\",\"imdbAkas\".title FROM \"imdbBasics\" "
+                      "LEFT JOIN \"imdbAkas\" ON \"imdbBasics\".tconst = \"imdbAkas\".\"titleId\" "
+                      "WHERE (\"imdbBasics\".\"originalTitle\" =E\'";
+                sql += decode(nameOriginal); sql += "\' OR \"imdbAkas\".title = E\'";
+                sql += decode(nameRus); sql += "\') AND \"imdbBasics\".\"startYear\" = \'";
+                sql += yearOfRelease; sql +="\';";
+//                qDebug()<<"SQL = "<<sql;
+                if(query1->exec(sql))
+                {
+                    if(query1->next())
+                    {
+                        qDebug()<<"imdbBasics.tconst = "<< query1->value(0).toString();
+                        qDebug()<<"imdbBasics.originalTitle = "<< query1->value(1).toString();
+                        qDebug()<<"imdbAkas.title = "<< query1->value(2).toString();
+                        qDebug()<<"yearOfRelease = "<<yearOfRelease;
+                        urlIMDB = "https://www.imdb.com/title/";
+                        urlIMDB += query1->value(0).toString();
+                        urlIMDB += "/reviews?ref_=tt_urv";
+                        qDebug()<<"urlIMDB = "<< urlIMDB;
+                        sql = "UPDATE avp SET \"URL_imdb\" = \'";
+                        sql += urlIMDB; sql += "\' WHERE \"ID\" = ";
+                        sql += tmp.setNum(avpID); sql += ";";
+                        qDebug()<<"SQL = "<<sql;
+                        if(!query1->exec(sql))
+                            qDebug()<<query1->lastError().text();
+                        i++;
+                        qDebug()<<"i ============ "<< i <<"\n";
+                    }
+                }
+                else
+                    qDebug()<<query1->lastError().text();
+//                if(i==1)
+//                    break;
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+        qDebug()<<"End function makeRefIMBD_ForAVP()";
     }
     catch(std::exception &e)
     {
@@ -635,8 +693,8 @@ void CDataCollectionService::run()
     //=====================================IMDB make DB
 //    makeDB_IMBD();
 //    makeDB_IMBD_AKAS();
-//    makeRefIMBD_ForAVP();
-    remakeColumnYearOfRelease();
+    makeRefIMBD_ForAVP();
+//    remakeColumnYearOfRelease();
     //=====================================IMDB end make DB
 
 

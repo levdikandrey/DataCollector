@@ -210,6 +210,7 @@ void CImportData::doWork(const QString &fileName)
 //=========================================================
 bool CImportData::existAVS(QString &url, QString name)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     bool res=true;
     QString sql="";
 
@@ -218,6 +219,7 @@ bool CImportData::existAVS(QString &url, QString name)
     if(!query->exec(sql))
     {
         emit resultReady(query->lastError().text());
+        qDebug()<<query->lastError().text();
         res = false;
     }
     else
@@ -231,12 +233,13 @@ bool CImportData::existAVS(QString &url, QString name)
 }
 
 //=========================================================
-bool CImportData::existAVP(QString &url)
+bool CImportData::existAVP(const QString &url)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     bool res=true;
     QString sql="";
     sql = "SELECT * FROM avp WHERE \"URL\"=\'"+url+"\';";
-//    qDebug()<<sql;
+    qDebug()<<sql;
     if(!query->exec(sql))
     {
         emit resultReady(query->lastError().text());
@@ -255,6 +258,7 @@ bool CImportData::existAVP(QString &url)
 //=========================================================
 bool CImportData::existUser(QString &fio)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     bool res=true;
     QString sql="";
     sql = "SELECT * FROM \"User\" WHERE \"FIO\"=\'"+fio+"\';";
@@ -277,6 +281,7 @@ bool CImportData::existUser(QString &fio)
 //=========================================================
 bool CImportData::addSaveInDB(SDataAVP &m_sDataAVP)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
 //    qDebug()<<"CImportData::addSaveInDB(SDataAVP &m_sDataAVP)="<<m_sDataAVP.avsURL;
     bool res=true;
     QString sql="";
@@ -289,6 +294,7 @@ bool CImportData::addSaveInDB(SDataAVP &m_sDataAVP)
         if(!query->exec(sql))
         {
             emit resultReady(query->lastError().text());
+            qDebug()<<query->lastError().text();
             res = false;
         }
         else
@@ -302,8 +308,8 @@ bool CImportData::addSaveInDB(SDataAVP &m_sDataAVP)
         if(!addAVP(m_sDataAVP))
             res = false;
     }
-//    else
-//        res = false;
+    else
+        res = false;
     return res;
 }
 

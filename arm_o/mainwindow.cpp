@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionStatus, SIGNAL(triggered()), SLOT(slotStatus()));
     connect(ui->actionConnectToDB, SIGNAL(triggered()), SLOT(slotSettingsDB()));
     connect(ui->actionChangePassword, SIGNAL(triggered()), SLOT(slotChangePassword()));
+    connect(ui->actionMakeReport, SIGNAL(triggered()), SLOT(slotMakeReport()));
 
     connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));
     connect(ui->radioButtonChecked,SIGNAL(toggled(bool)), SLOT(slotRBChecked(bool)));
@@ -1409,7 +1410,7 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
 //=========================================================
 void MainWindow::slotAbout()
 {
-    QMessageBox::about(this,tr("О программе"),tr("АРМ оператора мониторинга АВП на АВС.\nВерсия 1.0"));
+    QMessageBox::about(this,tr("О программе"),tr("АРМ оператора мониторинга АВП на АВС.\nВерсия 1.03"));
 }
 
 //=========================================================
@@ -1499,6 +1500,7 @@ void MainWindow::handleResultsKinopoisk(const QString &result)
 //=========================================================
 void MainWindow::slotAddAVP()
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QString tmp, timestamp, sql ="";
     SDataAVP dataAVP;
     dAddAVP->initAVS();
@@ -1519,10 +1521,17 @@ void MainWindow::slotAddAVP()
             dataAVP.duration = dAddAVP->getDuration();
             dataAVP.dateSaveInDB = QDateTime::currentDateTime();
             dataAVP.userSaveInDB = currentUserName;
+
+            if(cImportData->existAVP(dAddAVP->getURL_AVP()))
+            {
+                QMessageBox::warning(this,"Внимание","Невозможно добавить. АВП с таким URL существует!","Да");
+                return;
+            }
+
             if(cImportData->addSaveInDB(dataAVP))
                 QMessageBox::information(this,"Добавление АВП","АВП добавлено успешно.","Да");
             else
-                QMessageBox::critical(this,"Ошибка","Ошибка добавлено АВП!","Да");
+                QMessageBox::critical(this,"Ошибка","Ошибка добавления АВП!","Да");
         }
         catch(std::exception &e)
         {
@@ -1841,9 +1850,10 @@ void MainWindow::slotEditAudit()
 
             qDebug()<<"sql="<<sql;
             if(!query->exec(sql))
+            {
                 qDebug()<<query->lastError().text();
-
-
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            }
         }
         catch(std::exception &e)
         {
@@ -1872,6 +1882,62 @@ void MainWindow::slotSettingsDB()
     else
         QMessageBox::warning(this,"Внимание","Нет файла конфигурации settings.ini!","Да");
     fileSettings.close();
+}
+
+//=========================================================
+void MainWindow::slotMakeReport()
+{
+    QString sql,tmp;
+    try
+    {
+        sql = "SELECT avp.\"NameRus\", "
+              "avp.\"URL\","
+              "u.\"FIO\","
+              "\"Task\".\"DateAppoint\","
+              "p.\"NamePriority\","
+              "ts.\"StatusName\","
+              "\"Task\".\"PercentCompleted\","
+              "avp.\"URL\","
+              "\"Task\".\"Comment\","
+              "\"Task\".\"ID\","
+              "\"Task\".\"ID_AVP\" "
+              "FROM \"Task\" "
+              "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
+              "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
+              "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
+              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\"";
+        sql += " ORDER BY \"Task\".\"ID\";";
+        qDebug()<<"sql="<<sql;
+
+        if(query->exec(sql))
+        {
+             QXlsx::Document xlsx("./report1.xlsx");
+             int row =1;
+             while(query->next())
+             {
+                 xlsx.write(row,1,QVariant(query->value(0).toString()));
+                 xlsx.write(row,2,QVariant(query->value(1).toString()));
+                 xlsx.write(row,3,QVariant(query->value(2).toString()));
+                 xlsx.write(row,4,QVariant(query->value(3).toString()));
+                 xlsx.write(row,5,QVariant(query->value(4).toString()));
+                 xlsx.write(row,6,QVariant(query->value(5).toString()));
+                 xlsx.write(row,7,QVariant(initViolations(query->value(10).toInt())->text()));
+                 xlsx.write(row,8,QVariant(query->value(8).toString()));
+                 row++;
+             }
+             xlsx.save();
+             QMessageBox::information(this,"Сообщение","Создан отчет о задачах.","Да");
+        }
+        else
+        {
+            qDebug()<<query->lastError().text();
+            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================
