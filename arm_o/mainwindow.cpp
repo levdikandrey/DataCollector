@@ -1508,11 +1508,58 @@ void MainWindow::slotEditAVP(int, int)
 //=========================================================
 void MainWindow::slotEditAVP()
 {
+    QString tmp, sql;
     QModelIndexList selectedRows = ui->tableWidgetAVP->selectionModel()->selectedRows();
     dEditAVP->initAVS(ui->tableWidgetAVP->item(selectedRows[0].row(),8)->text().toLongLong());
 
     if(dEditAVP->exec() == QDialog::Accepted)
     {
+        try
+        {
+            sql = "UPDATE \"avp\" SET \"NameRus\"=\'";
+            sql += dEditAVP->getNameAVP();
+            sql += "\',\"NameOriginal\"=\'";
+            sql += dEditAVP->getNameOriginal();
+            sql += "\',\"URL\"=\'";
+            sql += dEditAVP->getURL_AVP();
+            sql += "\' WHERE \"ID\"=";
+            sql += ui->tableWidgetAVP->item(selectedRows[0].row(),8)->text();
+            sql += ";";
+//            qDebug()<<"sql="<<sql;
+
+            if(!query->exec(sql))
+                qDebug()<<query->lastError().text();
+
+            sql = "UPDATE \"AVPattribute\" SET \"Rubric\"=\'";
+            sql += dEditAVP->getRubricAVP();
+            sql += "\',\"FilmMaker\"=\'";
+            sql += dEditAVP->getFilmMaker();
+            sql += "\',\"Age\"=\'";
+            sql += dEditAVP->getAge();
+            sql += "\',\"YearOfRelease\"=\'";
+            sql += dEditAVP->getYearOfRelease();
+            sql += "\',\"Duration\"=\'";
+            sql += dEditAVP->getDuration();
+            sql += "\' WHERE \"ID_AVP\"=";
+            sql += ui->tableWidgetAVP->item(selectedRows[0].row(),8)->text();
+            sql += ";";
+//            qDebug()<<"sql="<<sql;
+
+            if(!query->exec(sql))
+                qDebug()<<query->lastError().text();
+
+//            slotReload();
+            ui->tableWidgetAVP->item(selectedRows[0].row(),0)->setText(dEditAVP->getNameAVP());
+            ui->tableWidgetAVP->item(selectedRows[0].row(),1)->setText(dEditAVP->getURL_AVP());
+            ui->tableWidgetAVP->item(selectedRows[0].row(),2)->setText(dEditAVP->getRubricAVP());
+            ui->tableWidgetAVP->item(selectedRows[0].row(),3)->setText(dEditAVP->getYearOfRelease());
+            ui->tableWidgetAVP->item(selectedRows[0].row(),4)->setText(dEditAVP->getFilmMaker());
+
+        }
+        catch(std::exception &e)
+        {
+            qDebug()<<e.what();
+        }
     }
 }
 
