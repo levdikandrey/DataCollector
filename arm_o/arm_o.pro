@@ -24,6 +24,7 @@ SOURCES += \
     aprotocol.cpp \
     client.cpp \
     dchangepassword.cpp \
+    deditavp.cpp \
     dsettingsdb.cpp \
     request.cpp \
     requestsender.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     aprotocol.h \
     client.h \
     dchangepassword.h \
+    deditavp.h \
     dsettingsdb.h \
     request.h \
     requestsender.h \
@@ -81,6 +83,7 @@ FORMS += \
     d_addviolation.ui \
     d_changepassword.ui \
     d_editaudit.ui \
+    d_editavp.ui \
     d_editgroup.ui \
     d_edittask.ui \
     d_edittaskusers.ui \

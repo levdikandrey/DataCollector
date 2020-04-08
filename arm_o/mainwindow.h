@@ -14,6 +14,7 @@
 #include "cimportdatakinopoisk.h"
 #include "dimportdataoutexcel.h"
 #include "daddavp.h"
+#include "deditavp.h"
 #include "daddtask.h"
 #include "dedittask.h"
 #include "dedittaskuser.h"
@@ -121,6 +122,14 @@ private slots:
      * @brief slotAddAVP - добавляет новый АВП в таблицу и в БД
      */
     void slotAddAVP();
+    /**
+     * @brief slotEditAVP - редактировать в таблице и в БД.
+     */
+    void slotEditAVP();
+    /**
+     * @brief slotEditAVP - редактировать в таблице и в БД (при двойном клике на строке записи в таблице).
+     */
+    void slotEditAVP(int, int);
     /**
      * @brief slotDeleteAVP - удаляет один или несколько АВП из таблицы и БД
      */
@@ -295,6 +304,7 @@ private:
     DEditAudit *dEditAudit;
     DSettingsDB *dSettingsDB;
     DChangePassword *dChangePassword;
+    DEditAVP *dEditAVP;
 
     Client *m_client;
 

@@ -41,7 +41,7 @@ bool AServer::initDB()
     try
     {
         db = QSqlDatabase::addDatabase("QPSQL");
-        db.setHostName("192.168.28.96");
+        db.setHostName("127.0.0.1");
         db.setDatabaseName("avpDB");
         db.setUserName("postgres");
         db.setPassword("postgres");

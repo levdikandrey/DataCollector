@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1256</width>
+    <width>1320</width>
     <height>796</height>
    </rect>
   </property>
@@ -360,7 +360,7 @@
        <string>Добавить задачу</string>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -572,6 +572,23 @@
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>33</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Редактировать АВП</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
             </property>
            </widget>
           </item>
@@ -1416,7 +1433,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1256</width>
+     <width>1320</width>
      <height>21</height>
     </rect>
    </property>
@@ -1799,8 +1816,8 @@
    <slot>slotDeleteAVP()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>192</x>
-     <y>663</y>
+     <x>412</x>
+     <y>691</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1815,8 +1832,8 @@
    <slot>slotReload()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1028</x>
-     <y>726</y>
+     <x>1173</x>
+     <y>755</y>
     </hint>
     <hint type="destinationlabel">
      <x>1241</x>
@@ -1847,8 +1864,8 @@
    <slot>slotNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>725</x>
-     <y>665</y>
+     <x>867</x>
+     <y>691</y>
     </hint>
     <hint type="destinationlabel">
      <x>787</x>
@@ -1863,8 +1880,8 @@
    <slot>slotPrevious()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>399</x>
-     <y>663</y>
+     <x>527</x>
+     <y>691</y>
     </hint>
     <hint type="destinationlabel">
      <x>379</x>
@@ -1879,8 +1896,8 @@
    <slot>slotChangeNumberPage()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>511</x>
-     <y>677</y>
+     <x>641</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
      <x>534</x>
@@ -1911,8 +1928,8 @@
    <slot>slotFindAVP()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1218</x>
-     <y>123</y>
+     <x>1296</x>
+     <y>138</y>
     </hint>
     <hint type="destinationlabel">
      <x>1248</x>
@@ -1933,6 +1950,22 @@
     <hint type="destinationlabel">
      <x>857</x>
      <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotEditAVP()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>670</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>127</x>
+     <y>770</y>
     </hint>
    </hints>
   </connection>
@@ -1957,5 +1990,6 @@
   <slot>slotSelectAVS(QString)</slot>
   <slot>slotFindAVP()</slot>
   <slot>slotFilterApply()</slot>
+  <slot>slotEditAVP()</slot>
  </slots>
 </ui>

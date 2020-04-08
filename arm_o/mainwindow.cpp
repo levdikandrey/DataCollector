@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEditFindString,SIGNAL(returnPressed()),SLOT(slotFindAVP()));
     connect(ui->lineEditFindString,SIGNAL(textChanged(const QString&)),SLOT(slotTextChanged(const QString&)));
 
+    connect(ui->tableWidgetAVP, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEditAVP(int, int)));
     connect(ui->tableWidgetCurrentTasks, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEditTask(int, int)));
     connect(ui->tableWidgetMyTasks, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEditMyTask(int, int)));
     connect(ui->tableWidgetAudit, SIGNAL(cellDoubleClicked(int, int)),this, SLOT(slotEditAudit(int, int)));
@@ -119,6 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     dAddAVP = new DAddAVP(this);
     dAddAVP->setModal(false);
+    dEditAVP = new DEditAVP(this);
 
     dAddTask = new DAddTask(this);
     dEditTask = new DEditTask(this);
@@ -316,7 +318,7 @@ bool MainWindow::initDB()
     {
         db = QSqlDatabase::addDatabase("QPSQL");
         db.setHostName("127.0.0.1");
-        db.setHostName("192.168.28.96");
+//        db.setHostName("192.168.28.96");
         db.setDatabaseName("avpDB");
         db.setUserName("postgres");
         db.setPassword("postgres");
@@ -1494,6 +1496,23 @@ void MainWindow::handleResultsKinopoisk(const QString &result)
                 dImportDataOutExcel->setProgress(progress);
             stepProgress = 0;
         }
+    }
+}
+
+//=========================================================
+void MainWindow::slotEditAVP(int, int)
+{
+    slotEditAVP();
+}
+
+//=========================================================
+void MainWindow::slotEditAVP()
+{
+    QModelIndexList selectedRows = ui->tableWidgetAVP->selectionModel()->selectedRows();
+    dEditAVP->initAVS(ui->tableWidgetAVP->item(selectedRows[0].row(),8)->text().toLongLong());
+
+    if(dEditAVP->exec() == QDialog::Accepted)
+    {
     }
 }
 
