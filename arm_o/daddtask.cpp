@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QObject>
 
 extern QSqlDatabase db;
@@ -26,10 +27,11 @@ DAddTask::DAddTask(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::Stretch);
     ui->tableWidget->horizontalHeader()->resizeSection(5, 0);
 
+    m_flagNotJob = true;
     m_currentIdAVS = -1;
     m_currentNumberPage = 1;
     m_currentState = -1;
-    m_countAVP = countAVP();
+    m_countAVP = countAVPNotJob();
     int page_count = (m_countAVP/1000);
     if( m_countAVP%1000 > 0)
         page_count++;
@@ -47,6 +49,8 @@ DAddTask::DAddTask(QWidget *parent)
     connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));
     connect(ui->radioButtonChecked,SIGNAL(toggled(bool)), SLOT(slotRBChecked(bool)));
     connect(ui->radioButtonAll,SIGNAL(toggled(bool)), SLOT(slotRBAll(bool)));
+    connect(ui->checkBoxFlagNotJob,SIGNAL(toggled(bool)), SLOT(slotRBAllNotJob(bool)));
+
     connect(ui->lineEditFindString,SIGNAL(textChanged(const QString&)),SLOT(slotTextChanged(const QString&)));
     connect(ui->lineEditFindString,SIGNAL(returnPressed()),SLOT(slotFindAVP()));
 
@@ -193,6 +197,7 @@ void DAddTask::initAVS()
        }
        else
            qDebug()<<query->lastError().text();
+       m_currentIdAVS = -1;
     }
     catch(std::exception &e)
     {
@@ -314,6 +319,37 @@ int DAddTask::countAVP(long idAVS)
     }
     return count;
 }
+
+//=========================================================
+int DAddTask::countAVPNotJob(long idAVS)
+{
+    int count = 0;
+    QString sql, tmp;
+    try
+    {
+        if(idAVS == -1)
+        {
+            sql = "SELECT COUNT(*) FROM avp WHERE \"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\");";
+        }
+        else
+        {
+            sql = "SELECT COUNT(*) FROM avp WHERE \"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\") AND \"ID_AVS\"="+ tmp.setNum(idAVS)+ ";";
+        }
+        if(query->exec(sql))
+        {
+            if(query->next())
+                count = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return count;
+}
+
 
 //=========================================================
 void DAddTask::slotPrevious()
@@ -504,20 +540,35 @@ void DAddTask::slotTextChanged(const QString &text)
 }
 
 //=========================================================
-int DAddTask::countAVP_Analysis(int state)
+int DAddTask::countAVP_Analysis(int state,long idAVS)
 {
+//    qDebug()<<__PRETTY_FUNCTION__;
     int count = 0;
     QString sql, tmp;
     try
     {
-        if(state == 1)// С нарушениями
+        if((state == 1) && (idAVS != -1))// С нарушениями
         {
-            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 ) GROUP BY \"ID\";";
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID_AVS\"="+ tmp.setNum(idAVS)+ "AND \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 )";
         }
-        else// Все проверенные
+        if((state == 1) && (idAVS == -1))// С нарушениями
         {
-            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" ) GROUP BY \"ID\";";
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 )";
         }
+        else if((state == 2) && (idAVS != -1))// Все проверенные
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID_AVS\"="+ tmp.setNum(idAVS)+ " AND \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" )";
+        }
+        else if((state == 2) && (idAVS == -1))// Все проверенные
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" )";
+        }
+
+        if(m_flagNotJob)
+            sql+=" AND avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
+
+        sql+=" GROUP BY \"ID\";";
+//        qDebug()<<"sql="<<sql;
         if(query->exec(sql))
         {
             count = query->size();
@@ -537,44 +588,25 @@ void DAddTask::slotRBViolation(bool state)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     if(state)
-       initTableListAVP(1,m_currentIdAVS, 1);
+       initTableListAVP(1, m_currentIdAVS, 2);
 
     m_currentState = 1;
     m_currentNumberPage = 1;
-    m_countAVP = countAVP_Analysis(1);
-    int page_count = m_countAVP/1000;
-    if(m_countAVP%1000 > 0)
-        page_count++;
-
-    QString tmp;
-    QString text="из ";text+=tmp.setNum(page_count); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
-    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
-    ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
-    ui->labelCountAVP->setText(text);
-    ui->pushButtonPreview->setEnabled(false);
+    initSelectorPage(m_currentNumberPage,m_currentState);
     QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
 void DAddTask::slotRBChecked(bool state)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     if(state)
        initTableListAVP(1, m_currentIdAVS, 2);
 
     m_currentState = 2;
     m_currentNumberPage = 1;
-    m_countAVP = countAVP_Analysis(2);
-    int page_count = m_countAVP/1000;
-    if(m_countAVP%1000 > 0)
-        page_count++;
-
-    QString tmp;
-    QString text="из ";text+=tmp.setNum(page_count); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
-    ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
-    ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
-    ui->labelCountAVP->setText(text);
-    ui->pushButtonPreview->setEnabled(false);
+    initSelectorPage(m_currentNumberPage,m_currentState);
     QApplication::restoreOverrideCursor();
 }
 
@@ -583,11 +615,41 @@ void DAddTask::slotRBAll(bool state)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     if(state)
-       initTableListAVP(1, m_currentIdAVS, -1);
+        initTableListAVP(1, m_currentIdAVS, m_currentState);
 
     m_currentState = -1;
     m_currentNumberPage = 1;
-    m_countAVP = countAVP(m_currentIdAVS);
+    initSelectorPage(m_currentNumberPage, m_currentState);
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DAddTask::slotRBAllNotJob(bool state)
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    m_flagNotJob = state;
+    m_currentNumberPage = 1;
+
+    initTableListAVP(m_currentNumberPage, m_currentIdAVS, m_currentState);
+    initSelectorPage(m_currentNumberPage, m_currentState);
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DAddTask::initSelectorPage(int numberPage, int state)
+{
+//    qDebug()<<__PRETTY_FUNCTION__;
+    m_currentNumberPage = numberPage;
+    if((state == -1) && (m_flagNotJob))
+       m_countAVP = countAVPNotJob(m_currentIdAVS);
+    else if((state == -1) && (!m_flagNotJob))
+       m_countAVP = countAVP(m_currentIdAVS);
+    else if(state == 1)
+       m_countAVP = countAVP_Analysis(1,m_currentIdAVS);
+    else if(state == 2)
+       m_countAVP = countAVP_Analysis(2,m_currentIdAVS);
+
+//    qDebug()<<"m_countAVP = "<<m_countAVP;
     int page_count = m_countAVP/1000;
     if(m_countAVP%1000 > 0)
         page_count++;
@@ -598,12 +660,18 @@ void DAddTask::slotRBAll(bool state)
     ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
-    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void DAddTask::initStateAVP()
+{
+    ui->radioButtonAll->setChecked(true);
 }
 
 //=========================================================
 void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QString sql="",tmp;
     try
     {
@@ -625,7 +693,10 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
         if( idAVS != -1)
         {
             sql+=" WHERE \"ID_AVS\"="; sql+=tmp.setNum(idAVS);
+//            if(m_flagNotJob)
+//                sql+=" AND avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
         }
+
         if( state == 1)
         {
             if( idAVS != -1)
@@ -636,6 +707,8 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
             {
                 sql+=" WHERE avp.\"ID\" IN (SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\"!=12)";
             }
+            if(m_flagNotJob)
+                sql+=" AND avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
         }
         else if( state == 2)
         {
@@ -647,9 +720,18 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
             {
                 sql+=" WHERE avp.\"ID\" IN (SELECT \"ID_AVP\" FROM \"AnalysisResult\")";
             }
+            if(m_flagNotJob)
+                sql+=" AND avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
         }
+        else if( state == -1)
+        {
+            if(m_flagNotJob)
+                sql+=" WHERE avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
+        }
+
         sql+=" ORDER BY avp.\"ID\" LIMIT 1000 OFFSET ";
         sql+=tmp.setNum((numberPage-1)*1000);sql+=";";
+        qDebug()<<"SQL = "<<sql;
 
         if(query->exec(sql))
         {
@@ -768,8 +850,12 @@ void DAddTask::slotSelectAVS(QString nameAVS)
 
     if(m_currentState == -1)
         m_countAVP = countAVP(m_currentIdAVS);
-    else
-        m_countAVP = m_countCurrentAVP;
+    else if(m_currentState == 1)
+        m_countAVP = countAVP_Analysis(1,m_currentIdAVS);
+    else if(m_currentState == 2)
+        m_countAVP = countAVP_Analysis(2,m_currentIdAVS);
+    else if(m_currentState == 3)
+        m_countAVP = countAVPNotJob(m_currentIdAVS);
 
     QString tmp;
     QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";

@@ -324,7 +324,7 @@ private:
 
     void initDialog();
     int countAVP(long idAVS = -1);
-    int countAVP_Analysis(int state);
+    int countAVP_Analysis(int state,long idAVS);
     long idAVS(QString nameAVS);
     long getIdAVP(QString nameAVP);
     int getIdUser(QString userName);

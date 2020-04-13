@@ -23,12 +23,15 @@ public:
     void initComboBoxPriority();
     void initComboBoxStatus();
     void initTableListAVP(int numberPage = 1, long idAVS = -1, int state = -1);
+    void initSelectorPage(int numberPage = 1, int state = -1);
+    void initStateAVP();
     void clearLineFindAVP();
 
     const QString getUserFIO() const;
     const QString getStatusName() const;
     const QString getNamePriority() const;
     const std::map<long,QString> getListAVP() const;
+    int countAVP_Analysis(int state,long idAVS);
 
 private slots:
     void slotAdd();
@@ -45,6 +48,7 @@ private slots:
     void slotRBViolation(bool);
     void slotRBChecked(bool);
     void slotRBAll(bool);
+    void slotRBAllNotJob(bool);
     /**
      * @brief slotSelectAVS
      * @param avs
@@ -58,7 +62,7 @@ private:
     QTimer m_timer;
 
     int countAVP(long idAVS = -1);
-    int countAVP_Analysis(int state);
+    int countAVPNotJob(long idAVS = -1);
     long idAVS(QString nameAVS);
     bool isExistAVP(long idAVS = -1);
 
@@ -67,6 +71,7 @@ private:
     int m_currentState;
     int m_currentIdAVS;
     int m_countCurrentAVP;
+    bool m_flagNotJob;
 };
 
 #endif // DADDTASK_H

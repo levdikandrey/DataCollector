@@ -949,37 +949,6 @@ int MainWindow::countAVP(long idAVS)
 }
 
 //=========================================================
-int MainWindow::countAVP_Analysis(int state)
-{
-    int count = 0;
-    QString sql, tmp;
-    try
-    {
-        if(state == 1)// С нарушениями
-        {
-            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 ) GROUP BY \"ID\";";
-        }
-        else// Все проверенные
-        {
-            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" ) GROUP BY \"ID\";";
-        }
-        if(query->exec(sql))
-        {
-//            if(query->next())
-            //                count = query->value(0).toInt();
-            count = query->size();
-        }
-        else
-            qDebug()<<query->lastError().text();
-    }
-    catch(std::exception &e)
-    {
-        qDebug()<<e.what();
-    }
-    return count;
-}
-
-//=========================================================
 long MainWindow::idAVS(QString nameAVS)
 {
     long id = -1;
@@ -1091,6 +1060,46 @@ void MainWindow::slotStateChanged(int state)
 }
 
 //=========================================================
+int MainWindow::countAVP_Analysis(int state,long idAVS)
+{
+    int count = 0;
+    QString sql, tmp;
+    try
+    {
+        if((state == 1) && (idAVS != -1))// С нарушениями
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID_AVS\"="+ tmp.setNum(idAVS)+ "AND \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 )";
+        }
+        if((state == 1) && (idAVS == -1))// С нарушениями
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" WHERE \"ID_Violation\" !=12 )";
+        }
+        else if((state == 2) && (idAVS != -1))// Все проверенные
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID_AVS\"="+ tmp.setNum(idAVS)+ " AND \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" )";
+        }
+        else if((state == 2) && (idAVS == -1))// Все проверенные
+        {
+            sql = "SELECT \"ID\" FROM avp WHERE \"ID\" IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\" )";
+        }
+
+        sql+=" GROUP BY \"ID\";";
+        qDebug()<<"sql="<<sql;
+        if(query->exec(sql))
+        {
+            count = query->size();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return count;
+}
+
+//=========================================================
 void MainWindow::slotSelectAVS(QString nameAVS)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -1113,8 +1122,13 @@ void MainWindow::slotSelectAVS(QString nameAVS)
 
     if(m_currentState == -1)
         m_countAVP = countAVP(m_currentIdAVS);
-    else
-        m_countAVP = m_countCurrentAVP;
+    else if(m_currentState == 1)
+        m_countAVP = countAVP_Analysis(1,m_currentIdAVS);
+    else if(m_currentState == 2)
+        m_countAVP = countAVP_Analysis(2,m_currentIdAVS);
+
+//    else
+//        m_countAVP = m_countCurrentAVP;
 
     QString tmp;
     QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
@@ -1615,17 +1629,16 @@ void MainWindow::slotAddTask()
     QString tmp, timestamp, sql ="";
     std::map<long,QString> listAVP;
     dAddTask->clearLineFindAVP();
-    dAddTask->initTableListAVP();
     dAddTask->initComboBoxUser();
     dAddTask->initComboBoxStatus();
     dAddTask->initComboBoxPriority();
     dAddTask->initAVS();
+    dAddTask->initStateAVP();
+    dAddTask->initTableListAVP();
+
     QDateTime dt;
     QApplication::restoreOverrideCursor();
 
-//    dAddTask->showFullScreen();
-//    QRect r = QApplication::screens().at(0)->geometry();
-//    dAddTask->resize(r.width() * 95, r.height() * 90);
     dAddTask->showMaximized();
 
     if(dAddTask->exec() == QDialog::Accepted)
@@ -2051,7 +2064,7 @@ void MainWindow::slotRBViolation(bool state)
 
     m_currentState = 1;
     m_currentNumberPage = 1;
-    m_countAVP = countAVP_Analysis(1);
+    m_countAVP = countAVP_Analysis(m_currentState,m_currentIdAVS);
     int page_count = m_countAVP/1000;
     if(m_countAVP%1000 > 0)
         page_count++;
@@ -2075,7 +2088,7 @@ void MainWindow::slotRBChecked(bool state)
 
     m_currentState = 2;
     m_currentNumberPage = 1;
-    m_countAVP = countAVP_Analysis(2);
+    m_countAVP = countAVP_Analysis(m_currentState,m_currentIdAVS);
     int page_count = m_countAVP/1000;
     if(m_countAVP%1000 > 0)
         page_count++;
