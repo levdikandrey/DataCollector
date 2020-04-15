@@ -316,13 +316,29 @@ bool MainWindow::initDB()
     bool res = true;
     try
     {
+        QSettings settings(QDir::toNativeSeparators(QApplication::applicationDirPath()) + "/settings.ini",QSettings::IniFormat);
         db = QSqlDatabase::addDatabase("QPSQL");
-        db.setHostName("127.0.0.1");
-//        db.setHostName("192.168.28.96");
-        db.setDatabaseName("avpDB");
-        db.setUserName("postgres");
-        db.setPassword("postgres");
+        QString server = settings.value("MAIN/SERVER").toString(); //        db.setHostName("192.168.28.96");
+        if (server == "")
+            server = "127.0.0.1";
+        db.setHostName(server);
+
+        QString nameDB = settings.value("MAIN/NAME_DB").toString();
+        if (nameDB == "")
+            nameDB = "avpDB";
+        db.setDatabaseName(nameDB);
+
+        QString user = settings.value("MAIN/USER").toString();
+        if (user == "")
+            user = "postgres";
+        db.setUserName(user);
+
+        QString password = settings.value("MAIN/PASSWD").toString();
+        if (password == "")
+            password = "postgres";
+        db.setPassword(password);
         bool ok = db.open();
+
         if(ok)
         {
             QPalette palette;
