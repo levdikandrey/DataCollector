@@ -1149,6 +1149,7 @@ void MainWindow::slotSelectAVS(QString nameAVS)
     QString tmp;
     QString text="из ";text+=tmp.setNum(m_countAVP/1000); text+=" (всего АВП ";text+=tmp.setNum(m_countAVP);text+=")";
     ui->lineEditNumberPage->setValidator( new QIntValidator(1,(m_countAVP/1000), this) );
+    ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
     QApplication::restoreOverrideCursor();

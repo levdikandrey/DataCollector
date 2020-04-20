@@ -203,7 +203,7 @@ private slots:
      */
     void slotChangeNumberPage();
     /**
-     * @brief slotSelectAVS
+     * @brief slotSelectAVS - функция выбора АВС
      * @param avs
      */
     void slotSelectAVS(QString);
