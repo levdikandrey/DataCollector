@@ -344,6 +344,7 @@ private:
 
     bool initNetClient();
     void addComment(uint64_t idTask, QString comment);
+    void setColorRowTable(QTableWidget *table, int row, int r, int g, int b);
 
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);

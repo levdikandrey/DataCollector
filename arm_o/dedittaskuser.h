@@ -19,6 +19,7 @@ public:
     void initComboBoxPriority(QString currentPriority);
     void initComboBoxStatus(QString currentStatus);
     void initTableViolation(long id_avp);
+    void initDateRealization(long id_avp);
 
     void setNameAVP(QString nameAVP);
     void setPercent(QString percent);
@@ -29,6 +30,7 @@ public:
     const QString getStatus() const;
     const QString getPercent() const;
     const QString getComment() const;
+    const QString getDateRealization() const;
     QTableWidget* getViolations() const;
 
 private slots:

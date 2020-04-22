@@ -30,6 +30,7 @@ public:
     const QString getUserFIO() const;
     const QString getStatusName() const;
     const QString getNamePriority() const;
+    const QDateTime getDateRealization() const;
     const std::map<long,QString> getListAVP() const;
     int countAVP_Analysis(int state,long idAVS);
 

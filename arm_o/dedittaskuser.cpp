@@ -123,6 +123,33 @@ void DEditTaskUser::initComboBoxStatus(QString currentStatus)
 }
 
 //=========================================================
+void DEditTaskUser::initDateRealization(long id_avp)
+{
+    QString sql, tmp;
+    m_idAVP = id_avp;
+    try
+    {
+        sql = "SELECT \"DateRealization\" FROM \"Task\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+";";
+        if(query->exec(sql))
+        {
+            if(query->next())
+            {
+                if(!query->value(0).isNull())
+                    ui->dateEdit->setDate(query->value(0).toDate());
+                else
+                    ui->dateEdit->setDate(QDate::currentDate());
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 void DEditTaskUser::initTableViolation(long id_avp)
 {
     QString sql="",tmp, str;
@@ -337,6 +364,12 @@ const QString DEditTaskUser::getPercent() const
 const QString DEditTaskUser::getComment() const
 {
     return ui->textEditComment->toPlainText();
+}
+
+//=========================================================
+const QString DEditTaskUser::getDateRealization() const
+{
+    return ui->dateEdit->dateTime().toString("yyyy-MM-ddTHH:mm:ss");
 }
 
 //=========================================================

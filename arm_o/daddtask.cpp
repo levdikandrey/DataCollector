@@ -97,6 +97,12 @@ const std::map<long,QString> DAddTask::getListAVP() const
 }
 
 //=========================================================
+const QDateTime DAddTask::getDateRealization() const
+{
+    return ui->dateEditRealization->dateTime();
+}
+
+//=========================================================
 bool DAddTask::isExistAVP(long idAVS)
 {
     bool res = false;

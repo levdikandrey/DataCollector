@@ -431,6 +431,32 @@
            </spacer>
           </item>
           <item>
+           <widget class="QGroupBox" name="groupBox_3">
+            <property name="title">
+             <string>Фильтры поиска</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QRadioButton" name="radioButtoName">
+               <property name="text">
+                <string>Название АВП</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="radioButtonNameOrigin">
+               <property name="text">
+                <string>Оригинальное название АВП</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <widget class="QLineEdit" name="lineEditFindString">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1020,6 +1046,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Дата выполнения</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Приоритет</string>
            </property>
           </column>
@@ -1195,6 +1226,11 @@
           <column>
            <property name="text">
             <string>Дата назначения</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Дата выполнения</string>
            </property>
           </column>
           <column>

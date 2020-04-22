@@ -42,7 +42,7 @@ void DEditAVP::initAVS(uint64_t idAVP)
                 ui->lineEditRubric->setText(query->value(4).toString());
                 ui->lineEditFilmMaker->setText(query->value(5).toString());
                 ui->lineEditAge->setText(query->value(6).toString());
-                ui->spinBoxYearOfRelease->setValue(query->value(7).toString().toInt());
+                ui->lineEditYearOfRelease->setText(query->value(7).toString());
                 ui->spinBoxDuration->setValue(query->value(8).toString().toInt());
             }
         }
@@ -97,8 +97,7 @@ const QString DEditAVP::getAge() const
 //=========================================================
 const QString DEditAVP::getYearOfRelease() const
 {
-    QString tmp;
-    return tmp.setNum(ui->spinBoxYearOfRelease->value());
+    return ui->lineEditYearOfRelease->text();
 }
 
 //=========================================================
@@ -124,7 +123,7 @@ void DEditAVP::slotCancel()
     ui->lineEditRubric->clear();
     ui->lineEditFilmMaker->clear();
     ui->lineEditAge->clear();
-    ui->spinBoxYearOfRelease->clear();
+    ui->lineEditYearOfRelease->clear();
     ui->spinBoxDuration->clear();
     initAVS(m_idAVP);
 }
