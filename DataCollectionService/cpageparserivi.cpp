@@ -1,5 +1,6 @@
 #include "cpageparserivi.h"
 #include <QDateTime>
+#include <QDir>
 
 //=========================================================
 CPageParserIVI::CPageParserIVI(QObject *parent): QObject(parent)
@@ -30,6 +31,35 @@ void CPageParserIVI::doWork(const QString &startDir)
     for (int i = 0; i < allFiles.size(); ++i)
         parsePage(allFiles.at(i));
     qDebug()<<"colAVP="<<colAVP;
+}
+
+//=========================================================
+bool CPageParserIVI::existsFilmMakerInSaveDb(const QString &url)
+{
+    bool res = true;
+    QString sql;
+    try
+    {
+        sql = "SELECT aa.\"FilmMaker\" FROM avp INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" WHERE avp.\"URL\"=\'";
+        sql += url; sql += "\';";
+//        qDebug()<<"sql="<<sql;
+        if(m_query->exec(sql))
+        {
+            if(m_query->next())
+            {
+//                qDebug()<<"FilmMaker :"<<m_query->value(0).toString();
+                if(m_query->value(0).toString()=="")
+                   res = false;
+            }
+        }
+        else
+            qDebug()<<m_query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+         qDebug()<<e.what();
+    }
+    return res;
 }
 
 //=========================================================
@@ -140,6 +170,75 @@ QString CPageParserIVI::findIdAVP(QString &url)
 }
 
 //=========================================================
+bool CPageParserIVI::updateSaveInDB()
+{
+    qDebug()<<"\n"<<__PRETTY_FUNCTION__;
+    qDebug()<<"m_URL = "<<m_URL;
+    qDebug()<<"m_nameRus = "<<m_nameRus;
+    qDebug()<<"m_nameOriginal = "<<m_nameOriginal;
+    qDebug()<<"m_yearOfRelease = "<<m_yearOfRelease;
+    qDebug()<<"m_age = "<<m_age;
+    qDebug()<<"m_duration = "<<m_duration;
+    qDebug()<<"m_country = "<<m_country;
+    qDebug()<<"m_rubric = "<<m_rubric;
+    qDebug()<<"m_filmMaker = "<<m_filmMaker;
+
+    bool res=true;
+    QString sql="";
+    QString tmp;
+    try
+    {
+        if(existsFilmMakerInSaveDb(m_URL))
+        {
+            qDebug()<<"FilMaker exists in save DB AVP: "<<m_nameRus;
+            return false;
+        }
+
+        sql="UPDATE avp SET \"NameRus\" = E\'";
+        sql += decode(m_nameRus);sql+="\', \"NameOriginal\" = E\'";
+        sql += decode(m_nameOriginal); sql+="\' WHERE \"URL\" = \'";
+        sql += m_URL; sql+="\';";
+        qDebug()<<sql;
+        if(!m_query->exec(sql))
+        {
+            qDebug()<<sql;
+            qDebug()<<m_query->lastError().text();
+            res = false;
+        }
+        else
+        {
+            res = true;
+            sql = "UPDATE \"AVPattribute\" SET \"YearOfRelease\"=\'";
+            sql += m_yearOfRelease; sql +="\',\"Age\" =\'";
+            sql += m_age; sql+="\',\"Duration\"=\'";
+            sql += m_duration; sql +="\',\"FilmMaker\"=\'";
+            sql += m_filmMaker; sql +="\',\"Country\"=\'";
+            sql += m_country; sql +="\',\"Rubric\" = \'";
+            sql += m_rubric; sql +="\' WHERE \"ID_AVP\" =(SELECT \"ID\" FROM avp WHERE \"URL\" = \'";
+            sql += m_URL; sql +="\');";
+            qDebug()<<sql;
+            if(!m_query->exec(sql))
+            {
+                qDebug()<<sql;
+                qDebug()<<m_query->lastError().text();
+                res = false;
+            }
+            else
+            {
+                colAVP++;
+                qDebug()<<"Update in DB OK AVP: "<<m_nameRus<<"   colAVP="<<colAVP<<"\n";
+                res = true;
+            }
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return res;
+}
+
+//=========================================================
 bool CPageParserIVI::addSaveInDB()
 {
     bool res=true;
@@ -150,7 +249,8 @@ bool CPageParserIVI::addSaveInDB()
         if(existsSaveInDb(m_URL))
         {
             qDebug()<<"AVP exists in DB AVP: "<<m_nameRus;
-           return res = false;
+           res = updateSaveInDB();
+           return res;
         }
 
         sql="INSERT INTO avp (\"NameRus\",\"URL\",\"ID_AVS\",\"NameOriginal\",\"URL_kinopoisk\",\"URL_imdb\") VALUES (E\'";
@@ -197,7 +297,7 @@ bool CPageParserIVI::addSaveInDB()
             else
             {
                 colAVP++;
-                qDebug()<<"Save in DB OK AVP: "<<m_nameRus<<"   colAVP="<<colAVP;
+                qDebug()<<"Save in DB OK AVP: "<<m_nameRus<<"   colAVP="<<colAVP<<"\n";
                 res = true;
             }
         }
@@ -211,17 +311,68 @@ bool CPageParserIVI::addSaveInDB()
 
 int col_file =0;
 //=========================================================
-void CPageParserIVI::parsePageExt(const QString &fileName)
+void CPageParserIVI::parsePageExt1(const QString &fileName)
 {
-//    qDebug()<<"\nPAGE_EXT="<<fileName;
+    qDebug()<<"\nPAGE_EXT="<<fileName;
     QFile file(fileName);
-    QString s_FingNameOriginal = "orig_title";
+    QString s_FindFilmMaker ="<div class=\"fixedSlimPosterBlock__title\">";
+    QString s_FindFilmMakerSecond = "<div class=\"fixedSlimPosterBlock__secondTitle\">";
     if(file.open(QFile::ReadOnly | QIODevice::Text))
     {
         while (!file.atEnd())
         {
             QString line = file.readLine();
-            if(line.indexOf(s_FingNameOriginal) != -1) // URL
+            if(line.indexOf(s_FindFilmMaker) != -1) //FilmMaker
+            {
+//                qDebug()<<"line = "<<line;
+                int index = line.indexOf(s_FindFilmMaker);
+                QString s_tmp = line.mid(index+s_FindFilmMaker.length(),line.length()-index- s_FindFilmMaker.length());
+//                qDebug()<<"s_tmp = "<<s_tmp;
+                if(s_tmp.indexOf("</div>") != -1)
+                {
+                    m_filmMaker = s_tmp.mid(0,s_tmp.indexOf("</div>"));
+//                    qDebug()<<"m_filmMaker = "<< m_filmMaker;
+                }
+                if(line.indexOf(s_FindFilmMakerSecond) != -1)
+                {
+                    index = line.indexOf(s_FindFilmMakerSecond);
+                    s_tmp = line.mid(index+s_FindFilmMakerSecond.length(),line.length()-index- s_FindFilmMakerSecond.length());
+//                qDebug()<<"s_tmp_second = "<<s_tmp;
+                    if(s_tmp.indexOf("</div>") != -1)
+                    {
+                        m_filmMaker += " ";
+                        m_filmMaker += s_tmp.mid(0,s_tmp.indexOf("</div>"));
+                        qDebug()<<"m_filmMaker1 = "<< m_filmMaker;
+                    }
+                }
+            }
+            if((m_nameOriginal !="") && (m_filmMaker != ""))
+            {
+                break;
+            }
+        }
+        file.close();
+    }
+    else
+    {
+        qDebug()<<"Не могу открыть файл:"<<fileName;
+    }
+}
+
+//=========================================================
+void CPageParserIVI::parsePageExt(const QString &fileName)
+{
+    //    qDebug()<<"\nPAGE_EXT="<<fileName;
+    QFile file(fileName);
+    QString s_FingNameOriginal = "orig_title";
+    QString s_FindFilmMaker ="<div class=\"slimPosterBlock__title\">";
+    QString s_FindFilmMakerSecond ="<div class=\"slimPosterBlock__secondTitle\">";
+    if(file.open(QFile::ReadOnly | QIODevice::Text))
+    {
+        while (!file.atEnd())
+        {
+            QString line = file.readLine();
+            if(line.indexOf(s_FingNameOriginal) != -1) // NameOriginal
             {
                 int index = line.indexOf(s_FingNameOriginal);
                 QString s_tmp = line.mid(index+s_FingNameOriginal.length()+5,line.length()-index- s_FingNameOriginal.length()-5);
@@ -231,12 +382,40 @@ void CPageParserIVI::parsePageExt(const QString &fileName)
 //                    qDebug()<<"m_nameOriginal = "<< m_nameOriginal;
                 }
             }
+            else if(line.indexOf(s_FindFilmMaker) != -1) //FilmMaker
+            {
+//                qDebug()<<"line = "<<line;
+                int index = line.indexOf(s_FindFilmMaker);
+                QString s_tmp = line.mid(index+s_FindFilmMaker.length(),line.length()-index- s_FindFilmMaker.length());
+//                qDebug()<<"s_tmp = "<<s_tmp;
+                if(s_tmp.indexOf("</div>") != -1)
+                {
+                    m_filmMaker = s_tmp.mid(0,s_tmp.indexOf("</div>"));
+//                    qDebug()<<"m_filmMaker = "<< m_filmMaker;
+                }
+                if(line.indexOf(s_FindFilmMakerSecond) != -1)
+                {
+                    index = line.indexOf(s_FindFilmMakerSecond);
+                    s_tmp = line.mid(index+s_FindFilmMakerSecond.length(),line.length()-index- s_FindFilmMakerSecond.length());
+//                qDebug()<<"s_tmp_second = "<<s_tmp;
+                    if(s_tmp.indexOf("</div>") != -1)
+                    {
+                        m_filmMaker += " ";
+                        m_filmMaker += s_tmp.mid(0,s_tmp.indexOf("</div>"));
+//                    qDebug()<<"m_filmMaker1 = "<< m_filmMaker;
+                    }
+                }
+            }
+            if((m_nameOriginal !="") && (m_filmMaker != ""))
+            {
+                break;
+            }
         }
         file.close();
     }
     else
     {
-//        qDebug()<<"Не могу открыть файл:"<<fileName;
+        qDebug()<<"Не могу открыть файл:"<<fileName;
     }
 }
 
@@ -272,10 +451,15 @@ void CPageParserIVI::parsePage(const QString &page)
                 if(line.indexOf("\" class=\"item-content-wrapper js-collection-content") != -1)
                 {
                     m_URL = "https://www.ivi.ru"+line.mid(index+s_findURL.length(),line.indexOf("\" class=\"item-content-wrapper js-collection-content")-s_findURL.length()-index);
-                    QString fileName="C:\\DownloadData\\ivi\\www.ivi.ru\\watch\\";
+                    QString fileName="d:\\DownloadData\\ivi\\www.ivi.ru\\watch\\";
                     fileName += line.mid(index+s_findURL.length()+7,line.indexOf("\" class=\"item-content-wrapper js-collection-content")-s_findURL.length()-index-7);
-                    fileName += "\\person";
-                    parsePageExt(fileName);
+                    if(QDir(fileName).exists())
+                    {
+                        fileName += "\\person";
+                        parsePageExt(fileName);
+                    }
+                    else
+                        parsePageExt1(fileName);
 //                    qDebug()<<"m_URL = "<<m_URL;
                 }
             }
@@ -349,7 +533,7 @@ void CPageParserIVI::parsePage(const QString &page)
                 addSaveInDB();
                 m_nameRus = "";
                 m_nameOriginal = "";
-                m_URL = "https://www.ivi.ru";
+                m_URL = "";
                 m_yearOfRelease = "";
                 m_rubric = "";
                 m_country = "";
@@ -360,7 +544,7 @@ void CPageParserIVI::parsePage(const QString &page)
         }
         file.close();
 //        col_file++;
-//        if( col_file == 1)
+//        if( col_file == 10)
 //            exit(0);
     }
     else
@@ -384,6 +568,7 @@ QStringList CPageParserIVI::getDirFiles( const QString& dirName  )
     dirList.removeAll( "." );
     dirList.removeAll( ".." );
     dirList.removeAll( "watch" );
+    dirList.removeAll( "animation" );
     for ( QStringList::Iterator dit = dirList.begin(); dit != dirList.end(); ++dit )
     {
         QDir curDir = dir;

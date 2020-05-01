@@ -1286,13 +1286,14 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
             }
             else
             {
-//                int row=0;
                 icon.addFile(QString::fromUtf8(":/icons/icons/alarm.png"), QSize(), QIcon::Normal, QIcon::Off);
                 str="";
                 while(queryViolation->next())
                 {
                     if(queryViolation->value(0).toString() == "Не обнаружено")
                         icon.addFile(QString::fromUtf8(":/icons/icons/ok.png"), QSize(), QIcon::Normal, QIcon::Off);
+                    else
+                        icon.addFile(QString::fromUtf8(":/icons/icons/alarm.png"), QSize(), QIcon::Normal, QIcon::Off);
                     str += queryViolation->value(0).toString();
                     if(queryViolation->value(3).toBool())
                     {
@@ -1312,7 +1313,6 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
 
                     str += tmp.setNum(queryViolation->value(1).toInt());
                     str +="% ";
-//                    row++;
                 }
                 itemViolations->setText(str);
             }
@@ -1579,10 +1579,10 @@ void MainWindow::slotEditAVP()
     {
         try
         {
-            sql = "UPDATE \"avp\" SET \"NameRus\"=\'";
-            sql += dEditAVP->getNameAVP();
-            sql += "\',\"NameOriginal\"=\'";
-            sql += dEditAVP->getNameOriginal();
+            sql = "UPDATE \"avp\" SET \"NameRus\"=E\'";
+            sql += cImportData->decode(dEditAVP->getNameAVP());
+            sql += "\',\"NameOriginal\"=E\'";
+            sql += cImportData->decode(dEditAVP->getNameOriginal());
             sql += "\',\"URL\"=\'";
             sql += dEditAVP->getURL_AVP();
             sql += "\' WHERE \"ID\"=";
@@ -1591,12 +1591,16 @@ void MainWindow::slotEditAVP()
 //            qDebug()<<"sql="<<sql;
 
             if(!query->exec(sql))
+            {
                 qDebug()<<query->lastError().text();
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+                return;
+            }
 
             sql = "UPDATE \"AVPattribute\" SET \"Rubric\"=\'";
             sql += dEditAVP->getRubricAVP();
-            sql += "\',\"FilmMaker\"=\'";
-            sql += dEditAVP->getFilmMaker();
+            sql += "\',\"FilmMaker\"=E\'";
+            sql += cImportData->decode(dEditAVP->getFilmMaker());
             sql += "\',\"Age\"=\'";
             sql += dEditAVP->getAge();
             sql += "\',\"YearOfRelease\"=\'";
@@ -1609,7 +1613,12 @@ void MainWindow::slotEditAVP()
 //            qDebug()<<"sql="<<sql;
 
             if(!query->exec(sql))
+            {
+
                 qDebug()<<query->lastError().text();
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+                return;
+            }
 
 //            slotReload();
             ui->tableWidgetAVP->item(selectedRows[0].row(),0)->setText(dEditAVP->getNameAVP());

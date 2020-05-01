@@ -25,6 +25,7 @@ public:
      * @param avpName - название АВП
      */
     bool addSaveInDB();
+    bool updateSaveInDB();
 
 signals:
     /**
@@ -63,6 +64,17 @@ private:
      * @param fileName - имя страницы
      */
     void parsePageExt(const QString &fileName);
+    /**
+     * @brief parsePageExt1 - функция разбора страницы на наличие дополнительных параметров об АВП
+     * @param fileName - имя страницы
+     */
+    void parsePageExt1(const QString &fileName);
+    /**
+     * @brief existsFilmMakerInSaveDb
+     * @param url - URL АВП
+     * @return  - true - если существует запись
+     */
+    bool existsFilmMakerInSaveDb(const QString &url);
     QString decode(QString str);
 
     QString findIdAVS(QString url, QString name);

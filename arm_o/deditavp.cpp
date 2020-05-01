@@ -43,7 +43,7 @@ void DEditAVP::initAVS(uint64_t idAVP)
                 ui->lineEditFilmMaker->setText(query->value(5).toString());
                 ui->lineEditAge->setText(query->value(6).toString());
                 ui->lineEditYearOfRelease->setText(query->value(7).toString());
-                ui->spinBoxDuration->setValue(query->value(8).toString().toInt());
+                ui->lineEditDuration->setText(query->value(8).toString());
             }
         }
         else
@@ -103,8 +103,7 @@ const QString DEditAVP::getYearOfRelease() const
 //=========================================================
 const QString DEditAVP::getDuration() const
 {
-    QString tmp;
-    return tmp.setNum(ui->spinBoxDuration->value());
+    return ui->lineEditDuration->text();
 }
 
 //=========================================================
@@ -124,7 +123,7 @@ void DEditAVP::slotCancel()
     ui->lineEditFilmMaker->clear();
     ui->lineEditAge->clear();
     ui->lineEditYearOfRelease->clear();
-    ui->spinBoxDuration->clear();
+    ui->lineEditDuration->clear();
     initAVS(m_idAVP);
 }
 

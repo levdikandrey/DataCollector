@@ -693,7 +693,7 @@ void CDataCollectionService::run()
     //=====================================IMDB make DB
 //    makeDB_IMBD();
 //    makeDB_IMBD_AKAS();
-    makeRefIMBD_ForAVP();
+//    makeRefIMBD_ForAVP();
 //    remakeColumnYearOfRelease();
     //=====================================IMDB end make DB
 
@@ -702,7 +702,8 @@ void CDataCollectionService::run()
 //    downlodPageIMDB();
 
 //===Test functions===
-//    operate("c:\\DownloadData\\ivi\\www.ivi.ru");
+//    operate("c:\\DownloadData\\ivi\\www.ivi.ru"); //Разбор IVI сайта
+      operate("d:\\DownloadData\\ivi\\www.ivi.ru"); //Разбор IVI сайта
 //    testExistsFilmInDB();
 //    importDataIVI_InFile();
 //    countValidFilmsInFileAchiveKinopoisk("C:\\Users\\leaa\\Documents\\kp_content");
