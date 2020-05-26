@@ -55,7 +55,7 @@ void DGroup::initTableGroup()
 
                 QTableWidgetItem *newItem = new QTableWidgetItem();
                 QIcon icon;
-                icon.addFile(QString::fromUtf8(":/icons/icons/group1.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon.addFile(QString::fromUtf8(":/icons/icons/group1.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem->setIcon(icon);
                 newItem->setText(query->value(1).toString());
                 ui->tableWidgetGroup->setItem(row,0, newItem);
@@ -64,7 +64,7 @@ void DGroup::initTableGroup()
                 QTableWidgetItem *newItem1 = new QTableWidgetItem();
                 newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
                 QIcon icon1;
-                icon1.addFile(QString::fromUtf8(":/icons/icons/category.ico"), QSize(), QIcon::Normal, QIcon::Off);
+                icon1.addFile(QString::fromUtf8(":/icons/icons/category.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem1->setIcon(icon1);
                 newItem1->setText(query->value(2).toString());
                 ui->tableWidgetGroup->setItem(row,1, newItem1);

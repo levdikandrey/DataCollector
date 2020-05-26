@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionConnectToDB, SIGNAL(triggered()), SLOT(slotSettingsDB()));
     connect(ui->actionChangePassword, SIGNAL(triggered()), SLOT(slotChangePassword()));
     connect(ui->actionMakeReport, SIGNAL(triggered()), SLOT(slotMakeReport()));
+    connect(ui->actionJournalSession, SIGNAL(triggered()), SLOT(slotJournalSession()));
+    connect(ui->actionJournalJob, SIGNAL(triggered()), SLOT(slotJournalJob()));
 
     connect(ui->radioButtonViolation,SIGNAL(toggled(bool)), SLOT(slotRBViolation(bool)));
     connect(ui->radioButtonChecked,SIGNAL(toggled(bool)), SLOT(slotRBChecked(bool)));
@@ -131,6 +133,8 @@ MainWindow::MainWindow(QWidget *parent)
     dEnter1 = new DEnter();
     dEditAudit = new DEditAudit(this);
     dChangePassword = new DChangePassword(this);
+    dJournalSession = new DJournalSession(this);
+
 
     m_currentIdAVS = -1;
     m_currentState = -1;
@@ -2309,6 +2313,18 @@ void MainWindow::slotChangeUser()
         initDialogAccess(currentUserName);
         initTableMyTask();
     }
+}
+
+//=========================================================
+void MainWindow::slotJournalSession()
+{
+    dJournalSession->initTableJournalSession();
+    dJournalSession->exec();
+}
+
+//=========================================================
+void MainWindow::slotJournalJob()
+{
 }
 
 //=========================================================

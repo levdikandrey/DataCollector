@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <QThread>
+#include <QDateTime>
 #include <QSqlDatabase>
 
 
@@ -111,7 +112,7 @@ void AServer::initThreads()
 //=========================================================
 void AServer::incomingConnection(qintptr socketDescriptor)
 {
-    qDebug()<<__PRETTY_FUNCTION__;
+    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")<<" "<<__PRETTY_FUNCTION__;
     Worker* worker = m_workers[m_rrcounter % m_threadCount];
     ++m_rrcounter;
     QMetaObject::invokeMethod(worker, "addClient", Qt::QueuedConnection,Q_ARG(qintptr, socketDescriptor),Q_ARG(ThreadReadQueue*, m_TRQ));

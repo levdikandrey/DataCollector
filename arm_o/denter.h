@@ -22,6 +22,8 @@ private slots:
 
 private:
     bool checkPassword(QString fio);
+    void saveRecord();
+    int getIdUser(QString userName);
     Ui::D_Enter *ui;
     QSqlQuery *query;
 };

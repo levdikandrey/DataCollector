@@ -9,6 +9,7 @@
 #include <QtEndian>
 #include <QHostAddress>
 #include <QtNetwork>
+#include <QDateTime>
 
 extern std::deque<SCommand> listAVP;
 
@@ -65,6 +66,7 @@ AClient::AClient(qintptr socketDescriptor, ThreadReadQueue* threadReadQueue, QOb
     m_request = "";
 
     m_client.setSocketDescriptor(socketDescriptor);
+    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")<<" "<<m_client.peerAddress().toString();
 
     connect(&m_client, &QTcpSocket::readyRead, this, &AClient::onReadyRead);
     connect(&m_client, &QTcpSocket::disconnected, this, &AClient::onClientDisconnected);
@@ -146,7 +148,7 @@ void AClient::sendAnswerAnalysisAVP(const SCommand &command)
         ans.length = sizeof(uint64_t)+1;
         ans.idAVP = command.idAVP;
         ans.status = command.answerState;
-        qDebug()<<"Send answer Client IP = "<<name<< "length packet = "<<sizeof(ans);
+        qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")<<" Send answer Client IP = "<<name<< "length packet = "<<sizeof(ans);
         m_client.write(reinterpret_cast<char*>(&ans), sizeof(ans));
         m_client.flush();
     }
@@ -158,7 +160,7 @@ void AClient::onClientDisconnected()
     qDebug()<<__PRETTY_FUNCTION__;
     QString name;
     name =  m_client.peerAddress().toString();
-    qDebug()<<"Client disconnect IP = "<<name;
+    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")<<" Client disconnect IP = "<<name;
     m_client.flush();
     done();
 }

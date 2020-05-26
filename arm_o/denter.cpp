@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDir>
+#include <QDateTime>
 
 extern QSqlDatabase db;
 extern QString currentUserName;
@@ -75,6 +76,43 @@ bool DEnter::checkPassword(QString fio)
 }
 
 //=========================================================
+int DEnter::getIdUser(QString userName)
+{
+    int id = -1;
+    QString sql;
+    try
+    {
+        sql = "SELECT \"ID\" FROM \"User\" WHERE \"FIO\"=\'"+ userName +"\';";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                id = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return id;
+}
+
+//=========================================================
+void DEnter::saveRecord()
+{
+    QString sql;
+    QString fio;
+
+    sql = "INSERT INTO \"Session\"(\"SessionDate\",\"ID_User\",\"Info\") VALUES(\'";
+    sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
+    sql += fio.setNum(getIdUser(ui->comboBoxUsers->currentText())); sql += ",\'Вход в систему\');";
+//    qDebug()<<sql;
+    if(!query->exec(sql))
+        qDebug()<<query->lastError().text();
+}
+
+//=========================================================
 void DEnter::slotEnter()
 {
     if(checkPassword(ui->comboBoxUsers->currentText()))
@@ -83,6 +121,7 @@ void DEnter::slotEnter()
         QSettings settings(QDir::toNativeSeparators(QApplication::applicationDirPath()) + "/settings.ini",QSettings::IniFormat);
 //    qDebug()<<"settings.value(USER/NAME).toString()="<<settings.value("USER/NAME").toString();
         settings.setValue("USER/NAME",ui->comboBoxUsers->currentText());
+        saveRecord();
         accept();
     }
     else

@@ -26,6 +26,8 @@
 #include "requestsender.h"
 #include "dsettingsdb.h"
 #include "dchangepassword.h"
+#include "djournalsession.h"
+
 #include "client.h"
 #include "aprotocol.h"
 
@@ -267,6 +269,9 @@ private slots:
     void slotChangePassword();
     void slotMakeReport();
 
+    void slotJournalSession();
+    void slotJournalJob();
+
 public slots:
     /**
      * @brief handleResults
@@ -305,6 +310,7 @@ private:
     DSettingsDB *dSettingsDB;
     DChangePassword *dChangePassword;
     DEditAVP *dEditAVP;
+    DJournalSession *dJournalSession;
 
     Client *m_client;
 
@@ -331,7 +337,7 @@ private:
     int getIdTaskStatus(QString taskStatus);
     int getIdPriority(QString namePriority);
 
-    void initComboBoxUser(QComboBox *comboBox);
+//    void initComboBoxUser(QComboBox *comboBox);
     void initComboBoxStatus(QComboBox *comboBox);
     void initComboBoxPriority(QComboBox *comboBox);
 
@@ -348,6 +354,6 @@ private:
 
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);
-
+    void initComboBoxUser(QComboBox *comboBox);
 };
 #endif // MAINWINDOW_H

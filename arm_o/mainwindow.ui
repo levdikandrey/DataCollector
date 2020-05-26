@@ -1512,8 +1512,23 @@
     <addaction name="actionClearDB"/>
     <addaction name="actionMakeReport"/>
    </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>Журналы</string>
+    </property>
+    <addaction name="actionJournalSession"/>
+    <addaction name="actionJournalJob"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>Отчеты</string>
+    </property>
+    <addaction name="action_3"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_6"/>
    <addaction name="menu_4"/>
    <addaction name="menu_3"/>
   </widget>
@@ -1662,6 +1677,29 @@
   <action name="actionMakeReport">
    <property name="text">
     <string>Отчет о задачах</string>
+   </property>
+  </action>
+  <action name="actionJournalSession">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Журнал входа в программу</string>
+   </property>
+  </action>
+  <action name="actionJournalJob">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Журнал работы с АВП</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>Отчет об обработанных АВП</string>
    </property>
   </action>
  </widget>
