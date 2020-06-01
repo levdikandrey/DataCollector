@@ -1508,9 +1508,6 @@
     <addaction name="actionGroup"/>
     <addaction name="actionUser"/>
     <addaction name="separator"/>
-    <addaction name="actionLog"/>
-    <addaction name="actionClearDB"/>
-    <addaction name="actionMakeReport"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -1523,7 +1520,7 @@
     <property name="title">
      <string>Отчеты</string>
     </property>
-    <addaction name="action_3"/>
+    <addaction name="actionReportAVP"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -1697,7 +1694,7 @@
     <string>Журнал работы с АВП</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="actionReportAVP">
    <property name="text">
     <string>Отчет об обработанных АВП</string>
    </property>

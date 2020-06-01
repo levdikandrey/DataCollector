@@ -106,7 +106,7 @@ void DEnter::saveRecord()
 
     sql = "INSERT INTO \"Session\"(\"SessionDate\",\"ID_User\",\"Info\") VALUES(\'";
     sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
-    sql += fio.setNum(getIdUser(ui->comboBoxUsers->currentText())); sql += ",\'Вход в систему\');";
+    sql += fio.setNum(getIdUser(ui->comboBoxUsers->currentText())); sql += ",\'Вход в приложение\');";
 //    qDebug()<<sql;
     if(!query->exec(sql))
         qDebug()<<query->lastError().text();

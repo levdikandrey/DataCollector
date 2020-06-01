@@ -27,6 +27,7 @@
 #include "dsettingsdb.h"
 #include "dchangepassword.h"
 #include "djournalsession.h"
+#include "djournaljobavp.h"
 
 #include "client.h"
 #include "aprotocol.h"
@@ -311,6 +312,7 @@ private:
     DChangePassword *dChangePassword;
     DEditAVP *dEditAVP;
     DJournalSession *dJournalSession;
+    DJournalJobAVP *dJournalJobAVP;
 
     Client *m_client;
 
@@ -333,6 +335,7 @@ private:
     int countAVP_Analysis(int state,long idAVS);
     long idAVS(QString nameAVS);
     long getIdAVP(QString nameAVP);
+    QString getNameRusAVP(uint64_t idAVP);
     int getIdUser(QString userName);
     int getIdTaskStatus(QString taskStatus);
     int getIdPriority(QString namePriority);
@@ -351,6 +354,10 @@ private:
     bool initNetClient();
     void addComment(uint64_t idTask, QString comment);
     void setColorRowTable(QTableWidget *table, int row, int r, int g, int b);
+
+    void closeEvent(QCloseEvent *event);
+    void saveInJournalRecordClose();
+    void addRecordJournalJobAVP(int category, QString info);
 
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);

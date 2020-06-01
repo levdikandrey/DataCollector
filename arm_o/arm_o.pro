@@ -25,6 +25,7 @@ SOURCES += \
     client.cpp \
     dchangepassword.cpp \
     deditavp.cpp \
+    djournaljobavp.cpp \
     djournalsession.cpp \
     dsettingsdb.cpp \
     request.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     client.h \
     dchangepassword.h \
     deditavp.h \
+    djournaljobavp.h \
     djournalsession.h \
     dsettingsdb.h \
     request.h \
@@ -93,6 +95,7 @@ FORMS += \
     d_enter.ui \
     d_group.ui \
     d_importdata.ui \
+    d_journaljobavp.ui \
     d_journalsession.ui \
     d_settingsdb.ui \
     d_user.ui \

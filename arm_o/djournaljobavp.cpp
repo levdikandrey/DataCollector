@@ -1,5 +1,5 @@
-#include "djournalsession.h"
-#include "ui_d_journalsession.h"
+#include "djournaljobavp.h"
+#include "ui_d_journaljobavp.h"
 #include "mainwindow.h"
 
 #include <QSqlDatabase>
@@ -10,9 +10,9 @@
 
 extern QSqlDatabase db;
 //=========================================================
-DJournalSession::DJournalSession(QWidget *parent) :
+DJournalJobAVP::DJournalJobAVP(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DJournalSession)
+    ui(new Ui::DJournalJobAVP)
 {
     ui->setupUi(this);
     query = new QSqlQuery(db);
@@ -23,27 +23,22 @@ DJournalSession::DJournalSession(QWidget *parent) :
 }
 
 //=========================================================
-DJournalSession::~DJournalSession()
+DJournalJobAVP::~DJournalJobAVP()
 {
     delete ui;
 }
 
 //=========================================================
-void DJournalSession::initDialog()
+void DJournalJobAVP::initDialog()
 {
     ui->tableWidget->horizontalHeader()->resizeSection(0, 200);//Date
-    ui->tableWidget->horizontalHeader()->resizeSection(1, 200);//FIO
+    ui->tableWidget->horizontalHeader()->resizeSection(1, 250);//FIO
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);//Session
+    ui->tableWidget->horizontalHeader()->resizeSection(3, 150);//Category
 }
 
 //=========================================================
-void DJournalSession::slotExit()
-{
-    accept();
-}
-
-//=========================================================
-void DJournalSession::initTableJournalSession()
+void DJournalJobAVP::initTableJournalSession()
 {
     QString sql="";
     try
@@ -51,7 +46,7 @@ void DJournalSession::initTableJournalSession()
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
 
-        sql = "SELECT ss.\"SessionDate\",u.\"FIO\",ss.\"Info\" FROM \"Session\" ss INNER JOIN \"User\" u ON ss.\"ID_User\" = u.\"ID\";";
+        sql = "SELECT jj.\"DateEvent\",u.\"FIO\",jj.\"Info\",jj.\"Сategory\" FROM \"JournalJobAVP\" jj INNER JOIN \"User\" u ON jj.\"ID_User\" = u.\"ID\";";
 
         if(query->exec(sql))
         {
@@ -80,6 +75,10 @@ void DJournalSession::initTableJournalSession()
                 newItem3->setText(query->value(2).toString());
                 ui->tableWidget->setItem(row,2, newItem3);
 
+                QTableWidgetItem *newItem4 = new QTableWidgetItem();
+                newItem4->setText(query->value(3).toString());
+                ui->tableWidget->setItem(row,3, newItem4);
+
                 row++;
             }
         }
@@ -95,7 +94,7 @@ void DJournalSession::initTableJournalSession()
 }
 
 //=========================================================
-void DJournalSession::slotReview()
+void DJournalJobAVP::slotReview()
 {
     QString sql="";
     bool filterCheck = false;
@@ -105,7 +104,7 @@ void DJournalSession::slotReview()
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
 
-        sql = "SELECT ss.\"SessionDate\",u.\"FIO\",ss.\"Info\" FROM \"Session\" ss INNER JOIN \"User\" u ON ss.\"ID_User\" = u.\"ID\"";
+        sql = "SELECT ss.\"DateEvent\",u.\"FIO\",ss.\"Info\",ss.\"Сategory\" FROM \"JournalJobAVP\" ss INNER JOIN \"User\" u ON ss.\"ID_User\" = u.\"ID\"";
 
         if(ui->groupBoxUser->isChecked())
         {
@@ -116,13 +115,13 @@ void DJournalSession::slotReview()
         {
             if(!filterCheck)
             {
-                sql +=" WHERE (ss.\"SessionDate\" >='"; sql += ui->dateEditDateBegin->date().toString("yyyy-MM-dd");
-                sql += "\'::date AND ss.\"SessionDate\" <=\'";sql += ui->dateEditDateEnd->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
+                sql +=" WHERE (ss.\"DateEvent\" >='"; sql += ui->dateEditDateBegin->date().toString("yyyy-MM-dd");
+                sql += "\'::date AND ss.\"DateEvent\" <=\'";sql += ui->dateEditDateEnd->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
             }
             else
             {
-                sql +=" AND (ss.\"SessionDate\" >='"; sql += ui->dateEditDateBegin->date().toString("yyyy-MM-dd");
-                sql += "\'::date AND ss.\"SessionDate\" <=\'";sql += ui->dateEditDateEnd->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
+                sql +=" AND (ss.\"DateEvent\" >='"; sql += ui->dateEditDateBegin->date().toString("yyyy-MM-dd");
+                sql += "\'::date AND ss.\"DateEvent\" <=\'";sql += ui->dateEditDateEnd->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
             }
             filterCheck = true;
         }
@@ -156,6 +155,10 @@ void DJournalSession::slotReview()
                 newItem3->setText(query->value(2).toString());
                 ui->tableWidget->setItem(row,2, newItem3);
 
+                QTableWidgetItem *newItem4 = new QTableWidgetItem();
+                newItem3->setText(query->value(3).toString());
+                ui->tableWidget->setItem(row,3, newItem4);
+
                 row++;
             }
         }
@@ -169,3 +172,12 @@ void DJournalSession::slotReview()
         qDebug()<<e.what();
     }
 }
+
+//=========================================================
+void DJournalJobAVP::slotExit()
+{
+    accept();
+}
+
+
+

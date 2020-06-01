@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DJournalSession</class>
- <widget class="QDialog" name="DJournalSession">
+ <class>DJournalJobAVP</class>
+ <widget class="QDialog" name="DJournalJobAVP">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>755</width>
-    <height>657</height>
+    <width>1208</width>
+    <height>710</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Журнал входа в программу</string>
+   <string>Журнал работы с АВП</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -204,6 +204,11 @@
        <string>Действия</string>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>Категория</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item row="2" column="0">
@@ -263,32 +268,32 @@
   <connection>
    <sender>pushButtonExit</sender>
    <signal>clicked()</signal>
-   <receiver>DJournalSession</receiver>
+   <receiver>DJournalJobAVP</receiver>
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>678</x>
-     <y>621</y>
+     <x>763</x>
+     <y>587</y>
     </hint>
     <hint type="destinationlabel">
-     <x>751</x>
-     <y>619</y>
+     <x>838</x>
+     <y>596</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButtonReview</sender>
    <signal>clicked()</signal>
-   <receiver>DJournalSession</receiver>
+   <receiver>DJournalJobAVP</receiver>
    <slot>slotReview()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>701</x>
-     <y>67</y>
+     <x>786</x>
+     <y>71</y>
     </hint>
     <hint type="destinationlabel">
-     <x>751</x>
-     <y>97</y>
+     <x>838</x>
+     <y>88</y>
     </hint>
    </hints>
   </connection>

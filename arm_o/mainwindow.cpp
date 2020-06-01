@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionStatus, SIGNAL(triggered()), SLOT(slotStatus()));
     connect(ui->actionConnectToDB, SIGNAL(triggered()), SLOT(slotSettingsDB()));
     connect(ui->actionChangePassword, SIGNAL(triggered()), SLOT(slotChangePassword()));
-    connect(ui->actionMakeReport, SIGNAL(triggered()), SLOT(slotMakeReport()));
+    connect(ui->actionReportAVP, SIGNAL(triggered()), SLOT(slotMakeReport()));
     connect(ui->actionJournalSession, SIGNAL(triggered()), SLOT(slotJournalSession()));
     connect(ui->actionJournalJob, SIGNAL(triggered()), SLOT(slotJournalJob()));
 
@@ -134,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
     dEditAudit = new DEditAudit(this);
     dChangePassword = new DChangePassword(this);
     dJournalSession = new DJournalSession(this);
-
+    dJournalJobAVP = new DJournalJobAVP(this);
 
     m_currentIdAVS = -1;
     m_currentState = -1;
@@ -197,6 +197,44 @@ MainWindow::~MainWindow()
     delete ui;
     delete query;
     delete m_requestSender;
+    delete m_client;
+}
+
+//=========================================================
+void MainWindow::closeEvent(QCloseEvent *)
+{
+//    slotExit();
+    saveInJournalRecordClose();
+}
+
+//=========================================================
+void MainWindow::saveInJournalRecordClose()
+{
+    QString sql;
+    QString fio;
+
+    sql = "INSERT INTO \"Session\"(\"SessionDate\",\"ID_User\",\"Info\") VALUES(\'";
+    sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
+    sql += fio.setNum(getIdUser(currentUserName)); sql += ",\'Выход из приложения\');";
+//    qDebug()<<sql;
+    if(!query->exec(sql))
+        qDebug()<<query->lastError().text();
+}
+
+//=========================================================
+void MainWindow::addRecordJournalJobAVP(int category, QString info)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString sql;
+    QString fio;
+    QString tmp;
+    sql = "INSERT INTO \"JournalJobAVP\"(\"DateEvent\",\"ID_User\",\"Info\",\"Сategory\") VALUES(\'";
+    sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
+    sql += fio.setNum(getIdUser(currentUserName)); sql += ",\'"; sql += info; sql +="\',";
+    sql += tmp.setNum(category);sql += ");";
+    qDebug()<<sql;
+    if(!query->exec(sql))
+        qDebug()<<query->lastError().text();
 }
 
 //=========================================================
@@ -219,6 +257,8 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, true);
                ui->tabWidget->setTabEnabled( 3, false);
                ui->menu_4->setEnabled(false);
+               ui->menu_5->setEnabled(false);
+               ui->menu_6->setEnabled(false);
                ui->tabWidget->setCurrentIndex(2);
            }
            else if(groupCategory == "Администраторы")
@@ -227,6 +267,8 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, true);
                ui->tabWidget->setTabEnabled( 3, true);
                ui->menu_4->setEnabled(true);
+               ui->menu_5->setEnabled(true);
+               ui->menu_6->setEnabled(true);
                ui->tabWidget->setCurrentIndex(0);
            }
            else if((groupCategory == "Руководство") || (groupCategory == "Начальники групп"))
@@ -235,6 +277,8 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, true);
                ui->tabWidget->setTabEnabled( 3, false);
                ui->menu_4->setEnabled(false);
+               ui->menu_5->setEnabled(true);
+               ui->menu_6->setEnabled(true);
                ui->tabWidget->setCurrentIndex(1);
            }
            else if(groupCategory == "Эксперты")
@@ -243,6 +287,8 @@ void MainWindow::initDialogAccess(QString userName)
                ui->tabWidget->setTabEnabled( 2, false);
                ui->tabWidget->setTabEnabled( 3, true);
                ui->menu_4->setEnabled(false);
+               ui->menu_5->setEnabled(false);
+               ui->menu_6->setEnabled(false);
                ui->tabWidget->setCurrentIndex(3);
            }
        }
@@ -1032,6 +1078,30 @@ long MainWindow::getIdAVP(QString )
 }
 
 //=========================================================
+QString MainWindow::getNameRusAVP(uint64_t idAVP)
+{
+    QString nameRus;
+    QString sql,tmp;
+    try
+    {
+        sql ="SELECT \"NameRus\" FROM avp WHERE \"ID\"="+tmp.setNum(idAVP)+";";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                nameRus = query->value(0).toString();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return nameRus;
+}
+
+
+//=========================================================
 int MainWindow::getIdUser(QString userName)
 {
     int id = -1;
@@ -1624,6 +1694,7 @@ void MainWindow::slotEditAVP()
                 return;
             }
 
+            addRecordJournalJobAVP(1,"Редактирование АВП: "+dEditAVP->getNameAVP()+", "+dEditAVP->getNameOriginal());
 //            slotReload();
             ui->tableWidgetAVP->item(selectedRows[0].row(),0)->setText(dEditAVP->getNameAVP());
             ui->tableWidgetAVP->item(selectedRows[0].row(),1)->setText(dEditAVP->getURL_AVP());
@@ -1671,9 +1742,15 @@ void MainWindow::slotAddAVP()
             }
 
             if(cImportData->addSaveInDB(dataAVP))
+            {
                 QMessageBox::information(this,"Добавление АВП","АВП добавлено успешно.","Да");
+                addRecordJournalJobAVP(1,"Добавление АВП: "+dAddAVP->getNameAVP()+", "+dAddAVP->getNameOriginal());
+            }
             else
+            {
                 QMessageBox::critical(this,"Ошибка","Ошибка добавления АВП!","Да");
+                addRecordJournalJobAVP(2,"Ошибка добавления АВП!: "+dAddAVP->getNameAVP()+", "+dAddAVP->getNameOriginal());
+            }
         }
         catch(std::exception &e)
         {
@@ -1724,6 +1801,8 @@ void MainWindow::slotAddTask()
 //                qDebug()<<"sql="<<sql;
                 if(!query->exec(sql))
                     qDebug()<<query->lastError().text();
+                else
+                    addRecordJournalJobAVP(1,"Добавление новой задачи наименование АВП: "+ getNameRusAVP(idAVP.first));
             }
             initTableTask(true);
         }
@@ -1774,9 +1853,11 @@ void MainWindow::slotEditTask()
             sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text();
             sql += ";";
 
-//            qDebug()<<"sql="<<sql;
+            qDebug()<<"sql="<<sql;
             if(!query->exec(sql))
                 qDebug()<<query->lastError().text();
+            else
+                addRecordJournalJobAVP(1,"Редактирование \"Текущие задачи\" АВП: "+ getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
 
             initTableTask(true);
         }
@@ -1827,9 +1908,14 @@ void MainWindow::slotDeleteAVP()
 //                sql = "DELETE FROM avp WHERE \"ID\"=";sql += ui->tableWidgetAVP->takeItem(selectedRows[0].row(),8)->text(); sql += ";";
                 sql = "DELETE FROM avp WHERE \"ID\"=";sql += ui->tableWidgetAVP->item(selectedRows[0].row(),8)->text(); sql += ";";
 //                qDebug()<<"sql ="<<sql;
-                query->exec(sql);
-                ui->tableWidgetAVP->removeRow(selectedRows[0].row());
-                selectedRows = ui->tableWidgetAVP->selectionModel()->selectedRows();
+                if(query->exec(sql))
+                {
+                    addRecordJournalJobAVP(3,"Удаление АВП: "+ui->tableWidgetAVP->item(selectedRows[0].row(),0)->text());
+                    ui->tableWidgetAVP->removeRow(selectedRows[0].row());
+                    selectedRows = ui->tableWidgetAVP->selectionModel()->selectedRows();
+                }
+                else
+                    qDebug()<<query->lastError().text();
             }
         }
     }
@@ -1854,10 +1940,11 @@ void MainWindow::slotDeleteTask()
                 while (!selectedRows.empty())
                 {
 //                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->takeItem(selectedRows[0].row(),9)->text(); sql += ";";
-                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),9)->text(); sql += ";";
+                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text(); sql += ";";
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
                     {
+                        addRecordJournalJobAVP(1,"Удаление задачи наименование АВП: "+ getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
                         ui->tableWidgetCurrentTasks->removeRow(selectedRows[0].row());
                         selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
                     }
@@ -1908,6 +1995,8 @@ void MainWindow::slotEditMyTask()
 //            qDebug()<<"sql="<<sql;
             if(!query->exec(sql))
                 qDebug()<<query->lastError().text();
+            else
+                addRecordJournalJobAVP(1,"Редактирование \"Мои задачи\" АВП: "+ getNameRusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),10)->text().toLong()));
 
             initTableTask(true);
         }
@@ -1951,6 +2040,8 @@ void MainWindow::slotEditAudit()
                 qDebug()<<query->lastError().text();
                 QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
             }
+            else
+                addRecordJournalJobAVP(1,"Редактирование \"Экспертиза\" АВП: "+ getNameRusAVP(ui->tableWidgetAudit->item(selectedRows[0].row(),10)->text().toLong()));
         }
         catch(std::exception &e)
         {
@@ -1984,6 +2075,7 @@ void MainWindow::slotSettingsDB()
 //=========================================================
 void MainWindow::slotMakeReport()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString sql,tmp;
     try
     {
@@ -2023,7 +2115,10 @@ void MainWindow::slotMakeReport()
                  row++;
              }
              xlsx.save();
+             QApplication::restoreOverrideCursor();
              QMessageBox::information(this,"Сообщение","Создан отчет о задачах.","Да");
+             QDesktopServices::openUrl(QUrl::fromLocalFile("./report1.xlsx"));
+//             QProcess::startDetached("./report1.xlsx");
         }
         else
         {
@@ -2034,7 +2129,9 @@ void MainWindow::slotMakeReport()
     catch(std::exception &e)
     {
         qDebug()<<e.what();
+        QApplication::restoreOverrideCursor();
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
@@ -2325,6 +2422,8 @@ void MainWindow::slotJournalSession()
 //=========================================================
 void MainWindow::slotJournalJob()
 {
+    dJournalJobAVP->initTableJournalSession();
+    dJournalJobAVP->exec();
 }
 
 //=========================================================
@@ -2819,5 +2918,8 @@ void MainWindow::slotGoToURL()
 void MainWindow::slotExit()
 {
     if(QMessageBox::information(this, tr("Сообщение"),tr("Вы действительно хотите выйти из приложения?"),tr("Да"),tr("Нет"))==0)
+    {
+//        saveInJournalRecordClose();
         close();
+    }
 }
