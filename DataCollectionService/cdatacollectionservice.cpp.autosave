@@ -309,7 +309,7 @@ void CDataCollectionService::makeNewFileForKinopoisk(QString fileName)
 
             if(year_of_production == "2020")
             {
-                qDebug()<<"year_of_production = "<<year_of_production;
+//                qDebug()<<"year_of_production = "<<year_of_production;
                 out<< line;
                 col++;
             }

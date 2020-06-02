@@ -88,6 +88,7 @@ private:
     void makeDB_IMBD_AKAS();
     void makeRefIMBD_ForAVP();
     void remakeColumnYearOfRelease();
+    void makeNewFileForKinopoisk(QString fileName);
     //=============== end list test utils
 
 private slots:
