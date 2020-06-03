@@ -335,7 +335,6 @@ private:
     int countAVP_Analysis(int state,long idAVS);
     long idAVS(QString nameAVS);
     long getIdAVP(QString nameAVP);
-    QString getNameRusAVP(uint64_t idAVP);
     int getIdUser(QString userName);
     int getIdTaskStatus(QString taskStatus);
     int getIdPriority(QString namePriority);
@@ -357,10 +356,11 @@ private:
 
     void closeEvent(QCloseEvent *event);
     void saveInJournalRecordClose();
-    void addRecordJournalJobAVP(int category, QString info);
 
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);
     void initComboBoxUser(QComboBox *comboBox);
+    void addRecordJournalJobAVP(int category, QString info);
+    QString getNameRusAVP(uint64_t idAVP);
 };
 #endif // MAINWINDOW_H
