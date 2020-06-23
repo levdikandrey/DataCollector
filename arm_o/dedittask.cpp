@@ -428,7 +428,7 @@ void DEditTask::slotApplyViolation()
             if(!query_data->exec())
                 qDebug()<<"ERROR:"<<query_data->lastError().text();
         }
-        ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения для АВП: "+ ((MainWindow*)parent())->getNameRusAVP(m_idAVP) +" нарушение - " + ui->comboBoxViolation->currentText());
+        ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения для АВП: "+ ((MainWindow*)parent())->getNameRusAVP(m_idAVP) +". Нарушение - " + ui->comboBoxViolation->currentText());
         initTableViolation(m_idAVP);
     }
     catch(std::exception &e)

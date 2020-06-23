@@ -32,7 +32,8 @@ CImportDataKinopoisk::~CImportDataKinopoisk()
 //=========================================================
 void CImportDataKinopoisk::doWork(const QString &fileName)
 {
-    QString url, title_ru, title_original;
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString url, title_ru, title_original, year_of_production,directors, genres;
     QString result,tmp;
 
     int col_Ok = 0;
@@ -54,14 +55,18 @@ void CImportDataKinopoisk::doWork(const QString &fileName)
             QString line = file.readLine();
             QStringList list = line.split('\t');
 
-            url = list.at(0).mid(list.at(0).lastIndexOf("=")+1,list.at(0).length()-list.at(0).lastIndexOf("=")-1);
-            title_ru = list.at(1).mid(list.at(1).lastIndexOf("=")+1,list.at(1).length()-list.at(1).lastIndexOf("=")-1);
-            title_original = list.at(2).mid(list.at(2).lastIndexOf("=")+1,list.at(2).length()-list.at(2).lastIndexOf("=")-1);
+            year_of_production = list.at(0).mid(list.at(0).lastIndexOf("=")+1,list.at(0).length()-list.at(0).lastIndexOf("=")-1);
+            url = list.at(1).mid(list.at(1).lastIndexOf("=")+1,list.at(1).length()-list.at(1).lastIndexOf("=")-1);
+            title_ru = list.at(2).mid(list.at(2).lastIndexOf("=")+1,list.at(2).length()-list.at(2).lastIndexOf("=")-1);
+            directors = list.at(3).mid(list.at(3).lastIndexOf("=")+1,list.at(3).length()-list.at(3).lastIndexOf("=")-1);
+            title_original = list.at(4).mid(list.at(4).lastIndexOf("=")+1,list.at(4).length()-list.at(4).lastIndexOf("=")-1);
+            genres = list.at(5).mid(list.at(5).lastIndexOf("=")+1,list.at(5).length()-list.at(5).lastIndexOf("=")-1);
 
             i++;
             qDebug()<<"i="<<i;
 
-            if(title_ru == "" || i<671000)
+//            if(title_ru == "" || i<671000)
+             if(title_ru == "")
                 continue;
             else
             {
@@ -75,10 +80,11 @@ void CImportDataKinopoisk::doWork(const QString &fileName)
                 m_sDataAVP.avpNameRus = title_ru;
                 m_sDataAVP.avpNameOriginal = title_original;
                 m_sDataAVP.userSaveInDB = currentUserName;
-                m_sDataAVP.rubric = "";
+                m_sDataAVP.rubric = genres;
                 m_sDataAVP.age = "";
                 m_sDataAVP.duration = "";
-                m_sDataAVP.filmMaker = "";
+                m_sDataAVP.filmMaker = directors;
+                m_sDataAVP.yearOfRelease = year_of_production;
 
                 try
                 {
@@ -104,7 +110,7 @@ void CImportDataKinopoisk::doWork(const QString &fileName)
                        result = "Загрузка данных АВП ";
                        result +=tmp.setNum(i); result +=" ";
                        result += m_sDataAVP.avpURL; result += "........FAIL";
-                       flag_error = true;
+//                       flag_error = true;//ToDo
                        qDebug()<<result;
 //                       emit resultReady(result);
                    }
