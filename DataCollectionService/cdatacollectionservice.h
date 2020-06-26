@@ -31,6 +31,51 @@ struct SDownloadAVP
     int ID_AVP;
 };
 
+/**
+ * @brief The SDataAVP struct - структура для хранения данных об АВП
+ */
+struct SDataAVP
+{
+   QString avsName;
+   QString avsURL;
+   QString avpNameRus;
+   QString avpSeasonNum;
+   QString avpTrackNum;
+   QString avpNameOriginal;
+   QString avpURL;
+   QString rubric;
+   QString filmMaker;
+   QString yearOfRelease;
+   QDateTime dateSaveInDB;
+   QString age;
+   QString duration;
+   QString userSaveInDB;
+   QString urlKinopoisk;
+   QString urlIMDB;
+   QString avpForm;
+   QString country;
+   void clear()
+   {
+       avsName = "";
+       avsURL = "";
+       avpNameRus = "";
+       avpSeasonNum = "";
+       avpTrackNum = "";
+       avpNameOriginal = "";
+       avpURL = "";
+       rubric = "";
+       filmMaker = "";
+       yearOfRelease = "";
+       age = "";
+       duration = "";
+       userSaveInDB = "";
+       urlKinopoisk = "";
+       urlIMDB = "";
+       avpForm = "";
+       country = "";
+   }
+};
+
 //=========================================================
 class CDataCollectionServiceDestroyer
 {
@@ -64,10 +109,12 @@ private:
 
     std::deque<SDownloadAVP> m_listAVP_IMDB;
     SDownloadAVP m_sDownloadAVP;
+    SDataAVP m_sDataAVP;
     QString sql;
     QSqlDatabase db;
     QSqlQuery *query;
     QSqlQuery *query1;
+
     /**
      * @brief initDB - функция установки соединения с базой данных
      */
@@ -90,6 +137,26 @@ private:
     void remakeColumnYearOfRelease();
     void makeNewFileForKinopoisk(QString fileName);
     //=============== end list test utils
+
+    //=======parser collection========
+    void parserKinopoisk(QString fileName);
+    void parserIVI(QString fileName);
+    void parserMegogo(QString fileName);
+    void parserPremier(QString fileName);
+    void parserOkkoTV(QString fileName);
+    void parserMoreTV(QString fileName);
+
+    bool addSaveInDB(SDataAVP &sDataAVP);
+    /**
+     * @brief existsSaveInDb - функция проверяет существование, такой записи в БД АВП
+     * @param avpName - название АВП
+     * @return - true - если существует запись
+     */
+    bool existsSaveInDb(const QString &url);
+    QString findIdAVS(QString url, QString name);
+    QString findIdAVP(QString &url);
+    QString findIdUser(QString fio);
+    //=============== end parser collection========
 
 private slots:
     void readFile();

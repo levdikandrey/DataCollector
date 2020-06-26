@@ -71,8 +71,8 @@ void CDataCollectionService::initDB()
 {
     qDebug()<<"initDB()";
     db = QSqlDatabase::addDatabase("QPSQL");
-//    db.setHostName("192.168.28.96");
-    db.setHostName("127.0.0.1");
+    db.setHostName("192.168.28.96");
+//    db.setHostName("127.0.0.1");
     db.setDatabaseName("avpDB");
     db.setUserName("postgres");
     db.setPassword("postgres");
@@ -272,6 +272,288 @@ QString CDataCollectionService::analysisURL(const QString &url)
     else
         newURL = url+"/";
     return newURL;
+}
+
+//=========================================================
+void CDataCollectionService::parserKinopoisk(QString fileName)
+{
+}
+
+//=========================================================
+void CDataCollectionService::parserIVI(QString fileName)
+{
+}
+
+//=========================================================
+void CDataCollectionService::parserMegogo(QString fileName)
+{
+}
+
+//=========================================================
+void CDataCollectionService::parserPremier(QString fileName)
+{
+}
+
+//=========================================================
+void CDataCollectionService::parserOkkoTV(QString fileName)
+{
+}
+
+//=========================================================
+void CDataCollectionService::parserMoreTV(QString fileName)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString year_tmp;
+    QString result,tmp;
+    int col_Ok = 0;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QString textMsg = "Не могу открыть файл " + fileName+"!";
+        return;
+    }
+    else
+    {
+        int i=0;
+        while (!file.atEnd())
+        {
+            i++;
+            m_sDataAVP.clear();
+            QString line = file.readLine();
+            if(i == 1)
+                continue;
+            QStringList list = line.split('\t');
+
+            m_sDataAVP.avpNameRus = list.at(0).mid(list.at(0).lastIndexOf("=")+1,list.at(0).length()-list.at(0).lastIndexOf("=")-1);
+            m_sDataAVP.avpSeasonNum = list.at(1).mid(list.at(1).lastIndexOf("=")+1,list.at(1).length()-list.at(1).lastIndexOf("=")-1);
+            m_sDataAVP.avpTrackNum = list.at(2).mid(list.at(2).lastIndexOf("=")+1,list.at(2).length()-list.at(2).lastIndexOf("=")-1);
+            m_sDataAVP.avpURL = "https://more.tv" + list.at(3).mid(list.at(3).lastIndexOf("=")+1,list.at(3).length()-list.at(3).lastIndexOf("=")-1);
+            year_tmp = list.at(5).mid(list.at(5).lastIndexOf("=")+1,list.at(5).length()-list.at(5).lastIndexOf("=")-1);
+            QStringList list_year = year_tmp.split('-');
+            m_sDataAVP.yearOfRelease = list_year.at(0);
+            m_sDataAVP.age = list.at(6).mid(list.at(6).lastIndexOf("=")+1,list.at(6).length()-list.at(6).lastIndexOf("=")-1) + "+";
+            m_sDataAVP.avpForm = list.at(7).mid(list.at(7).lastIndexOf("=")+1,list.at(7).length()-list.at(7).lastIndexOf("=")-2);
+
+            m_sDataAVP.avsName = "more.tv";
+            m_sDataAVP.avsURL = "https://more.tv";
+            m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
+
+
+            qDebug()<<"title_ru="<<m_sDataAVP.avpNameRus
+                   << " season_num="<< m_sDataAVP.avpSeasonNum
+                   <<" track_num="<< m_sDataAVP.avpTrackNum
+                   << " url="<< m_sDataAVP.avpURL
+                   << " year="<< m_sDataAVP.yearOfRelease
+                   << " age="<<m_sDataAVP.age
+                   << " genres="<<m_sDataAVP.avpForm;
+            try
+            {
+               if(addSaveInDB(m_sDataAVP))
+               {
+                   col_Ok++;
+//                       if(col_Ok%100 == 0)
+                   if(i%100 == 0)
+                   {
+                       result = QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss");
+                       result += " Загрузка данных АВП: ";
+                    // result +=tmp.setNum(col_Ok);
+                       result +=tmp.setNum(i);
+                       result +=" записей. Добавлено ";
+                       result +=tmp.setNum(col_Ok);
+                       result +=" записей.";
+                       result += "........OK";
+                       qDebug()<<result;
+                   }
+               }
+               else
+               {
+                   result = "Загрузка данных АВП ";
+                   result +=tmp.setNum(i); result +=" ";
+                   result += m_sDataAVP.avpURL; result += "........FAIL";
+                   qDebug()<<result;
+               }
+            }
+            catch (std::exception &e)
+            {
+                qDebug()<<e.what();
+            }
+
+//            if(i == 10)
+//                break;
+//            qDebug()<<"i = "<<i;
+        }
+        file.close();
+        result="Запись данных о " + tmp.setNum(col_Ok)+" АВП завершена успешно!";
+        qDebug()<<result;
+    }
+}
+
+//=========================================================
+bool CDataCollectionService::existsSaveInDb(const QString &url)
+{
+    bool res = false;
+    QString sql;
+    try
+    {
+        sql = "SELECT * FROM avp WHERE \"URL\"=\'";
+        sql += url; sql += "\';";
+        //        qDebug()<<"sql="<<sql;
+        if(query->exec(sql))
+        {
+            if(query->next())
+                res = true;
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+         qDebug()<<e.what();
+    }
+    return res;
+}
+
+//=========================================================
+QString CDataCollectionService::findIdAVS(QString url, QString name)
+{
+    QString id_avs="";
+    QString sql="";
+    sql = "SELECT \"ID\" FROM avs WHERE \"URL\"=\'"+url+"\' AND \"NameAVS\"=\'"+name+"\';";
+//    qDebug()<<"sql="<<sql;
+    if(!query->exec(sql))
+    {
+        qDebug()<<query->lastError().text();
+        id_avs = "0";
+    }
+    else
+    {
+        if(query->next())
+        {
+            id_avs = query->value(0).toString();
+        }
+    }
+    qDebug()<<"id_avs="<<id_avs;
+    return id_avs;
+}
+
+//=========================================================
+bool CDataCollectionService::addSaveInDB(SDataAVP &sDataAVP)
+{
+    bool res=true;
+    QString sql="";
+    QString tmp;
+    try
+    {
+        if(existsSaveInDb(sDataAVP.avpURL))
+        {
+           return false;
+        }
+
+        sql="INSERT INTO avp (\"NameRus\",\"URL\",\"ID_AVS\",\"NameOriginal\",\"URL_kinopoisk\",\"URL_imdb\",\"Season_num\",\"Track_num\") VALUES (E\'";
+        sql += decode(sDataAVP.avpNameRus);sql+="\',\'";
+        sql += sDataAVP.avpURL; sql+="\',";
+        sql += findIdAVS("https://more.tv","more.tv");
+//        sql += "151";
+        sql+=",E\'"; sql += decode(sDataAVP.avpNameOriginal); sql+="\',\'";
+        sql += sDataAVP.urlKinopoisk;
+        sql+="\',\'";
+        sql += sDataAVP.urlIMDB;
+        sql+="\',E\'";
+        sql += decode(sDataAVP.avpSeasonNum);
+        sql+="\',E\'";
+        sql += decode(sDataAVP.avpTrackNum);
+        sql+="\');";
+//        qDebug()<<sql;
+
+        if(!query->exec(sql))
+        {
+            qDebug()<<sql;
+            qDebug()<<query->lastError().text();
+            res = false;
+        }
+        else
+        {
+            res = true;
+            sql = "INSERT INTO \"AVPattribute\" (\"DateSaveInDB\",\"Rubric\",\"FilmMaker\",\"YearOfRelease\",\"Age\",\"Duration\",\"ID_AVP\",\"ID_User\",\"Country\") VALUES ('";
+            sql += tmp.setNum(QDateTime::currentDateTime().date().year());sql += "-";
+            sql += tmp.setNum(QDateTime::currentDateTime().date().month());sql += "-";
+            sql += tmp.setNum(QDateTime::currentDateTime().date().day());
+            sql+="\',\'";
+            sql += sDataAVP.avpForm;sql+="\',\'";
+            sql += sDataAVP.filmMaker;
+            sql+="\',\'";
+            sql += sDataAVP.yearOfRelease;sql+="\',\'";
+            sql += sDataAVP.age;sql+="\',\'";
+            sql += sDataAVP.duration;sql+="\',";
+            sql += findIdAVP(sDataAVP.avpURL) ;sql+=",";
+            sql += findIdUser("Левдик А.А."); sql+=",\'";
+            sql += sDataAVP.country;
+            sql+="\');";
+//            qDebug()<<sql;
+
+            if(!query->exec(sql.toStdString().c_str()))
+            {
+                qDebug()<<sql;
+                qDebug()<<query->lastError().text();
+                res = false;
+            }
+            else
+            {
+//                colAVP++;
+//                qDebug()<<"Save in DB OK AVP: "<<sDataAVP.avpNameRus<<"   colAVP="<<colAVP<<"\n";
+                qDebug()<<"Save in DB OK AVP: "<<sDataAVP.avpNameRus<<"\n";
+                res = true;
+            }
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return res;
+}
+
+//=========================================================
+QString CDataCollectionService::findIdAVP(QString &url)
+{
+    QString id_avp="";
+    QString sql="";
+    sql = "SELECT \"ID\" FROM avp WHERE \"URL\"=\'"+url+"\';";
+    if(!query->exec(sql))
+    {
+        qDebug()<<query->lastError().text();
+        id_avp = "0";
+    }
+    else
+    {
+        if(query->next())
+        {
+            id_avp = query->value(0).toString();
+        }
+    }
+    return id_avp;
+}
+
+//=========================================================
+QString CDataCollectionService::findIdUser(QString fio)
+{
+    QString id_user="";
+    QString sql="";
+    sql = "SELECT \"ID\" FROM \"User\" WHERE \"FIO\"=\'"+fio+"\';";
+    if(!query->exec(sql))
+    {
+        qDebug()<<query->lastError().text();
+        id_user = "0";
+    }
+    else
+    {
+        if(query->next())
+        {
+            id_user = query->value(0).toString();
+        }
+    }
+    return id_user;
 }
 
 //=========================================================
@@ -738,6 +1020,8 @@ void CDataCollectionService::renamePathView()
 void CDataCollectionService::run()
 {
     qDebug()<<"CDataCollectionService::run getpid()="<<getpid();
+    parserMoreTV("D:\\Program\\m3_rez");
+
     //=====================================IMDB make DB
 //    makeDB_IMBD();
 //    makeDB_IMBD_AKAS();
@@ -755,7 +1039,9 @@ void CDataCollectionService::run()
 //    testExistsFilmInDB();
 //    importDataIVI_InFile();
 //    countValidFilmsInFileAchiveKinopoisk("C:\\Users\\leaa\\Documents\\kp_content");
-        makeNewFileForKinopoisk("D:\\Program\\Kinopoisk\\kp_content.tskv\\kp_content.tskv"); //сделать файл для показа
+
+//        makeNewFileForKinopoisk("D:\\Program\\Kinopoisk\\kp_content.tskv\\kp_content.tskv"); //сделать файл для показа
+
 //====END test
 
 //    m_cAPIdbAVP->setDB(db);

@@ -595,7 +595,7 @@ void DAddTask::slotRBViolation(bool state)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     if(state)
-       initTableListAVP(1, m_currentIdAVS, 2);
+       initTableListAVP(1, m_currentIdAVS, 1);
 
     m_currentState = 1;
     m_currentNumberPage = 1;
@@ -733,7 +733,8 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
         else if( state == -1)
         {
             if(m_flagNotJob)
-                sql+=" WHERE avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
+//                sql+=" WHERE avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
+            sql+=" AND avp.\"ID\" NOT IN (SELECT \"ID_AVP\" FROM \"Task\")";
         }
 
         sql+=" ORDER BY avp.\"ID\" LIMIT 1000 OFFSET ";
@@ -838,6 +839,7 @@ long DAddTask::idAVS(QString nameAVS)
 void DAddTask::slotSelectAVS(QString nameAVS)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
     QString avs;
     long id = -1;
     if(nameAVS == "Все")
