@@ -168,7 +168,8 @@ public slots:
     void handleResults(const QString &);
 
 signals:
-     void operate(const QString &);
+    void operate(const QString &);
+    void operateMegogo(const QString &);
 
 protected:
     CDataCollectionService(QObject *parent = nullptr);

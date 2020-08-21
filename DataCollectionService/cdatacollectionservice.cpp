@@ -3,6 +3,7 @@
 #include <QMutex>
 #include <QThread>
 #include <QDebug>
+#include <QStringList>
 
 #include <unistd.h>
 
@@ -35,6 +36,7 @@ CDataCollectionService::CDataCollectionService(QObject *parent) : QObject(parent
     m_pageParserIVI->moveToThread(&parsingPagesIVIThread);
     connect(&parsingPagesIVIThread, &QThread::finished, m_pageParserIVI, &QObject::deleteLater);
     connect(this, &CDataCollectionService::operate, m_pageParserIVI, &CPageParserIVI::doWork);
+    connect(this, &CDataCollectionService::operateMegogo, m_pageParserIVI, &CPageParserIVI::doWorkMegogo);
     connect(m_pageParserIVI, &CPageParserIVI::resultReady, this, &CDataCollectionService::handleResults);
     parsingPagesIVIThread.start();
 
@@ -292,11 +294,235 @@ void CDataCollectionService::parserMegogo(QString fileName)
 //=========================================================
 void CDataCollectionService::parserPremier(QString fileName)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString year_tmp;
+    QString result,tmp;
+    int col_Ok = 0;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QString textMsg = "Не могу открыть файл " + fileName+"!";
+        return;
+    }
+    else
+    {
+        int i=0;
+        while (!file.atEnd())
+        {
+            i++;
+            m_sDataAVP.clear();
+            QString line = file.readLine();
+            if(i == 1)
+                continue;
+            QStringList list = line.split(',');
+
+            m_sDataAVP.age = list.at(0);
+            m_sDataAVP.rubric = list.at(1);
+            m_sDataAVP.yearOfRelease = list.at(2);
+            m_sDataAVP.filmMaker = list.at(3);
+            m_sDataAVP.avpURL = list.at(4);
+            m_sDataAVP.avpSeasonNum = list.at(5);
+            m_sDataAVP.avpTrackNum = list.at(6);
+            m_sDataAVP.avpNameRus = list.at(7);
+
+            m_sDataAVP.avsName = "PREMIER";
+            m_sDataAVP.avsURL = "https://premier.one/";
+            m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
+
+
+            qDebug()<<"title_ru="<<m_sDataAVP.avpNameRus
+                   << " season_num="<< m_sDataAVP.avpSeasonNum
+                   <<" track_num="<< m_sDataAVP.avpTrackNum
+                   << " url="<< m_sDataAVP.avpURL
+                   << " year="<< m_sDataAVP.yearOfRelease
+                   << " age="<<m_sDataAVP.age
+                   << " genres="<<m_sDataAVP.avpForm;
+//            break;
+            try
+            {
+               if(addSaveInDB(m_sDataAVP))
+               {
+                   col_Ok++;
+//                       if(col_Ok%100 == 0)
+                   if(i%100 == 0)
+                   {
+                       result = QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss");
+                       result += " Загрузка данных АВП: ";
+                    // result +=tmp.setNum(col_Ok);
+                       result +=tmp.setNum(i);
+                       result +=" записей. Добавлено ";
+                       result +=tmp.setNum(col_Ok);
+                       result +=" записей.";
+                       result += "........OK";
+                       qDebug()<<result;
+                   }
+               }
+               else
+               {
+                   result = "Загрузка данных АВП ";
+                   result +=tmp.setNum(i); result +=" ";
+                   result += m_sDataAVP.avpURL; result += "........FAIL";
+                   qDebug()<<result;
+               }
+            }
+            catch (std::exception &e)
+            {
+                qDebug()<<e.what();
+            }
+
+//            if(i == 10)
+//                break;
+//            qDebug()<<"i = "<<i;
+        }
+        file.close();
+        result="Запись данных о " + tmp.setNum(col_Ok)+" АВП завершена успешно!";
+        qDebug()<<result;
+    }
 }
 
 //=========================================================
 void CDataCollectionService::parserOkkoTV(QString fileName)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString year_tmp;
+    QString result,tmp;
+    QStringList list;
+    int col_Ok = 0;
+    bool new_save = false;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QString textMsg = "Не могу открыть файл " + fileName+"!";
+        return;
+    }
+    else
+    {
+        int i=0;
+        while (!file.atEnd())
+        {
+            //            m_sDataAVP.clear();
+            QString line = file.readLine();
+//            qDebug()<<"line"<<line;
+            if(line.lastIndexOf("Url")!=-1)
+            {
+                i++;
+                m_sDataAVP.clear();
+                new_save = true;
+                list = line.split(':');
+                m_sDataAVP.avpURL = list.at(1)+list.at(2);
+                m_sDataAVP.avpURL = m_sDataAVP.avpURL.mid(1,m_sDataAVP.avpURL.length()-2);
+            }
+            else if(line.lastIndexOf("Фильм")!=-1)
+            {
+                list = line.split(':');
+                m_sDataAVP.avpNameRus = list.at(1);
+                m_sDataAVP.avpNameRus = m_sDataAVP.avpNameRus.mid(1,m_sDataAVP.avpNameRus.length()-2);
+                if(m_sDataAVP.avpNameRus[0] == 0x00ab)
+                {
+                    qDebug()<<"жопа";
+                    m_sDataAVP.avpNameRus = m_sDataAVP.avpNameRus.mid(1,m_sDataAVP.avpNameRus.lastIndexOf(0x00bb)-1);
+
+                }
+            }
+            else if(line.lastIndexOf("год")!=-1)
+            {
+                list = line.split(':');
+                m_sDataAVP.yearOfRelease = list.at(1);
+                m_sDataAVP.yearOfRelease =m_sDataAVP.yearOfRelease.mid(0,m_sDataAVP.yearOfRelease.length()-1);
+            }
+            else if(line.lastIndexOf("жанр")!=-1)
+            {
+                list = line.split(':');
+                m_sDataAVP.avpForm = list.at(1);
+                m_sDataAVP.avpForm =m_sDataAVP.avpForm.mid(0,m_sDataAVP.avpForm.length()-1);
+            }
+            else if(line.lastIndexOf("режиссёр")!=-1)
+            {
+                list = line.split(':');
+                m_sDataAVP.filmMaker = list.at(1);
+                m_sDataAVP.filmMaker =m_sDataAVP.filmMaker.mid(0,m_sDataAVP.filmMaker.length()-1);
+            }
+            else if(line.lastIndexOf("Возрастное")!=-1)
+            {
+                list = line.split(':');
+                m_sDataAVP.age = list.at(1);
+                m_sDataAVP.age = m_sDataAVP.age.mid(1,3);
+            }
+            else if((line!="") && (line.lastIndexOf("В ролях") == -1))
+            {
+               m_sDataAVP.country = line.mid(0, line.length()-1);
+               list = m_sDataAVP.country.split(0x00b7);
+               m_sDataAVP.country = list.at(0);
+               m_sDataAVP.country = m_sDataAVP.country.mid(0,m_sDataAVP.country.length()-1);
+               if(list.size()>1)
+               {
+                    m_sDataAVP.duration = list.at(1);
+                    m_sDataAVP.duration = m_sDataAVP.duration.mid(1,m_sDataAVP.duration.length()-1);
+                    list = m_sDataAVP.duration.split(' ');
+                    m_sDataAVP.duration = list.at(0);
+               }
+            }
+
+            if(line.lastIndexOf("В ролях") == -1)
+                continue;
+
+            m_sDataAVP.avsName = "OKKO";
+            m_sDataAVP.avsURL = "https://okko.tv";
+            m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
+
+
+            qDebug()<<"title_ru="<<m_sDataAVP.avpNameRus
+//                   << " season_num="<< m_sDataAVP.avpSeasonNum
+//                   <<" track_num="<< m_sDataAVP.avpTrackNum
+                   << " url="<< m_sDataAVP.avpURL
+                   << " year="<< m_sDataAVP.yearOfRelease
+                   << " age="<<m_sDataAVP.age
+                   << " filmMaker="<<m_sDataAVP.filmMaker
+                   << " country="<<m_sDataAVP.country
+                   << " duration="<<m_sDataAVP.duration
+                   << " genres="<<m_sDataAVP.avpForm;
+            try
+            {
+               if(addSaveInDB(m_sDataAVP))
+               {
+                   col_Ok++;
+//                       if(col_Ok%100 == 0)
+                   if(i%100 == 0)
+                   {
+                       result = QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss");
+                       result += " Загрузка данных АВП: ";
+                    // result +=tmp.setNum(col_Ok);
+                       result +=tmp.setNum(i);
+                       result +=" записей. Добавлено ";
+                       result +=tmp.setNum(col_Ok);
+                       result +=" записей.";
+                       result += "........OK";
+                       qDebug()<<result;
+                   }
+               }
+               else
+               {
+                   result = "Загрузка данных АВП ";
+                   result +=tmp.setNum(i); result +=" ";
+                   result += m_sDataAVP.avpURL; result += "........FAIL";
+                   qDebug()<<result;
+               }
+            }
+            catch (std::exception &e)
+            {
+                qDebug()<<e.what();
+            }
+
+//            if(i == 20)
+//                break;
+//            qDebug()<<"i = "<<i;
+        }
+        file.close();
+        result="Запись данных о " + tmp.setNum(col_Ok)+" АВП завершена успешно!";
+        qDebug()<<result;
+    }
 }
 
 //=========================================================
@@ -449,11 +675,16 @@ bool CDataCollectionService::addSaveInDB(SDataAVP &sDataAVP)
         {
            return false;
         }
+//        sql ="DELETE FROM avp WHERE \"URL\" =\'";
+//        sql +=sDataAVP.avpURL;
+//        sql+="\';";
+//        qDebug()<<sql;
+//        query->exec(sql);
 
         sql="INSERT INTO avp (\"NameRus\",\"URL\",\"ID_AVS\",\"NameOriginal\",\"URL_kinopoisk\",\"URL_imdb\",\"Season_num\",\"Track_num\") VALUES (E\'";
         sql += decode(sDataAVP.avpNameRus);sql+="\',\'";
         sql += sDataAVP.avpURL; sql+="\',";
-        sql += findIdAVS("https://more.tv","more.tv");
+        sql += findIdAVS(sDataAVP.avsURL,sDataAVP.avsName);
 //        sql += "151";
         sql+=",E\'"; sql += decode(sDataAVP.avpNameOriginal); sql+="\',\'";
         sql += sDataAVP.urlKinopoisk;
@@ -464,7 +695,7 @@ bool CDataCollectionService::addSaveInDB(SDataAVP &sDataAVP)
         sql+="\',E\'";
         sql += decode(sDataAVP.avpTrackNum);
         sql+="\');";
-//        qDebug()<<sql;
+        qDebug()<<sql;
 
         if(!query->exec(sql))
         {
@@ -490,7 +721,7 @@ bool CDataCollectionService::addSaveInDB(SDataAVP &sDataAVP)
             sql += findIdUser("Левдик А.А."); sql+=",\'";
             sql += sDataAVP.country;
             sql+="\');";
-//            qDebug()<<sql;
+            qDebug()<<sql;
 
             if(!query->exec(sql.toStdString().c_str()))
             {
@@ -1020,7 +1251,10 @@ void CDataCollectionService::renamePathView()
 void CDataCollectionService::run()
 {
     qDebug()<<"CDataCollectionService::run getpid()="<<getpid();
-    parserMoreTV("D:\\Program\\m3_rez");
+    //    parserMoreTV("D:\\Program\\m3_rez");
+//     parserPremier("D:\\Program\\Premier-2020-07-08.csv");
+    parserOkkoTV("D:\\Program\\okko\\Okko_Movie1.txt");
+//    operateMegogo("z:\\DownloadData\\megogo.ru\\ru\\view"); //Разбор megogo сайта
 
     //=====================================IMDB make DB
 //    makeDB_IMBD();

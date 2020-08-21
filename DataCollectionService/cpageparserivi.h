@@ -9,9 +9,54 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDateTime>
 
 /**
- * @brief The CPageParserIVI class - класс поток для разбора страниц ivi.ru
+ * @brief The SDataAVP struct - структура для хранения данных об АВП
+ */
+/*struct SDataAVP
+{
+   QString avsName;
+   QString avsURL;
+   QString avpNameRus;
+   QString avpSeasonNum;
+   QString avpTrackNum;
+   QString avpNameOriginal;
+   QString avpURL;
+   QString rubric;
+   QString filmMaker;
+   QString yearOfRelease;
+   QDateTime dateSaveInDB;
+   QString age;
+   QString duration;
+   QString userSaveInDB;
+   QString urlKinopoisk;
+   QString urlIMDB;
+   QString avpForm;
+   QString country;
+   void clear()
+   {
+       avsName = "";
+       avsURL = "";
+       avpNameRus = "";
+       avpSeasonNum = "";
+       avpTrackNum = "";
+       avpNameOriginal = "";
+       avpURL = "";
+       rubric = "";
+       filmMaker = "";
+       yearOfRelease = "";
+       age = "";
+       duration = "";
+       userSaveInDB = "";
+       urlKinopoisk = "";
+       urlIMDB = "";
+       avpForm = "";
+       country = "";
+   }
+};*/
+/**
+ * @brief The CPageParserIVI class - класс поток для разбора страниц ivi.ru и megogo.ru
  */
 class CPageParserIVI: public QObject
 {
@@ -40,8 +85,14 @@ public slots:
      * @param dirName - имя директории
      */
     void doWork(const QString &dirName);
+    void doWorkMegogo(const QString &dirName);
 
 private:
+    /**
+     * @brief parsePage - функция разбора страницы на наличие записи об АВП
+     * @param page - имя страницы
+     */
+    void parsePageMegogo(const QString &page);
     /**
      * @brief getDirFiles - функция возвращает список всех файлов в директории
      * @param dirName - имя директории
@@ -94,6 +145,8 @@ private:
     QString m_age;
     QString m_duration;
     QString m_filmMaker;
+
+    int m_nameAVS;
 };
 
 #endif // CPAGEPARSERIVI_H

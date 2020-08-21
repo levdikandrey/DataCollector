@@ -24,8 +24,24 @@ void CPageParserIVI::setDB(const QSqlDatabase &db)
 }
 
 //=========================================================
+void CPageParserIVI::doWorkMegogo(const QString &startDir)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    m_nameAVS = 2;
+    colAVP = 0;
+//    parsePageMegogo("z:\\DownloadData\\megogo.ru\\ru\\view\\106211-sheri\\tab_comments");
+    QStringList allFiles = getDirFiles( startDir );
+    for (int i = 0; i < allFiles.size(); ++i)
+    {
+        parsePageMegogo(allFiles.at(i));
+    }
+    qDebug()<<"colAVP="<<colAVP;
+}
+
+//=========================================================
 void CPageParserIVI::doWork(const QString &startDir)
 {
+    m_nameAVS = 1;
     colAVP = 0;
     QStringList allFiles = getDirFiles( startDir );
     for (int i = 0; i < allFiles.size(); ++i)
@@ -256,7 +272,15 @@ bool CPageParserIVI::addSaveInDB()
         sql="INSERT INTO avp (\"NameRus\",\"URL\",\"ID_AVS\",\"NameOriginal\",\"URL_kinopoisk\",\"URL_imdb\") VALUES (E\'";
         sql += decode(m_nameRus);sql+="\',\'";
         sql += m_URL; sql+="\',";
-        sql += findIdAVS("https://www.ivi.ru/","IVI");sql+=",E\'";
+        if(m_nameAVS == 1)
+        {
+            sql += findIdAVS("https://www.ivi.ru/","IVI");
+        }
+        else if(m_nameAVS == 2)
+        {
+            sql += findIdAVS("https://megogo.ru/ru","Megogo");
+        }
+        sql+=",E\'";
         sql += decode(m_nameOriginal); sql+="\',\'";
 //    sql += m_sDataAVP.urlKinopoisk;
         sql+="\',\'";
@@ -278,7 +302,7 @@ bool CPageParserIVI::addSaveInDB()
             sql += tmp.setNum(QDateTime::currentDateTime().date().day());
             sql+="\',\'";
             sql += m_rubric;sql+="\',\'";
-//        sql += m_sDataAVP.filmMaker;
+            sql += m_filmMaker;
             sql+="\',\'";
             sql += m_yearOfRelease;sql+="\',\'";
             sql += m_age;sql+="\',\'";
@@ -420,6 +444,91 @@ void CPageParserIVI::parsePageExt(const QString &fileName)
 }
 
 //=========================================================
+void CPageParserIVI::parsePageMegogo(const QString &page)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString tmp, person;
+    QFile file(page);
+    QString s_findNameRus = "<meta property=\"og:title\" content=\"";
+    QString s_findURL = "<meta property=\"og:url\" content=\"";
+    QString s_findDuration ="<meta property=\"video:duration\" content=\"";
+    QString s_findCountry ="<meta property=\"ya:ovs:country\" content=\"";
+    QString s_findGenre = "<meta property=\"ya:ovs:genre\" content=\"";
+    QString s_findAge = "<meta property=\"og:restrictions:age\" content=\"";
+    QString s_findYear ="<span class=\"video-year\">";
+    QString s_findYearTitle ="<title>";
+
+
+    QString s_findFilmMaker = "<meta property=\"ya:ovs:person\" content=\""; //  <meta property="ya:ovs:person:role" content="Executive producer" />
+    QString s_filmMaker = "<meta property=\"ya:ovs:person:role\" content=\"Executive producer\" />";
+
+    if(file.open(QFile::ReadOnly | QIODevice::Text))
+    {
+        while (!file.atEnd())
+        {
+            QString line = file.readLine();
+            if(line.indexOf(s_findNameRus) != -1) // Title
+            {
+                int index = line.indexOf(s_findNameRus);
+                m_nameRus = line.mid(index+s_findNameRus.length(),line.indexOf("/>")-index-s_findNameRus.length()-2);
+                qDebug()<<"m_nameRus = "<<m_nameRus;
+            }
+            else if(line.indexOf(s_findURL) != -1) // URL
+            {
+                int index = line.indexOf(s_findURL);
+                m_URL = line.mid(index+s_findURL.length(),line.indexOf("/>")-index-s_findURL.length()-2);
+                qDebug()<<"m_URL = "<<m_URL;
+            }
+            else if(line.indexOf(s_findDuration) != -1) // Duration
+            {
+                int index = line.indexOf(s_findDuration);
+                m_duration = tmp.setNum((line.mid(index+s_findDuration.length(),line.indexOf("/>")-index-s_findDuration.length()-2).toInt())/60);
+                qDebug()<<"m_duration = "<<m_duration;
+            }
+            else if(line.indexOf(s_findCountry) != -1) // Country
+            {
+                int index = line.indexOf(s_findCountry);
+                m_country = line.mid(index+s_findCountry.length(),line.indexOf("/>")-index-s_findCountry.length()-2);
+                qDebug()<<"m_country = "<<m_country;
+            }
+            else if(line.indexOf(s_findGenre) != -1) // Genre
+            {
+                int index = line.indexOf(s_findGenre);
+                m_rubric = line.mid(index+s_findGenre.length(),line.indexOf("/>")-index-s_findGenre.length()-2);
+                qDebug()<<"m_rubric = "<<m_rubric;
+            }
+            else if(line.indexOf(s_findAge) != -1) // Age
+            {
+                int index = line.indexOf(s_findAge);
+                m_age = line.mid(index+s_findAge.length(),line.indexOf("/>")-index-s_findAge.length()-2) + "+";
+                qDebug()<<"m_age = "<<m_age;
+            }
+            else if(line.indexOf(s_findFilmMaker) != -1) // current person
+            {
+                int index = line.indexOf(s_findFilmMaker);
+                person = line.mid(index+s_findFilmMaker.length(),line.indexOf("/>")-index-s_findFilmMaker.length()-2);
+//                qDebug()<<"m_age = "<<m_age;
+            }
+            else if(line.indexOf(s_filmMaker) != -1) // filmMaker
+            {
+                m_filmMaker = person;
+                qDebug()<<"m_filmMaker = "<<m_filmMaker;
+            }
+            else if(line.indexOf(s_findYearTitle) != -1) // yearTitle
+            {
+                line = file.readLine();
+                m_yearOfRelease = line.mid(line.indexOf(",")+2, 4);
+                qDebug()<<"m_yaerOfRelease = "<<m_yearOfRelease;
+            }
+        }
+        file.close();
+        addSaveInDB();
+    }
+    else
+        qDebug()<<"Не могу открыть файл:"<<page;
+}
+
+//=========================================================
 void CPageParserIVI::parsePage(const QString &page)
 {
 //    qDebug()<<"\nPAGE="<<page;
@@ -554,6 +663,9 @@ void CPageParserIVI::parsePage(const QString &page)
 //=========================================================
 QStringList CPageParserIVI::getDirFiles( const QString& dirName  )
 {
+//    qDebug()<<__PRETTY_FUNCTION__;
+//    int i =0;
+
 //    qDebug()<<"dirName="<<dirName;
     QDir dir( dirName );
     if ( !dir.exists() )
@@ -579,5 +691,6 @@ QStringList CPageParserIVI::getDirFiles( const QString& dirName  )
             fileNames.append( QFileInfo(*it).absoluteFilePath() );
         }
     }
+//    qDebug()<<__PRETTY_FUNCTION__<<"____END";
     return fileNames;
 }

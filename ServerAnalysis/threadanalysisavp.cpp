@@ -43,7 +43,7 @@ void ThreadAnalysisAVP::initListAVP()
     QString sql;
     try
     {
-        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 1;";
+        sql = "SELECT \"ID\" FROM avp WHERE \"ID\" NOT IN ( SELECT \"ID_AVP\" FROM \"AnalysisResult\") GROUP BY \"ID\" LIMIT 100000;";
         if(query->exec(sql))
         {
             while(query->next())
