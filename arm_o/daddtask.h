@@ -9,6 +9,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class D_AddTask; }
 QT_END_NAMESPACE
 
+/**
+*  Класс добавления новых задач оператору
+*/
 class DAddTask: public QDialog
 {
         Q_OBJECT

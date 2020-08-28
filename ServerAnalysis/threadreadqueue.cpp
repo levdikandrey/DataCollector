@@ -196,10 +196,12 @@ void ThreadReadQueue::analysisAVP(uint64_t idAVP)
         m_idAVS = idAVS(idAVP);
         pathOnDisk = getPathOnDisk(idAVP);
 
-        if( ( m_idAVS == 147 ) && ( pathOnDisk  == "") )// IVI film
+        if( (( m_idAVS == 147 ) || ( m_idAVS == 149 ) || ( m_idAVS == 151 ) || ( m_idAVS == 150 ) || ( m_idAVS == 152 ))   && ( pathOnDisk  == "") )// IVI film
         {
+            qDebug()<<"****"<<sql;
             sql ="SELECT avp.\"NameRus\",avp.\"NameOriginal\",aa.\"YearOfRelease\" FROM avp "
                  "INNER JOIN \"AVPattribute\" aa ON avp.\"ID\" = aa.\"ID_AVP\" WHERE avp.\"ID\"="+tmp.setNum(idAVP)+";";
+            qDebug()<<"sql="<<sql;
             if(query->exec(sql))
             {
                 if(query->next())

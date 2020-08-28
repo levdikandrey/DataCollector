@@ -41,6 +41,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+//    dStartProgressDialog = new DStartProgressDialog();
+//    dStartProgressDialog->moveToThread(&startProgressDialogThread);
+//    connect(&startProgressDialogThread, &QThread::finished, dStartProgressDialog, &QObject::deleteLater);
+//    connect(this, &MainWindow::operateStartProgressDialog,dStartProgressDialog, &DStartProgressDialog::doWork);
+////    connect(dStartProgressDialog, &DStartProgressDialog::resultReady, this, &MainWindow::handleResults);
+//    startProgressDialogThread.start();
+//    emit operateStartProgressDialog("");
+
+
     ui->actionClearDB->setEnabled(false);
     initDialog();
 
@@ -58,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionConnectToDB, SIGNAL(triggered()), SLOT(slotSettingsDB()));
     connect(ui->actionChangePassword, SIGNAL(triggered()), SLOT(slotChangePassword()));
     connect(ui->actionReportAVP, SIGNAL(triggered()), SLOT(slotMakeReport()));
+    connect(ui->actionReportAllStatistics, SIGNAL(triggered()), SLOT(slotMakeReportAll()));
     connect(ui->actionJournalSession, SIGNAL(triggered()), SLOT(slotJournalSession()));
     connect(ui->actionJournalJob, SIGNAL(triggered()), SLOT(slotJournalJob()));
 
@@ -115,6 +126,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cImportDataKinopoisk, &CImportDataKinopoisk::resultReady, this, &MainWindow::handleResultsKinopoisk);
     importDataThreadKinopoisk.start();
 
+//    m_timerStartInitDialog.setInterval(2000);
+//    m_timerStartInitDialog.setSingleShot(true);
+//    connect(&m_timer, &QTimer::timeout, this, [&]{slotInitDialog();});
+//    m_timerStartInitDialog.start();
+
+//     QTimer::singleShot(2000, this, SLOT(slotInitDialog()));
+
     m_requestSender = new RequestSender();
 
     dImportDataOutExcel = new DImportDataOutExcel(this);
@@ -122,8 +140,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     dAddAVP = new DAddAVP(this);
     dAddAVP->setModal(false);
-    dEditAVP = new DEditAVP(this);
 
+    dEditAVP = new DEditAVP(this);
     dAddTask = new DAddTask(this);
     dEditTask = new DEditTask(this);
     dEditTaskUser = new DEditTaskUser(this);
@@ -135,6 +153,9 @@ MainWindow::MainWindow(QWidget *parent)
     dChangePassword = new DChangePassword(this);
     dJournalSession = new DJournalSession(this);
     dJournalJobAVP = new DJournalJobAVP(this);
+    dReportJob = new DReportJob(this);
+    dReportAllStatistics = new DReportAllStatistics(this);
+
 
     m_currentIdAVS = -1;
     m_currentState = -1;
@@ -157,6 +178,36 @@ MainWindow::MainWindow(QWidget *parent)
     ui->labelStateConnectDB->hide();
 
     initNetClient();
+//    startProgressDialogThread.quit();
+//    startProgressDialogThread.terminate();
+
+}
+
+//=========================================================
+void MainWindow::slotInitDialog()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    m_requestSender = new RequestSender();
+
+    dImportDataOutExcel = new DImportDataOutExcel(this);
+    dImportDataOutExcel->setModal(false);
+
+    dAddAVP = new DAddAVP(this);
+    dAddAVP->setModal(false);
+
+    dEditAVP = new DEditAVP(this);
+    dAddTask = new DAddTask(this);
+    dEditTask = new DEditTask(this);
+    dEditTaskUser = new DEditTaskUser(this);
+    dGroup = new DGroup(this);
+    dUser = new DUser(this);
+    dViolation = new DViolation(this);
+    dEnter1 = new DEnter();
+    dEditAudit = new DEditAudit(this);
+    dChangePassword = new DChangePassword(this);
+    dJournalSession = new DJournalSession(this);
+    dJournalJobAVP = new DJournalJobAVP(this);
+    dReportJob = new DReportJob(this);
 }
 
 //=========================================================
@@ -222,16 +273,17 @@ void MainWindow::saveInJournalRecordClose()
 }
 
 //=========================================================
-void MainWindow::addRecordJournalJobAVP(int category, QString info)
+void MainWindow::addRecordJournalJobAVP(int category, QString info,QString nameAVP)
 {
     qDebug()<<__PRETTY_FUNCTION__;
     QString sql;
     QString fio;
     QString tmp;
-    sql = "INSERT INTO \"JournalJobAVP\"(\"DateEvent\",\"ID_User\",\"Info\",\"Сategory\") VALUES(\'";
+    sql = "INSERT INTO \"JournalJobAVP\"(\"DateEvent\",\"ID_User\",\"Info\",\"Сategory\",\"NameAVP\") VALUES(\'";
     sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
     sql += fio.setNum(getIdUser(currentUserName)); sql += ",\'"; sql += info; sql +="\',";
-    sql += tmp.setNum(category);sql += ");";
+    sql += tmp.setNum(category);
+    sql += ",\'"; sql+=nameAVP;sql += "\');";
     qDebug()<<sql;
     if(!query->exec(sql))
         qDebug()<<query->lastError().text();
@@ -364,7 +416,7 @@ void MainWindow::initDialog()
 //=========================================================
 bool MainWindow::initDB()
 {
-//    std::cout<<"initDB()"<<std::endl;
+    std::cout<<"initDB()_START"<<std::endl;
     bool res = true;
     try
     {
@@ -418,6 +470,7 @@ bool MainWindow::initDB()
         qDebug()<<e.what();
     }
     return res;
+    std::cout<<"initDB()_STOP"<<std::endl;
 }
 
 //=========================================================
@@ -836,6 +889,7 @@ void MainWindow::initTableMyTask()
 //=========================================================
 void MainWindow::initTableTask(bool)
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString sql="";
     bool filterCheck = false;
     try
@@ -991,8 +1045,10 @@ void MainWindow::initTableTask(bool)
 
                 QDate currentDT = QDateTime::currentDateTime().date();
                 QDate realizationDT = query->value(11).toDate();
-                if((currentDT > realizationDT) && (query->value(5).toString()!="Закрыта"))
+
+                if( (currentDT > realizationDT) && (query->value(5).toString()!="Закрыта") && (query->value(5).toString()!="Закрыта с экспертизой") )
                     setColorRowTable(ui->tableWidgetCurrentTasks,row,0xff,0xc0,0xcb);
+
                 row++;
             }
         }
@@ -1005,6 +1061,7 @@ void MainWindow::initTableTask(bool)
         qDebug()<<e.what();
         qDebug()<<query->lastError().text();
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
@@ -1694,7 +1751,7 @@ void MainWindow::slotEditAVP()
                 return;
             }
 
-            addRecordJournalJobAVP(1,"Редактирование АВП: "+dEditAVP->getNameAVP()+", "+dEditAVP->getNameOriginal());
+            addRecordJournalJobAVP(1,"Редактирование АВП",dEditAVP->getNameAVP());
 //            slotReload();
             ui->tableWidgetAVP->item(selectedRows[0].row(),0)->setText(dEditAVP->getNameAVP());
             ui->tableWidgetAVP->item(selectedRows[0].row(),1)->setText(dEditAVP->getURL_AVP());
@@ -1744,12 +1801,12 @@ void MainWindow::slotAddAVP()
             if(cImportData->addSaveInDB(dataAVP))
             {
                 QMessageBox::information(this,"Добавление АВП","АВП добавлено успешно.","Да");
-                addRecordJournalJobAVP(1,"Добавление АВП: "+dAddAVP->getNameAVP()+", "+dAddAVP->getNameOriginal());
+                addRecordJournalJobAVP(1,"Добавление АВП",dAddAVP->getNameAVP());
             }
             else
             {
                 QMessageBox::critical(this,"Ошибка","Ошибка добавления АВП!","Да");
-                addRecordJournalJobAVP(2,"Ошибка добавления АВП!: "+dAddAVP->getNameAVP()+", "+dAddAVP->getNameOriginal());
+                addRecordJournalJobAVP(2,"Ошибка добавления АВП!",dAddAVP->getNameAVP());
             }
         }
         catch(std::exception &e)
@@ -1802,7 +1859,7 @@ void MainWindow::slotAddTask()
                 if(!query->exec(sql))
                     qDebug()<<query->lastError().text();
                 else
-                    addRecordJournalJobAVP(1,"Добавление новой задачи наименование АВП: "+ getNameRusAVP(idAVP.first));
+                    addRecordJournalJobAVP(1,"Добавление новой задачи АВП",getNameRusAVP(idAVP.first));
             }
             initTableTask(true);
         }
@@ -1857,7 +1914,42 @@ void MainWindow::slotEditTask()
             if(!query->exec(sql))
                 qDebug()<<query->lastError().text();
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Текущие задачи\" АВП: "+ getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
+            {
+                QString info;
+                info ="Редактирование \"Текущие задачи\" ";
+                if(dEditTaskUser->flagEditOperator == true)
+                {
+                    info += "(поменялся оператор на - ";info += dEditTaskUser->getNameUser(); info +=") ";
+                }
+                if(dEditTaskUser->flagEditPriority == true)
+                {
+                    info += "(поменялся приоритет на - ";info += dEditTaskUser->getPriority(); info +=") ";
+                }
+                if(dEditTaskUser->flagEditStatus == true)
+                {
+                    info += "(поменялся статус на - ";info += dEditTaskUser->getStatus(); info +=") ";
+                }
+                if(dEditTaskUser->flagEditPercent == true)
+                {
+                    info += "(поменялся процент на - ";info += dEditTaskUser->getPercent(); info +=") ";
+                }
+                if(dEditTaskUser->flagEditDate == true)
+                {
+                    info += "(поменялась дата на - ";info += dEditTaskUser->getDateRealization(); info +=") ";
+                }
+                if(dEditTaskUser->flagEditComment == true)
+                {
+                    info += "(поменялся комментарий)";
+                }
+                info +=" АВП";
+                addRecordJournalJobAVP(1,info, getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
+                dEditTaskUser->flagEditOperator = false;
+                dEditTaskUser->flagEditPriority = false;
+                dEditTaskUser->flagEditStatus = false;
+                dEditTaskUser->flagEditPercent = false;
+                dEditTaskUser->flagEditDate = false;
+                dEditTaskUser->flagEditComment = false;
+            }
 
             initTableTask(true);
         }
@@ -1910,7 +2002,7 @@ void MainWindow::slotDeleteAVP()
 //                qDebug()<<"sql ="<<sql;
                 if(query->exec(sql))
                 {
-                    addRecordJournalJobAVP(3,"Удаление АВП: "+ui->tableWidgetAVP->item(selectedRows[0].row(),0)->text());
+                    addRecordJournalJobAVP(3,"Удаление АВП",ui->tableWidgetAVP->item(selectedRows[0].row(),0)->text());
                     ui->tableWidgetAVP->removeRow(selectedRows[0].row());
                     selectedRows = ui->tableWidgetAVP->selectionModel()->selectedRows();
                 }
@@ -1944,7 +2036,7 @@ void MainWindow::slotDeleteTask()
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
                     {
-                        addRecordJournalJobAVP(1,"Удаление задачи наименование АВП: "+ getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
+                        addRecordJournalJobAVP(1,"Удаление задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
                         ui->tableWidgetCurrentTasks->removeRow(selectedRows[0].row());
                         selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
                     }
@@ -1996,7 +2088,7 @@ void MainWindow::slotEditMyTask()
             if(!query->exec(sql))
                 qDebug()<<query->lastError().text();
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Мои задачи\" АВП: "+ getNameRusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),10)->text().toLong()));
+                addRecordJournalJobAVP(1,"Редактирование \"Мои задачи\" АВП", getNameRusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),10)->text().toLong()));
 
             initTableTask(true);
         }
@@ -2041,7 +2133,7 @@ void MainWindow::slotEditAudit()
                 QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
             }
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Экспертиза\" АВП: "+ getNameRusAVP(ui->tableWidgetAudit->item(selectedRows[0].row(),10)->text().toLong()));
+                addRecordJournalJobAVP(1,"Редактирование \"Экспертиза\" АВП", getNameRusAVP(ui->tableWidgetAudit->item(selectedRows[0].row(),10)->text().toLong()));
         }
         catch(std::exception &e)
         {
@@ -2073,65 +2165,16 @@ void MainWindow::slotSettingsDB()
 }
 
 //=========================================================
+void MainWindow::slotMakeReportAll()
+{
+    dReportAllStatistics->showMaximized();
+}
+
+//=========================================================
 void MainWindow::slotMakeReport()
 {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    QString sql,tmp;
-    try
-    {
-        sql = "SELECT avp.\"NameRus\", "
-              "avp.\"URL\","
-              "u.\"FIO\","
-              "\"Task\".\"DateAppoint\","
-              "p.\"NamePriority\","
-              "ts.\"StatusName\","
-              "\"Task\".\"PercentCompleted\","
-              "avp.\"URL\","
-              "\"Task\".\"Comment\","
-              "\"Task\".\"ID\","
-              "\"Task\".\"ID_AVP\" "
-              "FROM \"Task\" "
-              "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
-              "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
-              "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\"";
-        sql += " ORDER BY \"Task\".\"ID\";";
-        qDebug()<<"sql="<<sql;
-
-        if(query->exec(sql))
-        {
-             QXlsx::Document xlsx("./report1.xlsx");
-             int row =1;
-             while(query->next())
-             {
-                 xlsx.write(row,1,QVariant(query->value(0).toString()));
-                 xlsx.write(row,2,QVariant(query->value(1).toString()));
-                 xlsx.write(row,3,QVariant(query->value(2).toString()));
-                 xlsx.write(row,4,QVariant(query->value(3).toString()));
-                 xlsx.write(row,5,QVariant(query->value(4).toString()));
-                 xlsx.write(row,6,QVariant(query->value(5).toString()));
-                 xlsx.write(row,7,QVariant(initViolations(query->value(10).toInt())->text()));
-                 xlsx.write(row,8,QVariant(query->value(8).toString()));
-                 row++;
-             }
-             xlsx.save();
-             QApplication::restoreOverrideCursor();
-             QMessageBox::information(this,"Сообщение","Создан отчет о задачах.","Да");
-             QDesktopServices::openUrl(QUrl::fromLocalFile("./report1.xlsx"));
-//             QProcess::startDetached("./report1.xlsx");
-        }
-        else
-        {
-            qDebug()<<query->lastError().text();
-            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
-        }
-    }
-    catch(std::exception &e)
-    {
-        qDebug()<<e.what();
-        QApplication::restoreOverrideCursor();
-    }
-    QApplication::restoreOverrideCursor();
+//    dReportJob->initTableReportJob();
+    dReportJob->showMaximized();
 }
 
 //=========================================================

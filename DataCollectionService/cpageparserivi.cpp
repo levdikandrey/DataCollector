@@ -27,6 +27,7 @@ void CPageParserIVI::setDB(const QSqlDatabase &db)
 void CPageParserIVI::doWorkMegogo(const QString &startDir)
 {
     qDebug()<<__PRETTY_FUNCTION__;
+    qDebug()<<"startDir="<<startDir;
     m_nameAVS = 2;
     colAVP = 0;
 //    parsePageMegogo("z:\\DownloadData\\megogo.ru\\ru\\view\\106211-sheri\\tab_comments");
@@ -265,7 +266,8 @@ bool CPageParserIVI::addSaveInDB()
         if(existsSaveInDb(m_URL))
         {
             qDebug()<<"AVP exists in DB AVP: "<<m_nameRus;
-           res = updateSaveInDB();
+            qDebug()<<"";
+//           res = updateSaveInDB();
            return res;
         }
 
@@ -559,8 +561,11 @@ void CPageParserIVI::parsePage(const QString &page)
                 int index = line.indexOf(s_findURL);
                 if(line.indexOf("\" class=\"item-content-wrapper js-collection-content") != -1)
                 {
-                    m_URL = "https://www.ivi.ru"+line.mid(index+s_findURL.length(),line.indexOf("\" class=\"item-content-wrapper js-collection-content")-s_findURL.length()-index);
-                    QString fileName="d:\\DownloadData\\ivi\\www.ivi.ru\\watch\\";
+//                    m_URL = "https://www.ivi.ru"+line.mid(index+s_findURL.length(),line.indexOf("\" class=\"item-content-wrapper js-collection-content")-s_findURL.length()-index);
+                    m_URL = line.mid(index+s_findURL.length(),line.indexOf("\" class=\"item-content-wrapper js-collection-content")-s_findURL.length()-index);
+                    qDebug()<<"URL = "<<m_URL;
+//                    QString fileName="d:\\DownloadData\\ivi\\www.ivi.ru\\watch\\";
+                    QString fileName="z:\\DownloadData";
                     fileName += line.mid(index+s_findURL.length()+7,line.indexOf("\" class=\"item-content-wrapper js-collection-content")-s_findURL.length()-index-7);
                     if(QDir(fileName).exists())
                     {

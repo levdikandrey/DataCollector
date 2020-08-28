@@ -46,7 +46,7 @@ void DJournalJobAVP::initTableJournalSession()
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
 
-        sql = "SELECT jj.\"DateEvent\",u.\"FIO\",jj.\"Info\",jj.\"Сategory\" FROM \"JournalJobAVP\" jj INNER JOIN \"User\" u ON jj.\"ID_User\" = u.\"ID\";";
+        sql = "SELECT jj.\"DateEvent\",u.\"FIO\",jj.\"Info\",jj.\"Сategory\",jj.\"NameAVP\" FROM \"JournalJobAVP\" jj INNER JOIN \"User\" u ON jj.\"ID_User\" = u.\"ID\";";
 
         if(query->exec(sql))
         {
@@ -72,7 +72,7 @@ void DJournalJobAVP::initTableJournalSession()
                 ui->tableWidget->setItem(row,1, newItem1);
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
-                newItem3->setText(query->value(2).toString());
+                newItem3->setText(query->value(2).toString()+": "+query->value(4).toString());
                 ui->tableWidget->setItem(row,2, newItem3);
 
                 QTableWidgetItem *newItem4 = new QTableWidgetItem();

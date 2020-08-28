@@ -279,16 +279,105 @@ QString CDataCollectionService::analysisURL(const QString &url)
 //=========================================================
 void CDataCollectionService::parserKinopoisk(QString fileName)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString url, title_ru, title_original, year_of_production,directors, genres;
+    QString result,tmp;
+
+    int col_Ok = 0;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug()<<"Не могу открыть файл " + fileName+"!";
+        return;
+    }
+    else
+    {
+        int i=0;
+        while (!file.atEnd())
+        {
+            QString line = file.readLine();
+            QStringList list = line.split('\t');
+
+            year_of_production = list.at(0).mid(list.at(0).lastIndexOf("=")+1,list.at(0).length()-list.at(0).lastIndexOf("=")-1);
+            url = list.at(1).mid(list.at(1).lastIndexOf("=")+1,list.at(1).length()-list.at(1).lastIndexOf("=")-1);
+            title_ru = list.at(2).mid(list.at(2).lastIndexOf("=")+1,list.at(2).length()-list.at(2).lastIndexOf("=")-1);
+            directors = list.at(3).mid(list.at(3).lastIndexOf("=")+1,list.at(3).length()-list.at(3).lastIndexOf("=")-1);
+            title_original = list.at(4).mid(list.at(4).lastIndexOf("=")+1,list.at(4).length()-list.at(4).lastIndexOf("=")-1);
+            if(list.size()>=6)
+                genres = list.at(5).mid(list.at(5).lastIndexOf("=")+1,list.at(5).length()-list.at(5).lastIndexOf("=")-2);
+
+            i++;
+            qDebug()<<"i="<<i;
+
+             if(title_ru == "")
+                continue;
+            else
+            {
+                qDebug()<<"i="<<i<<"    "<<url<<"   "<<title_ru;
+                m_sDataAVP.urlKinopoisk = url;
+                m_sDataAVP.urlIMDB = "";
+                m_sDataAVP.avsName = "КиноПоиск Онлайн";
+                m_sDataAVP.avsURL = "https://www.kinopoisk.ru/watch/films/";
+                m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
+                m_sDataAVP.avpURL = url;
+                m_sDataAVP.avpNameRus = title_ru;
+                m_sDataAVP.avpNameOriginal = title_original;
+                m_sDataAVP.avpForm = genres;
+                qDebug()<<"genres="<<genres;
+                m_sDataAVP.age = "";
+                m_sDataAVP.duration = "";
+                m_sDataAVP.filmMaker = directors;
+                m_sDataAVP.yearOfRelease = year_of_production;
+
+                try
+                {
+                   if(addSaveInDB(m_sDataAVP))
+                   {
+                       col_Ok++;
+                       if(i%100 == 0)
+                       {
+                           result = QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss");
+                           result += " Загрузка данных АВП: ";
+                           result +=tmp.setNum(i);
+                           result +=" записей. Добавлено ";
+                           result +=tmp.setNum(col_Ok);
+                           result +=" записей.";
+                           result += "........OK";
+                           qDebug()<<result;
+
+                       }
+                   }
+                   else
+                   {
+                       result = "Загрузка данных АВП ";
+                       result +=tmp.setNum(i); result +=" ";
+                       result += m_sDataAVP.avpURL; result += "........FAIL";
+                       qDebug()<<result;
+                   }
+                }
+                catch (std::exception &e)
+                {
+                    qDebug()<<e.what();
+                }
+            }
+        }
+        file.close();
+        result="Запись данных о " + tmp.setNum(col_Ok)+" АВП завершена успешно!";
+        qDebug()<<result;
+    }
 }
 
 //=========================================================
 void CDataCollectionService::parserIVI(QString fileName)
 {
+    operate(fileName); //Разбор IVI сайта
 }
 
 //=========================================================
 void CDataCollectionService::parserMegogo(QString fileName)
 {
+    operateMegogo(fileName); //Разбор megogo сайта
 }
 
 //=========================================================
@@ -302,24 +391,27 @@ void CDataCollectionService::parserPremier(QString fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        qDebug()<<__PRETTY_FUNCTION__<<"1";
         QString textMsg = "Не могу открыть файл " + fileName+"!";
         return;
     }
     else
     {
+        qDebug()<<__PRETTY_FUNCTION__<<"2";
         int i=0;
         while (!file.atEnd())
         {
             i++;
+            qDebug()<<"i="<<i;
             m_sDataAVP.clear();
             QString line = file.readLine();
             if(i == 1)
                 continue;
-            QStringList list = line.split(',');
+            QStringList list = line.split(';');
 
             m_sDataAVP.age = list.at(0);
-            m_sDataAVP.rubric = list.at(1);
-            m_sDataAVP.yearOfRelease = list.at(2);
+            m_sDataAVP.avpForm = list.at(2);
+            m_sDataAVP.yearOfRelease = list.at(1);
             m_sDataAVP.filmMaker = list.at(3);
             m_sDataAVP.avpURL = list.at(4);
             m_sDataAVP.avpSeasonNum = list.at(5);
@@ -368,6 +460,7 @@ void CDataCollectionService::parserPremier(QString fileName)
             }
             catch (std::exception &e)
             {
+//                qDebug()<<"exception";
                 qDebug()<<e.what();
             }
 
@@ -408,11 +501,13 @@ void CDataCollectionService::parserOkkoTV(QString fileName)
             if(line.lastIndexOf("Url")!=-1)
             {
                 i++;
+                qDebug()<<"i ="<<i;
                 m_sDataAVP.clear();
                 new_save = true;
                 list = line.split(':');
                 m_sDataAVP.avpURL = list.at(1)+list.at(2);
                 m_sDataAVP.avpURL = m_sDataAVP.avpURL.mid(1,m_sDataAVP.avpURL.length()-2);
+//                qDebug()<<m_sDataAVP.avpURL;
             }
             else if(line.lastIndexOf("Фильм")!=-1)
             {
@@ -421,10 +516,11 @@ void CDataCollectionService::parserOkkoTV(QString fileName)
                 m_sDataAVP.avpNameRus = m_sDataAVP.avpNameRus.mid(1,m_sDataAVP.avpNameRus.length()-2);
                 if(m_sDataAVP.avpNameRus[0] == 0x00ab)
                 {
-                    qDebug()<<"жопа";
+//                    qDebug()<<"жопа";
                     m_sDataAVP.avpNameRus = m_sDataAVP.avpNameRus.mid(1,m_sDataAVP.avpNameRus.lastIndexOf(0x00bb)-1);
 
                 }
+                qDebug()<<m_sDataAVP.avpNameRus;
             }
             else if(line.lastIndexOf("год")!=-1)
             {
@@ -545,11 +641,14 @@ void CDataCollectionService::parserMoreTV(QString fileName)
         while (!file.atEnd())
         {
             i++;
+            qDebug()<<"i="<<i;
             m_sDataAVP.clear();
             QString line = file.readLine();
+//            qDebug()<<"line="<<line;
             if(i == 1)
                 continue;
             QStringList list = line.split('\t');
+//            qDebug()<<"list.size()="<<list.size();
 
             m_sDataAVP.avpNameRus = list.at(0).mid(list.at(0).lastIndexOf("=")+1,list.at(0).length()-list.at(0).lastIndexOf("=")-1);
             m_sDataAVP.avpSeasonNum = list.at(1).mid(list.at(1).lastIndexOf("=")+1,list.at(1).length()-list.at(1).lastIndexOf("=")-1);
@@ -1251,10 +1350,14 @@ void CDataCollectionService::renamePathView()
 void CDataCollectionService::run()
 {
     qDebug()<<"CDataCollectionService::run getpid()="<<getpid();
-    //    parserMoreTV("D:\\Program\\m3_rez");
-//     parserPremier("D:\\Program\\Premier-2020-07-08.csv");
-    parserOkkoTV("D:\\Program\\okko\\Okko_Movie1.txt");
-//    operateMegogo("z:\\DownloadData\\megogo.ru\\ru\\view"); //Разбор megogo сайта
+//    parserKinopoisk("D:\\Program\\POKAZ\\kinopoisk.tskv");
+//    parserMoreTV("D:\\Program\\POKAZ\\MoreTV.txt");
+//    parserPremier("D:\\Program\\POKAZ\\Premier.csv");
+//    parserOkkoTV("D:\\Program\\POKAZ\\OkkoTV.txt");
+//    parserMegogo("D:\\Program\\POKAZ\\megogo.ru\\ru\\view");
+    parserIVI("D:\\Program\\POKAZ\\www.ivi.ru");
+
+//    parserPremier("D:\\Program\\POKAZ\\Premier-2020-07-23.csv");
 
     //=====================================IMDB make DB
 //    makeDB_IMBD();

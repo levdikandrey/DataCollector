@@ -1521,6 +1521,7 @@
      <string>Отчеты</string>
     </property>
     <addaction name="actionReportAVP"/>
+    <addaction name="actionReportAllStatistics"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -1697,6 +1698,11 @@
   <action name="actionReportAVP">
    <property name="text">
     <string>Отчет об обработанных АВП</string>
+   </property>
+  </action>
+  <action name="actionReportAllStatistics">
+   <property name="text">
+    <string>Отчет общей статистики</string>
    </property>
   </action>
  </widget>

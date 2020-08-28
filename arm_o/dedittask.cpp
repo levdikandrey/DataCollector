@@ -31,6 +31,7 @@ DEditTask::DEditTask(QWidget *parent)
     ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(2, 90);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(3, 0);
+
 }
 
 //=========================================================
@@ -297,6 +298,7 @@ void DEditTask::slotDeleteViolation()
             {
                 while (!selectedRows.empty())
                 {
+                    ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Удаление нарушения - " + ui->tableWidgetViolation->takeItem(selectedRows[0].row(),0)->text()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP));
                     sql = "DELETE FROM \"AnalysisResult\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->takeItem(selectedRows[0].row(),3)->text(); sql += ";";
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
@@ -428,7 +430,7 @@ void DEditTask::slotApplyViolation()
             if(!query_data->exec())
                 qDebug()<<"ERROR:"<<query_data->lastError().text();
         }
-        ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения для АВП: "+ ((MainWindow*)parent())->getNameRusAVP(m_idAVP) +". Нарушение - " + ui->comboBoxViolation->currentText());
+        ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения - " + ui->comboBoxViolation->currentText()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP));
         initTableViolation(m_idAVP);
     }
     catch(std::exception &e)

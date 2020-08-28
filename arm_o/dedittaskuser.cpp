@@ -24,6 +24,19 @@ DEditTaskUser::DEditTaskUser(QWidget *parent)
     ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(2, 90);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(3, 0);
+
+    flagEditOperator = false;
+    flagEditStatus = false;
+    flagEditPriority = false;
+    flagEditPercent = false;
+    flagEditComment = false;
+    flagEditDate = false;
+
+    connect(ui->comboBoxUser, QOverload<int>::of(&QComboBox::activated),[=](int){ flagEditOperator = true; });
+    connect(ui->comboBoxStatus, QOverload<int>::of(&QComboBox::activated),[=](int){ flagEditStatus = true; });
+    connect(ui->comboBoxPriority, QOverload<int>::of(&QComboBox::activated),[=](int){ flagEditPriority = true; });
+    connect(ui->spinBoxPercent, QOverload<int>::of(&QSpinBox::valueChanged),[=](int){flagEditPercent = true; });
+    connect(ui->dateEdit, SIGNAL(dateChanged(const QDate &)), this, SLOT(slotDateChanged(const  QDate &)));
 }
 
 //=========================================================
@@ -31,6 +44,12 @@ DEditTaskUser::~DEditTaskUser()
 {
     delete query;
     delete ui;
+}
+
+//=========================================================
+void DEditTaskUser::slotDateChanged(const  QDate &)
+{
+    flagEditDate = true;
 }
 
 //=========================================================
@@ -211,68 +230,6 @@ void DEditTaskUser::initTableViolation(long id_avp)
     {
         qDebug()<<e.what();
     }
-
-
-/*    QString sql="",tmp, str;
-    ui->tableWidgetViolation->horizontalHeader()->resizeSection(1, 0);
-
-    ui->tableWidgetViolation->clearContents();
-    ui->tableWidgetViolation->setRowCount(0);
-
-    try
-    {
-
-        sql = "SELECT \"Violation\" FROM \"Violation\";";
-
-        if(query->exec(sql))
-        {
-            int row = 0;
-            while(query->next())
-            {
-                ui->tableWidgetViolation->setRowCount(row+1);
-
-                QCheckBox *cbItem = new QCheckBox(this);
-                cbItem->setText(query->value(0).toString());
-                ui->tableWidgetViolation->setCellWidget(row,0, cbItem);//Название нарушения
-
-                QSpinBox *sbItem = new QSpinBox(this);
-                sbItem->setMaximum(100);
-                ui->tableWidgetViolation->setCellWidget(row,1, sbItem);//Процент обнаружения
-
-                row++;
-            }
-        }
-        else
-            qDebug()<<query->lastError().text();
-
-        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\" FROM \"AnalysisResult\" ar "
-              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+";";
-
-//        qDebug()<<"sql = "<<sql;
-        if(query->exec(sql))
-        {
-            int row = 0;
-            while(query->next())
-            {
-                for(int i=0; i<ui->tableWidgetViolation->rowCount();i++)
-                {
-                    if(reinterpret_cast<QCheckBox*>(ui->tableWidgetViolation->cellWidget(i,0))->text() == query->value(0).toString())
-                    {
-                        reinterpret_cast<QCheckBox*>(ui->tableWidgetViolation->cellWidget(i,0))->setChecked(true);
-                        reinterpret_cast<QSpinBox*>(ui->tableWidgetViolation->cellWidget(i,1))->setValue(query->value(1).toString().toInt());
-                    }
-                }
-                row++;
-            }
-
-        }
-        else
-            qDebug()<<query->lastError().text();
-    }
-    catch(std::exception &e)
-    {
-        qDebug()<<e.what();
-    }*/
 }
 
 //=========================================================

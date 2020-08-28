@@ -145,6 +145,7 @@ private:
     void parserPremier(QString fileName);
     void parserOkkoTV(QString fileName);
     void parserMoreTV(QString fileName);
+    //=======end parser collection========
 
     bool addSaveInDB(SDataAVP &sDataAVP);
     /**

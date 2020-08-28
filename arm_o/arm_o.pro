@@ -27,7 +27,10 @@ SOURCES += \
     deditavp.cpp \
     djournaljobavp.cpp \
     djournalsession.cpp \
+    dreportallstatistics.cpp \
+    dreportjob.cpp \
     dsettingsdb.cpp \
+    dstartprogressdialog.cpp \
     request.cpp \
     requestsender.cpp \
     cimportdata.cpp \
@@ -57,7 +60,10 @@ HEADERS += \
     deditavp.h \
     djournaljobavp.h \
     djournalsession.h \
+    dreportallstatistics.h \
+    dreportjob.h \
     dsettingsdb.h \
+    dstartprogressdialog.h \
     request.h \
     requestsender.h \
     cimportdata.h \
@@ -97,6 +103,8 @@ FORMS += \
     d_importdata.ui \
     d_journaljobavp.ui \
     d_journalsession.ui \
+    d_reportallstatistics.ui \
+    d_reportjob.ui \
     d_settingsdb.ui \
     d_user.ui \
     d_violation.ui \

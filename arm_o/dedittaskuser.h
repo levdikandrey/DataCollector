@@ -9,6 +9,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class D_EditTaskUser; }
 QT_END_NAMESPACE
 
+/**
+ * @brief DEditTaskUser - класс для редактирования задачи в закладке "Текущие задачи"
+ */
 class DEditTaskUser: public QDialog
 {
         Q_OBJECT
@@ -33,11 +36,19 @@ public:
     const QString getDateRealization() const;
     QTableWidget* getViolations() const;
 
+    bool flagEditOperator;
+    bool flagEditStatus;
+    bool flagEditPriority;
+    bool flagEditPercent;
+    bool flagEditComment;
+    bool flagEditDate;
+
 private slots:
     void slotViewPicture();
     void slotApply();
     void slotCancel();
     void slotExit();
+    void slotDateChanged(const QDate &);
 
 private:
     Ui::D_EditTaskUser *ui;

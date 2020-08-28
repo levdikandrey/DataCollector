@@ -28,6 +28,10 @@
 #include "dchangepassword.h"
 #include "djournalsession.h"
 #include "djournaljobavp.h"
+#include "dreportjob.h"
+#include "dreportallstatistics.h"
+
+#include "dstartprogressdialog.h"
 
 #include "client.h"
 #include "aprotocol.h"
@@ -269,9 +273,11 @@ private slots:
 
     void slotChangePassword();
     void slotMakeReport();
+    void slotMakeReportAll();
 
     void slotJournalSession();
     void slotJournalJob();
+    void slotInitDialog();
 
 public slots:
     /**
@@ -287,11 +293,15 @@ signals:
     /**
      * @brief operate
      */
+    void operateStartProgressDialog(const QString &);
     void operate(const QString &);
     void operateKinopoisk(const QString &);
 
 private:
     Ui::MainWindow *ui;
+    DStartProgressDialog *dStartProgressDialog;
+    QThread startProgressDialogThread;
+
     CImportDataKinopoisk  *cImportDataKinopoisk;
     QThread importDataThread;
     QThread importDataThreadKinopoisk;
@@ -313,6 +323,8 @@ private:
     DEditAVP *dEditAVP;
     DJournalSession *dJournalSession;
     DJournalJobAVP *dJournalJobAVP;
+    DReportJob *dReportJob;
+    DReportAllStatistics *dReportAllStatistics;
 
     Client *m_client;
 
@@ -329,6 +341,7 @@ private:
     int m_currentState;
 
     QTimer m_timer;
+    QTimer m_timerStartInitDialog;
 
     void initDialog();
     int countAVP(long idAVS = -1);
@@ -340,8 +353,8 @@ private:
     int getIdPriority(QString namePriority);
 
 //    void initComboBoxUser(QComboBox *comboBox);
-    void initComboBoxStatus(QComboBox *comboBox);
-    void initComboBoxPriority(QComboBox *comboBox);
+//    void initComboBoxStatus(QComboBox *comboBox);
+//    void initComboBoxPriority(QComboBox *comboBox);
 
     // Метод инициализации запроса на получение данных
     bool getData(const QString &url_path, const QString &fileName);
@@ -360,7 +373,15 @@ private:
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);
     void initComboBoxUser(QComboBox *comboBox);
-    void addRecordJournalJobAVP(int category, QString info);
+    void initComboBoxStatus(QComboBox *comboBox);
+    void initComboBoxPriority(QComboBox *comboBox);
+
+    /**
+     * @brief addRecordJournalJobAVP
+     * @param category
+     * @param info
+     */
+    void addRecordJournalJobAVP(int category, QString info, QString nameAVP);
     QString getNameRusAVP(uint64_t idAVP);
 };
 #endif // MAINWINDOW_H
