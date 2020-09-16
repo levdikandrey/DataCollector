@@ -312,6 +312,7 @@ void MainWindow::initDialogAccess(QString userName)
                ui->menu_5->setEnabled(false);
                ui->menu_6->setEnabled(false);
                ui->tabWidget->setCurrentIndex(2);
+               ui->pushButtonDeleteAVP->setEnabled(false);
            }
            else if(groupCategory == "Администраторы")
            {
@@ -322,6 +323,7 @@ void MainWindow::initDialogAccess(QString userName)
                ui->menu_5->setEnabled(true);
                ui->menu_6->setEnabled(true);
                ui->tabWidget->setCurrentIndex(0);
+               ui->pushButtonDeleteAVP->setEnabled(true);
            }
            else if((groupCategory == "Руководство") || (groupCategory == "Начальники групп"))
            {
@@ -332,6 +334,7 @@ void MainWindow::initDialogAccess(QString userName)
                ui->menu_5->setEnabled(true);
                ui->menu_6->setEnabled(true);
                ui->tabWidget->setCurrentIndex(1);
+               ui->pushButtonDeleteAVP->setEnabled(false);
            }
            else if(groupCategory == "Эксперты")
            {
@@ -342,6 +345,7 @@ void MainWindow::initDialogAccess(QString userName)
                ui->menu_5->setEnabled(false);
                ui->menu_6->setEnabled(false);
                ui->tabWidget->setCurrentIndex(3);
+               ui->pushButtonDeleteAVP->setEnabled(false);
            }
        }
        else
@@ -1405,8 +1409,10 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
     try
     {
         itemViolations = new QTableWidgetItem();
-        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"CheckAuto\" FROM \"AnalysisResult\" ar "
-              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+";";
+//        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"CheckAuto\" FROM \"AnalysisResult\" ar "
+//              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+" GROUP BY v.\"Violation\";";
+        sql = "SELECT v.\"Violation\",SUM(ar.\"Percent\"),ar.\"CheckAuto\" FROM \"AnalysisResult\" ar "
+              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+" GROUP BY(v.\"Violation\",ar.\"CheckAuto\");";
 //        qDebug()<<"sql="<<sql;
         if(queryViolation->exec(sql))
         {
@@ -1426,7 +1432,7 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
                     else
                         icon.addFile(QString::fromUtf8(":/icons/icons/alarm.png"), QSize(), QIcon::Normal, QIcon::Off);
                     str += queryViolation->value(0).toString();
-                    if(queryViolation->value(3).toBool())
+                    if(queryViolation->value(2).toBool())
                     {
                         str +="(ИИ)";
                     }
@@ -1441,8 +1447,14 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
                         int percent = queryViolation->value(1).toString().toInt()
 
                     }*/
-
-                    str += tmp.setNum(queryViolation->value(1).toInt());
+                    if(queryViolation->value(1).toInt()>100)
+                    {
+                        str += tmp.setNum(100);
+                    }
+                    else
+                    {
+                        str += tmp.setNum(queryViolation->value(1).toInt());
+                    }
                     str +="% ";
                 }
                 itemViolations->setText(str);
@@ -2120,7 +2132,7 @@ void MainWindow::slotEditAudit()
             sql = "UPDATE \"Task\" SET \"ID_TaskStatus\"=";
             sql += tmp.setNum(getIdTaskStatus("Одобрена экспертом"));
             sql += ",\"Comment\"=\'";
-            tmp = "Эксперт: " + dEditAudit->getComment();
+            tmp = "Эксперт: " + currentUserName +" "+ dEditAudit->getComment();
             sql += tmp;
             sql += "\' WHERE \"ID\"=";
             sql += ui->tableWidgetAudit->item(selectedRows[0].row(),9)->text();
