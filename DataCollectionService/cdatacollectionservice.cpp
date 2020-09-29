@@ -477,7 +477,7 @@ void CDataCollectionService::parserPremier(QString fileName)
 //=========================================================
 void CDataCollectionService::parserOkkoTV(QString fileName)
 {
-    qDebug()<<__PRETTY_FUNCTION__;
+//    qDebug()<<__PRETTY_FUNCTION__;
     QString year_tmp;
     QString result,tmp;
     QStringList list;
@@ -715,6 +715,135 @@ void CDataCollectionService::parserMoreTV(QString fileName)
 }
 
 //=========================================================
+void CDataCollectionService::parserAppleTV(QString fileName)
+{
+        qDebug()<<"\nfileName="<<fileName;
+        m_nameRus = "";
+        m_nameOriginal = "";
+        m_URL = "";
+        m_yearOfRelease = "";
+        m_rubric = "";
+        m_country = "";
+        m_age = "";
+        m_duration = "";
+        m_filmMaker = "";
+        m_sDataAVP.clear();
+
+        QFile file(fileName);
+
+        QString s_findNameRus = "<span data-test-info-title>";
+        QString s_findURL = "<link rel=\"canonical\" href=";
+        QString s_findAge = "<dd data-test-rating class=\"product-footer__metadata__section__desc typ-caption clr-secondary-text\">";
+        QString s_findRubric = "<dd data-test-genre class=\"product-footer__metadata__section__desc typ-caption clr-secondary-text\">";
+        QString s_findDuration = "<dd data-test-duration class=\"product-footer__metadata__section__desc typ-caption clr-secondary-text\">";
+        QString s_findYearOfRelease = "<dd data-test-releasedate class=\"product-footer__metadata__section__desc typ-caption clr-secondary-text\">";
+        QString s_findCountry = "<span class=\"locale-switcher__footer__country-name\" data-test-country-name>";
+        QString s_findFilmMaker = "<meta property=\"video:director\" content=";
+
+        if(file.open(QFile::ReadOnly | QIODevice::Text))
+        {
+            while (!file.atEnd())
+            {
+                QString line = file.readLine();
+                if(line.indexOf(s_findURL) != -1) // URL
+                {
+                    int index = line.indexOf(s_findURL);
+                    if(line.indexOf("id=") != -1)
+                    {
+                        m_URL = line.mid(index+s_findURL.length()+1,line.indexOf("id=")-s_findURL.length()-index-3);
+                        qDebug()<<"URL ="<<m_URL;
+                    }
+                }
+                else if(line.indexOf(s_findAge) != -1) // Age
+                {
+                    int index = line.indexOf(s_findAge);
+                    if((line.indexOf("</dd>") != -1) && (m_URL != ""))
+                    {
+                        m_age = line.mid(index+s_findAge.length(),line.indexOf("</dd>")-s_findAge.length()-index);
+                        qDebug()<<"m_age ="<<m_age;
+                    }
+                }
+                else if(line.indexOf(s_findNameRus) != -1) // NameRus
+                {
+                    int index = line.indexOf(s_findNameRus);
+                    m_nameRus = line.mid(index+s_findNameRus.length(),line.indexOf("</span>")-s_findNameRus.length()-index);
+                    qDebug()<<"m_nameRus ="<<m_nameRus;
+                }
+                else if(line.indexOf(s_findRubric) != -1) // Rubric
+                {
+                    int index = line.indexOf(s_findRubric);
+                    if((line.indexOf("</dd>") != -1))
+                    {
+                        m_rubric = line.mid(index+s_findRubric.length(),line.indexOf("</dd>")-s_findRubric.length()-index);
+                        qDebug()<<"m_rubric ="<<m_rubric;
+                    }
+                }
+                else if(line.indexOf(s_findYearOfRelease) != -1) // YearOfRelease
+                {
+                    int index = line.indexOf(s_findYearOfRelease);
+                    if((line.indexOf("</dd>") != -1))
+                    {
+                        m_yearOfRelease = line.mid(index+s_findYearOfRelease.length(),line.indexOf("</dd>")-s_findYearOfRelease.length()-index);
+                        qDebug()<<"m_yearOfRelease ="<<m_yearOfRelease;
+                    }
+                }
+                else if(line.indexOf(s_findDuration) != -1) // Duration
+                {
+                    int index = line.indexOf(s_findDuration);
+                    if((line.indexOf("</dd>") != -1))
+                    {
+                        m_duration = line.mid(index+s_findDuration.length(),line.indexOf("</dd>")-s_findDuration.length()-index);
+                        qDebug()<<"m_duration ="<<m_duration;
+                    }
+                }
+                else if(line.indexOf(s_findFilmMaker) != -1) // filmMaker
+                {
+                    int index = line.indexOf(s_findFilmMaker);
+                    if((line.indexOf("id=") != -1))
+                    {
+                        m_filmMaker = line.mid(index+s_findFilmMaker.length()+1,line.indexOf("id=")-s_findFilmMaker.length()-index-3);
+                    }
+                    qDebug()<<"m_filmMaker ="<<m_filmMaker;
+                }
+
+            }
+            file.close();
+    //        col_file++;
+    //        if( col_file == 10)
+    //            exit(0);
+        }
+        else
+            qDebug()<<"Не могу открыть файл:"<<fileName;
+
+        m_sDataAVP.avpNameRus = m_nameRus;
+        m_sDataAVP.avpURL = m_URL;
+        m_sDataAVP.yearOfRelease = m_yearOfRelease;
+        m_sDataAVP.age = m_age;
+        m_sDataAVP.avpForm = m_rubric;
+        m_sDataAVP.filmMaker = m_filmMaker;
+        m_sDataAVP.duration = m_duration;
+
+        m_sDataAVP.avsName = "AppleTV";
+        m_sDataAVP.avsURL = "https://tv.apple.com";
+        m_sDataAVP.dateSaveInDB = QDateTime::currentDateTime();
+
+        if((m_URL !="") && (m_nameRus != "") && (m_yearOfRelease !=""))
+        {
+            qDebug()<<"addSaveInDB";
+            addSaveInDB(m_sDataAVP);
+            m_nameRus = "";
+            m_nameOriginal = "";
+            m_URL = "";
+            m_yearOfRelease = "";
+            m_rubric = "";
+            m_country = "";
+            m_age = "";
+            m_duration = "";
+            m_filmMaker = "";
+        }
+}
+
+//=========================================================
 bool CDataCollectionService::existsSaveInDb(const QString &url)
 {
     bool res = false;
@@ -885,6 +1014,53 @@ QString CDataCollectionService::findIdUser(QString fio)
     }
     return id_user;
 }
+
+//=========================================================
+//void CDataCollectionService::makeListURL_AppleTV(QString fileName)
+//{
+//    qDebug()<<__PRETTY_FUNCTION__;
+//    qDebug()<<fileName;
+//    QFile file(fileName);
+//    QFile file_new("D:\\Program\\ap\\list_url.txt");
+////    if (!file_new.open(QIODevice::WriteOnly | QIODevice::Text))
+//    if (!file_new.open(QIODevice::Append | QIODevice::Text))
+//    {
+//        QString textMsg = "Не могу открыть файл D:\\Program\\ap1\\list_url.txt!";
+//        return;
+//    }
+//    QTextStream out(&file_new);
+
+//    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+//    {
+//        QString textMsg = "Не могу открыть файл " + fileName+"!";
+//        return;
+//    }
+//    else
+//    {
+//        qDebug()<<__PRETTY_FUNCTION__<<"_1";
+//        int i=0;
+//        int col=0;
+//        while (!file.atEnd())
+//        {
+//            i++;
+//            QString line = file.readLine();
+
+//            if(line.indexOf("\"ru-ru\"") != -1)
+//            {
+//                if(line.indexOf("href") != -1)
+//                {
+//                    out << line.mid(line.indexOf("href=")+6, line.length()-line.indexOf("href=")-11)+"\n";
+////                    out<< line  ;
+//                    col++;
+//                }
+//            }
+////            qDebug()<<"i = "<<i;
+//        }
+//        qDebug()<<"col = "<<col;
+//        file.close();
+//        file_new.close();
+//    }
+//}
 
 //=========================================================
 void CDataCollectionService::makeNewFileForKinopoisk(QString fileName)
@@ -1114,7 +1290,7 @@ void CDataCollectionService::makeRefIMBD_ForAVP()
                         if(!query1->exec(sql))
                             qDebug()<<query1->lastError().text();
                         i++;
-                        qDebug()<<"i ============ "<< i <<"\n";
+//                        qDebug()<<"i ============ "<< i <<"\n";
                     }
                 }
                 else
@@ -1355,9 +1531,8 @@ void CDataCollectionService::run()
 //    parserPremier("D:\\Program\\POKAZ\\Premier.csv");
 //    parserOkkoTV("D:\\Program\\POKAZ\\OkkoTV.txt");
 //    parserMegogo("D:\\Program\\POKAZ\\megogo.ru\\ru\\view");
-    parserIVI("D:\\Program\\POKAZ\\www.ivi.ru");
+//    parserIVI("D:\\Program\\POKAZ\\www.ivi.ru");
 
-//    parserPremier("D:\\Program\\POKAZ\\Premier-2020-07-23.csv");
 
     //=====================================IMDB make DB
 //    makeDB_IMBD();
@@ -1378,6 +1553,34 @@ void CDataCollectionService::run()
 //    countValidFilmsInFileAchiveKinopoisk("C:\\Users\\leaa\\Documents\\kp_content");
 
 //        makeNewFileForKinopoisk("D:\\Program\\Kinopoisk\\kp_content.tskv\\kp_content.tskv"); //сделать файл для показа
+
+
+    //======================================AppleTV
+//    QString pathFile;
+//    QString tmp;
+//    for(int i=0; i<=99;i++)
+//    {
+//        pathFile = "D:\\Program\\ap\\ap\\";
+//        pathFile += tmp.setNum(i);
+//делает файл со списком URL на страницы переведенные на русский в AppleTV
+//        makeListURL_AppleTV(pathFile);
+//    };
+
+    QDir dir( "Z:/DownloadData/AppleTV" );
+    if ( !dir.exists() )
+    {
+        qDebug()<<"No such directory"<<dir.dirName();
+    }
+    else
+    {
+        QStringList fileList = dir.entryList( QDir::Files );
+        for (int i = 0; i < fileList.size(); ++i)
+            parserAppleTV("Z:/DownloadData/AppleTV/"+fileList.at(i));
+    }
+
+//    parserAppleTV("Z:/DownloadData/AppleTV/umc.cmc.1a312xxue8d8qbdatkvhv0mwc");
+
+    //======================================AppleTV END Test
 
 //====END test
 

@@ -8,6 +8,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QString>
 
 #include <deque>
 
@@ -102,6 +103,17 @@ private:
 
     Request m_request;
 
+    QString m_nameRus;
+    QString m_nameOriginal;
+    QString m_URL;
+    QString m_yearOfRelease;
+    QString m_rubric;
+    QString m_country;
+    QString m_age;
+    QString m_duration;
+    QString m_filmMaker;
+
+
     QThread sendRequestThread;
     QThread parsingPagesIVIThread;
 
@@ -136,9 +148,11 @@ private:
     void makeRefIMBD_ForAVP();
     void remakeColumnYearOfRelease();
     void makeNewFileForKinopoisk(QString fileName);
+//    void makeListURL_AppleTV(QString fileName);
     //=============== end list test utils
 
     //=======parser collection========
+    void parserAppleTV(QString fileName);
     void parserKinopoisk(QString fileName);
     void parserIVI(QString fileName);
     void parserMegogo(QString fileName);
