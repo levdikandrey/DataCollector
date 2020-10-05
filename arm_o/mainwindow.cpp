@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     ui->setupUi(this);
 
 //    dStartProgressDialog = new DStartProgressDialog();
@@ -92,11 +93,13 @@ MainWindow::MainWindow(QWidget *parent)
         exit(0);
 
     initAVS();
+//    qDebug()<<__PRETTY_FUNCTION__<<"======5";
     initTableAVP();
-    initTableTask();
+//    initTableTask();
 //    initTableMyTask();
 
     initComboBoxUser(ui->comboBoxUser);
+//    qDebug()<<__PRETTY_FUNCTION__<<"======6";
     initComboBoxStatus(ui->comboBoxStatus);
     initComboBoxPriority(ui->comboBoxPriority);
 
@@ -153,9 +156,10 @@ MainWindow::MainWindow(QWidget *parent)
     dChangePassword = new DChangePassword(this);
     dJournalSession = new DJournalSession(this);
     dJournalJobAVP = new DJournalJobAVP(this);
+//    qDebug()<<__PRETTY_FUNCTION__<<"======1215";
     dReportJob = new DReportJob(this);
+//    qDebug()<<__PRETTY_FUNCTION__<<"======1216";
     dReportAllStatistics = new DReportAllStatistics(this);
-
 
     m_currentIdAVS = -1;
     m_currentState = -1;
@@ -180,7 +184,6 @@ MainWindow::MainWindow(QWidget *parent)
     initNetClient();
 //    startProgressDialogThread.quit();
 //    startProgressDialogThread.terminate();
-
 }
 
 //=========================================================
@@ -473,8 +476,8 @@ bool MainWindow::initDB()
     {
         qDebug()<<e.what();
     }
-    return res;
     std::cout<<"initDB()_STOP"<<std::endl;
+    return res;
 }
 
 //=========================================================
@@ -1410,7 +1413,8 @@ QTableWidgetItem* MainWindow::initViolations(long id_avp)
     {
         itemViolations = new QTableWidgetItem();
 //        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"CheckAuto\" FROM \"AnalysisResult\" ar "
-//              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+" GROUP BY v.\"Violation\";";
+//              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+" AND ar.\"CheckAuto\"=\'true\';";
+
         sql = "SELECT v.\"Violation\",SUM(ar.\"Percent\"),ar.\"CheckAuto\" FROM \"AnalysisResult\" ar "
               "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" WHERE \"ID_AVP\"="+tmp.setNum(id_avp)+" GROUP BY(v.\"Violation\",ar.\"CheckAuto\");";
 //        qDebug()<<"sql="<<sql;
@@ -1492,7 +1496,8 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
               "aa.\"DateSaveInDB\","
               "avp.\"NameOriginal\","
               "avs.\"NameAVS\","
-              "avp.\"ID\" FROM avp "
+              "avp.\"ID\","
+              "aa.\"Age\" FROM avp "
               "INNER JOIN avs ON avp.\"ID_AVS\" = avs.\"ID\" "
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON u.\"ID\" = aa.\"ID_User\"";
@@ -1587,11 +1592,6 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
                 ui->tableWidgetAVP->setItem(row,6, newItem6);
 
                 QTableWidgetItem *newItem7 = initViolations(query->value(9).toInt());
-                //                newItem7->setText("АВП не анализировалось");
-                //                QIcon icon7;
-                //                icon7.addFile(QString::fromUtf8(":/icons/icons/question.png"), QSize(), QIcon::Normal, QIcon::Off);
-                //                newItem7->setIcon(icon7);
-                //                newItem7->setFlags(newItem7->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetAVP->setItem(row,7, newItem7);
 
                 QTableWidgetItem *newItem8 = new QTableWidgetItem();
@@ -2119,6 +2119,7 @@ void MainWindow::slotEditMyTask()
 void MainWindow::slotEditAudit()
 {
     QString tmp, sql ="";
+    dEditAudit->clear();
     QModelIndexList selectedRows = ui->tableWidgetAudit->selectionModel()->selectedRows();
 
     dEditAudit->initTableViolation(ui->tableWidgetAudit->item(selectedRows[0].row(),10)->text().toLong());

@@ -31,7 +31,7 @@ void DStartProgressDialog::doWork(const QString &)
     pd->setWindowModality(Qt::WindowModal);
     pd->setRange(0,100);
 //    pd->show();
-    int i=0;
+//    int i=0;
     qDebug()<<__PRETTY_FUNCTION__<<"1";
     for(int i=0; i<100; i++)
     {

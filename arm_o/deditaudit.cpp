@@ -217,6 +217,19 @@ void DEditAudit::slotApply()
         qDebug()<<"sql="<<sql;
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
+
+    }
+
+    if(ui->lineEditDoc->text().length()>0)
+    {
+        sql = "INSERT INTO \"ExpertiseData\"(\"Data\",\"ID_AVP\") VALUES(:Data,:ID_AVP);";
+        query_data->prepare(sql);
+        query_data->bindValue(":Data", getData(ui->lineEditDoc->text()));
+        query_data->bindValue(":ID_AVP", m_idAVP);
+
+        qDebug()<<"sql="<<sql;
+        if(!query_data->exec())
+            qDebug()<<"ERROR:"<<query_data->lastError().text();
     }
     accept();
 }
@@ -391,6 +404,21 @@ void DEditAudit::slotAtachFile()
 }
 
 //=========================================================
+void DEditAudit::slotAtachAudit()
+{
+    QString fileName ="";
+    fileName = QFileDialog::getOpenFileName(this,
+                       QString::fromUtf8("Открыть файл"),
+                       QDir::currentPath(),
+                       "Все файлы документов (*.doc *.docx *.txt *.pdf *.rtf *.odt *.xlsx *.xls);;Все файлы (*.*)");
+
+    if(fileName != "")
+    {
+        ui->lineEditDoc->setText(fileName);
+    }
+}
+
+//=========================================================
 int DEditAudit::getIdAnalysisResult()
 {
     int id = -1;
@@ -470,6 +498,12 @@ void DEditAudit::slotTextChangedViolation()
 void DEditAudit::slotTextChanged(QString)
 {
     ui->pushButtonApplyViolation->setEnabled(true);
+}
+
+//=========================================================
+void DEditAudit::clear()
+{
+    ui->lineEditDoc->clear();
 }
 
 //=========================================================
