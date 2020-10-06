@@ -214,7 +214,7 @@ void DEditAudit::slotApply()
         sql += ui->tableWidgetViolation->item(row,5)->text();
         sql += ";";
 
-        qDebug()<<"sql="<<sql;
+//        qDebug()<<"sql="<<sql;
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
 
@@ -222,10 +222,15 @@ void DEditAudit::slotApply()
 
     if(ui->lineEditDoc->text().length()>0)
     {
-        sql = "INSERT INTO \"ExpertiseData\"(\"Data\",\"ID_AVP\") VALUES(:Data,:ID_AVP);";
+        QString fileName;
+        QStringList list = ui->lineEditDoc->text().split("/");
+        fileName = list.at(list.count()-1);
+        qDebug()<<"fileName="<<fileName;
+        sql = "INSERT INTO \"ExpertiseData\"(\"Data\",\"ID_AVP\",\"FileName\") VALUES(:Data,:ID_AVP,:FileName);";
         query_data->prepare(sql);
         query_data->bindValue(":Data", getData(ui->lineEditDoc->text()));
         query_data->bindValue(":ID_AVP", m_idAVP);
+        query_data->bindValue(":FileName", fileName);
 
         qDebug()<<"sql="<<sql;
         if(!query_data->exec())
