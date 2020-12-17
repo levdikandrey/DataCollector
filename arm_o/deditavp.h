@@ -7,7 +7,9 @@
 namespace Ui {
 class DEditAVP;
 }
-
+/**
+ * @brief The DEditAVP class - класс ддля редактирования АВП
+ */
 class DEditAVP : public QDialog
 {
     Q_OBJECT

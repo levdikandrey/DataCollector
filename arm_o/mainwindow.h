@@ -30,6 +30,7 @@
 #include "djournaljobavp.h"
 #include "dreportjob.h"
 #include "dreportallstatistics.h"
+#include "dappointexpert.h"
 
 #include "dstartprogressdialog.h"
 
@@ -89,6 +90,18 @@ public:
      * @brief initTableMyAudit - функция заполнения таблицы "Экспертиза"
      */
     void initTableAudit();
+    /**
+     * @brief initTableMyAudit - функция заполнения таблицы "Текущие экспертизы"
+     */
+    void initTableCurrentAudit();
+    /**
+     * @brief initTableAuditRKN - функция заполнения таблицы "Инспектор РКН"
+     */
+    void initTableAuditRKN();
+    /**
+     * @brief initTableArchive - функция заполнения таблицы "Архив"
+     */
+    void initTableArchive();
     /**
      * @brief initAVS - функция заполнения "Выберите АВС"
      */
@@ -162,6 +175,14 @@ private slots:
      */
     void slotEditAudit(int, int);
     /**
+     * @brief slotEditAuditRKN - функция вызывает диалог для редактирования параметров "Инспектор РКН" в БД АВП (при двойном клике на строке записи в таблице)
+     */
+    void slotEditAuditRKN(int, int);
+    /**
+     * @brief slotEditAuditRKN - функция вызывает диалог для редактирования параметров "Текущие экспертизы" в БД АВП (при двойном клике на строке записи в таблице)
+     */
+    void slotEditCurrentAudit(int, int);
+    /**
      * @brief slotDeleteTask - удаляет одину или несколько задач из таблицы и БД
      */
     void slotDeleteTask();
@@ -173,6 +194,14 @@ private slots:
      * @brief slotEditAudit - функция вызывает диалог для редактирования параметров "Экспертиза" в БД АВП
      */
     void slotEditAudit();
+    /**
+     * @brief slotEditAudit - функция вызывает диалог для редактирования параметров "Текущие экспертизы" в БД АВП
+     */
+    void slotEditCurrentAudit();
+    /**
+     * @brief slotEditAuditRKN - функция вызывает диалог для редактирования параметров "Инспектор РКН" в БД АВП
+     */
+    void slotEditAuditRKN();
     /**
      * @brief slotReload - функция перечитывает данные об АВП из БД
      */
@@ -278,6 +307,7 @@ private slots:
     void slotJournalSession();
     void slotJournalJob();
     void slotInitDialog();
+    void slotAppointExpert();
 
 public slots:
     /**
@@ -325,6 +355,7 @@ private:
     DJournalJobAVP *dJournalJobAVP;
     DReportJob *dReportJob;
     DReportAllStatistics *dReportAllStatistics;
+    DAppointExpert *dAppointExpert;
 
     Client *m_client;
 
@@ -383,5 +414,6 @@ public:
      */
     void addRecordJournalJobAVP(int category, QString info, QString nameAVP);
     QString getNameRusAVP(uint64_t idAVP);
+    const QTableWidget* getTableCurrentExpert() const;
 };
 #endif // MAINWINDOW_H

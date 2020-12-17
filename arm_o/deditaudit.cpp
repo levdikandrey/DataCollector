@@ -488,6 +488,12 @@ void DEditAudit::initComboBoxViolation()
 }
 
 //=========================================================
+void DEditAudit::setNameAVP(QString nameAVP)
+{
+    ui->labelNameAVP->setText(nameAVP);
+}
+
+//=========================================================
 void DEditAudit::slotActivated(int)
 {
     ui->pushButtonApplyViolation->setEnabled(true);

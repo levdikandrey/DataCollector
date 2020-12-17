@@ -37,6 +37,11 @@ public:
       */
      void initComboBoxViolation();
      /**
+      * @brief setNameAVP - функция устанавливает название АВП
+      * @param nameAVP - наименование АВП
+      */
+     void setNameAVP(QString nameAVP);
+     /**
       * @brief getComment - функция возвращает текущий комментарий
       * @return - комментарий
       */

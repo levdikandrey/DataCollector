@@ -23,6 +23,7 @@ PSQL_LIBDIR = C:\PostgreSQL\10\lib
 SOURCES += \
     aprotocol.cpp \
     client.cpp \
+    dappointexpert.cpp \
     dchangepassword.cpp \
     deditavp.cpp \
     djournaljobavp.cpp \
@@ -56,6 +57,7 @@ SOURCES += \
 HEADERS += \
     aprotocol.h \
     client.h \
+    dappointexpert.h \
     dchangepassword.h \
     deditavp.h \
     djournaljobavp.h \
@@ -91,6 +93,7 @@ FORMS += \
     d_addtask.ui \
     d_adduser.ui \
     d_addviolation.ui \
+    d_appointexpert.ui \
     d_changepassword.ui \
     d_editaudit.ui \
     d_editavp.ui \
