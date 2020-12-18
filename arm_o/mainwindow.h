@@ -268,9 +268,13 @@ private slots:
      */
     void slotTextChanged(const QString&);
     /**
-     * @brief slotFilterApply
+     * @brief slotFilterApply - функция применяет фильтры в закладке "Текущие задачи"
      */
     void slotFilterApply();
+    /**
+     * @brief slotFilterApply1 - функция применяет фильтры в закладке "Текущие экспертизы"
+     */
+    void slotFilterApply1();
     /**
      * @brief slotCurrentChanged
      */
@@ -298,6 +302,8 @@ private slots:
     void slotContextMenuRequested(const QPoint &pos);
     void slotContextMenuRequestedAVP(const QPoint &pos);
     void slotContextMenuRequestedExpert(const QPoint &pos);
+    void slotContextMenuRequestedExpert_2(const QPoint &pos);
+    void slotContextMenuRequestedExpert_4(const QPoint &pos);
     void slotContextMenuRequestedCurrentTask(const QPoint &pos);
 
     void slotChangePassword();

@@ -15,6 +15,7 @@ class DAppointExpert : public QDialog
 public:
     explicit DAppointExpert(QWidget *parent = nullptr);
     ~DAppointExpert();
+    const QString getExpertName() const;
 
 public slots:
     void slotApply();

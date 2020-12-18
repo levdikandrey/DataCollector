@@ -117,6 +117,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidgetAudit->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidgetAudit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedExpert(QPoint)));
 
+    ui->tableWidgetAudit_4->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWidgetAudit_4, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedExpert_4(QPoint)));
+
+    ui->tableWidgetAudit_2->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWidgetAudit_2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedExpert_2(QPoint)));
+
     cImportData = new CImportData();
     cImportData->moveToThread(&importDataThread);
     connect(&importDataThread, &QThread::finished, cImportData, &QObject::deleteLater);
@@ -158,9 +164,7 @@ MainWindow::MainWindow(QWidget *parent)
     dChangePassword = new DChangePassword(this);
     dJournalSession = new DJournalSession(this);
     dJournalJobAVP = new DJournalJobAVP(this);
-//    qDebug()<<__PRETTY_FUNCTION__<<"======1215";
     dReportJob = new DReportJob(this);
-//    qDebug()<<__PRETTY_FUNCTION__<<"======1216";
     dReportAllStatistics = new DReportAllStatistics(this);
     dAppointExpert = new DAppointExpert(this);
 
@@ -267,7 +271,34 @@ void MainWindow::closeEvent(QCloseEvent *)
 //=========================================================
 void MainWindow::slotAppointExpert()
 {
-    dAppointExpert->exec();
+    QString sql,tmp;
+    int id_expert;
+    if(dAppointExpert->exec() == QDialog::Accepted)
+    {
+        id_expert = getIdUser(dAppointExpert->getExpertName());
+        QModelIndexList selectedRows = ui->tableWidgetAudit_4->selectionModel()->selectedRows();
+        while (!selectedRows.empty())
+        {
+            sql ="UPDATE \"Task\" SET \"ID_Expert\" = ";
+            sql += tmp.setNum(id_expert);
+            sql += " WHERE \"ID\"=";
+            sql += ui->tableWidgetAudit_4->item(selectedRows[0].row(),10)->text();
+            sql += ";";
+//            qDebug()<<sql;
+            if(query->exec(sql))
+            {
+                addRecordJournalJobAVP(1,"Назначение эксперта: "+ dAppointExpert->getExpertName() + " для задачи АВП", getNameRusAVP(ui->tableWidgetAudit_4->item(selectedRows[0].row(),11)->text().toLong()));
+                ui->tableWidgetAudit_4->removeRow(selectedRows[0].row());
+                selectedRows = ui->tableWidgetAudit_4->selectionModel()->selectedRows();
+            }
+            else
+            {
+                qDebug()<<query->lastError().text();
+                break;
+            }
+        }
+        initTableCurrentAudit();
+    }
 }
 
 //=========================================================
@@ -279,7 +310,7 @@ void MainWindow::saveInJournalRecordClose()
     sql = "INSERT INTO \"Session\"(\"SessionDate\",\"ID_User\",\"Info\") VALUES(\'";
     sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
     sql += fio.setNum(getIdUser(currentUserName)); sql += ",\'Выход из приложения\');";
-//    qDebug()<<sql;
+    //    qDebug()<<sql;
     if(!query->exec(sql))
         qDebug()<<query->lastError().text();
 }
@@ -843,6 +874,7 @@ void MainWindow::initTableAuditRKN()
 void MainWindow::initTableCurrentAudit()
 {
     QString sql="";
+    bool filterCheck = false;
     try
     {
         ui->tableWidgetAudit_4->setSortingEnabled(false);
@@ -866,9 +898,26 @@ void MainWindow::initTableCurrentAudit()
               "LEFT JOIN \"User\" ue ON \"Task\".\"ID_Expert\" = ue.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusName\" =\'";
-        sql += "Экпертиза";
-        sql += "\' ORDER BY \"Task\".\"ID\";";
+        sql += "Экпертиза\'";
+        if(ui->groupBoxUser_2->isChecked())
+        {
+            sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxUser_2->currentText(); sql += "\'";
+            filterCheck = true;
+        }
+        if(ui->groupBoxPriority_2->isChecked())
+        {
+            sql +=" AND p.\"NamePriority\" = \'";sql += ui->comboBoxPriority_2->currentText(); sql += "\'";
+            filterCheck = true;
+        }
+        if(ui->groupBoxDate_2->isChecked())
+        {
+            sql +=" AND (\"Task\".\"DateAppoint\" >='"; sql += ui->dateEditDateBegin_2->date().toString("yyyy-MM-dd");
+            sql += "\'::date AND \"Task\".\"DateAppoint\" <=\'";sql += ui->dateEditDateEnd_2->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
+            filterCheck = true;
+        }
+        sql += " ORDER BY \"Task\".\"ID\";";
 //        qDebug()<<"sql = "<<sql;
+        filterCheck = false;
         if(query->exec(sql))
         {
             int row = 0;
@@ -988,10 +1037,11 @@ void MainWindow::initTableAudit()
               "\"Task\".\"ID_AVP\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
-              "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
+              "INNER JOIN \"User\" u ON \"Task\".\"ID_Expert\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusName\" =\'";
-        sql += "Экпертиза";
+        sql += "Экпертиза\' AND u.\"FIO\" =\'";
+        sql += currentUserName;
         sql += "\' ORDER BY \"Task\".\"ID\";";
 //        qDebug()<<"sql = "<<sql;
         if(query->exec(sql))
@@ -1439,7 +1489,9 @@ void MainWindow::initTableTask(bool)
                 QDate currentDT = QDateTime::currentDateTime().date();
                 QDate realizationDT = query->value(11).toDate();
 
-                if( (currentDT > realizationDT) && (query->value(5).toString()!="Закрыта") && (query->value(5).toString()!="Закрыта с экспертизой") )
+                if( (currentDT > realizationDT) && (query->value(5).toString()!="Закрыта") &&
+                        (query->value(5).toString()!="Закрыта с экспертизой") &&
+                        (query->value(5).toString()!="Проверена оператором"))
                     setColorRowTable(ui->tableWidgetCurrentTasks,row,0xff,0xc0,0xcb);
 
                 row++;
@@ -2830,6 +2882,14 @@ void MainWindow::slotFilterApply()
 }
 
 //=========================================================
+void MainWindow::slotFilterApply1()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    initTableCurrentAudit();
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
 void MainWindow::slotTextChanged(const QString &text)
 {
 //    if(text.length()==0)
@@ -3086,16 +3146,46 @@ void MainWindow::slotContextMenuRequestedAVP(const QPoint &pos)
 //=========================================================
 void MainWindow::slotContextMenuRequestedExpert(const QPoint &pos)
 {
-       QMenu * menu = new QMenu(this);
+    QMenu * menu = new QMenu(this);
 
-       QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
-       QIcon icon1;
-       icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
-       actionGoToURL->setIcon(icon1);
-       connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+    QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
+    QIcon icon1;
+    icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
+    actionGoToURL->setIcon(icon1);
+    connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
 
-       menu->addAction(actionGoToURL);
-       menu->popup(ui->tableWidgetAudit->viewport()->mapToGlobal(pos));
+    menu->addAction(actionGoToURL);
+    menu->popup(ui->tableWidgetAudit->viewport()->mapToGlobal(pos));
+}
+
+//=========================================================
+void MainWindow::slotContextMenuRequestedExpert_2(const QPoint &pos)
+{
+    QMenu * menu = new QMenu(this);
+
+    QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
+    QIcon icon1;
+    icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
+    actionGoToURL->setIcon(icon1);
+    connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+
+    menu->addAction(actionGoToURL);
+    menu->popup(ui->tableWidgetAudit_2->viewport()->mapToGlobal(pos));
+}
+
+//=========================================================
+void MainWindow::slotContextMenuRequestedExpert_4(const QPoint &pos)
+{
+    QMenu * menu = new QMenu(this);
+
+    QAction * actionGoToURL = new QAction(tr("Перейти по ссылки URL"), this);
+    QIcon icon1;
+    icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
+    actionGoToURL->setIcon(icon1);
+    connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+
+    menu->addAction(actionGoToURL);
+    menu->popup(ui->tableWidgetAudit_4->viewport()->mapToGlobal(pos));
 }
 
 //=========================================================
@@ -3504,8 +3594,18 @@ void MainWindow::slotGoToURL()
     }
     else if(ui->tabWidget->currentIndex()== 3)
     {
+        int row = ui->tableWidgetAudit_4->selectionModel()->currentIndex().row();
+        QDesktopServices::openUrl(QUrl(ui->tableWidgetAudit_4->item(row,1)->text()));
+    }
+    else if(ui->tabWidget->currentIndex()== 4)
+    {
         int row = ui->tableWidgetAudit->selectionModel()->currentIndex().row();
         QDesktopServices::openUrl(QUrl(ui->tableWidgetAudit->item(row,1)->text()));
+    }
+    else if(ui->tabWidget->currentIndex()== 5)
+    {
+        int row = ui->tableWidgetAudit_2->selectionModel()->currentIndex().row();
+        QDesktopServices::openUrl(QUrl(ui->tableWidgetAudit_2->item(row,1)->text()));
     }
 }
 

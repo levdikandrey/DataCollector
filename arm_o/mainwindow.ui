@@ -2648,6 +2648,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButtonReview_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotFilterApply1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>724</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>488</x>
+     <y>33</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotExit()</slot>
@@ -2673,5 +2689,6 @@
   <slot>slotEditAudit()</slot>
   <slot>slotEditAuditRKN()</slot>
   <slot>slotAppointExpert()</slot>
+  <slot>slotFilterApply1()</slot>
  </slots>
 </ui>

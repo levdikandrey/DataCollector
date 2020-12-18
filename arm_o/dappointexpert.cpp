@@ -46,6 +46,12 @@ void DAppointExpert::initDialog()
 }
 
 //=========================================================
+const QString DAppointExpert::getExpertName() const
+{
+    return ui->comboBoxExperts->currentText();
+}
+
+//=========================================================
 void DAppointExpert::slotApply()
 {
     QModelIndexList selectedRows = ((MainWindow*)parent())->getTableCurrentExpert()->selectionModel()->selectedRows();
