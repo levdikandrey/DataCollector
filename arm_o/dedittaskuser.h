@@ -49,6 +49,7 @@ private slots:
     void slotCancel();
     void slotExit();
     void slotDateChanged(const QDate &);
+    void slotPreviewExpertise();
 
 private:
     Ui::D_EditTaskUser *ui;

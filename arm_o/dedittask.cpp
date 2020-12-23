@@ -153,7 +153,7 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
         {
             while(query->next())
             {
-                if((query->value(1).toInt() != 4) && (query->value(1).toInt() != 6) && (query->value(1).toInt() != 7) && (query->value(1).toInt() != 8))
+                if((query->value(1).toInt() != 4) && (query->value(1).toInt() != 6) && (query->value(1).toInt() != 7) && (query->value(1).toInt() != 8) && (query->value(1).toInt() != 9))
                     ui->comboBoxStatus->addItem(query->value(0).toString());
 
             }

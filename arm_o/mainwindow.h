@@ -31,8 +31,9 @@
 #include "dreportjob.h"
 #include "dreportallstatistics.h"
 #include "dappointexpert.h"
-
 #include "dstartprogressdialog.h"
+#include "dpreviewarchive.h"
+
 
 #include "client.h"
 #include "aprotocol.h"
@@ -183,6 +184,10 @@ private slots:
      */
     void slotEditCurrentAudit(int, int);
     /**
+     * @brief slotPreviewAchive - функция вызывает диалог для просмотра параметров АВП "Архив" в БД АВП (при двойном клике на строке записи в таблице)
+     */
+    void slotPreviewAchive(int, int);
+    /**
      * @brief slotDeleteTask - удаляет одину или несколько задач из таблицы и БД
      */
     void slotDeleteTask();
@@ -260,13 +265,21 @@ private slots:
      */
     void slotRBAll(bool);
     /**
-     * @brief slotFindAVP
+     * @brief slotFindAVP - функция ищет АВП по названию
      */
     void slotFindAVP();
+    /**
+     * @brief slotFindArchiveAVP - функция ищет АВП по названию в архиве
+     */
+    void slotFindArchiveAVP();
     /**
      * @brief slotTextChanged
      */
     void slotTextChanged(const QString&);
+    /**
+     * @brief slotTextChanged1
+     */
+    void slotTextChanged1(const QString&);
     /**
      * @brief slotFilterApply - функция применяет фильтры в закладке "Текущие задачи"
      */
@@ -362,6 +375,7 @@ private:
     DReportJob *dReportJob;
     DReportAllStatistics *dReportAllStatistics;
     DAppointExpert *dAppointExpert;
+    DPreviewArchive *dPreviewArchive;
 
     Client *m_client;
 
@@ -378,6 +392,7 @@ private:
     int m_currentState;
 
     QTimer m_timer;
+    QTimer m_timer1;
     QTimer m_timerStartInitDialog;
 
     void initDialog();

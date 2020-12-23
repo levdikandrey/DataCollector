@@ -29,7 +29,7 @@ DAppointExpert::~DAppointExpert()
 void DAppointExpert::initDialog()
 {
     QString sql;
-    sql = "select * from \"User\" WHERE \"ID_Group\" = 11 OR \"ID_Group\" = 12;";
+    sql = "select * from \"User\" WHERE \"ID_Group\" = 11 OR \"ID_Group\" = 12 OR \"ID_Group\" = 8;";
 //  qDebug()<<"sql ="<<sql;
     if(!query->exec(sql))
     {

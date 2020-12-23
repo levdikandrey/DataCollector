@@ -9,6 +9,7 @@
 #include <QSpinBox>
 #include <QFileDialog>
 #include <QProcess>
+#include <QDesktopServices>
 
 extern QSqlDatabase db;
 //=========================================================
@@ -126,14 +127,15 @@ void DEditTaskUser::initComboBoxStatus(QString currentStatus)
         {
             while(query->next())
             {
-                if((query->value(1).toInt() != 5) && (query->value(1).toInt() != 6))
+                if((query->value(1).toInt() != 5) && (query->value(1).toInt() != 6) && (query->value(1).toInt() != 9))
                     ui->comboBoxStatus->addItem(query->value(0).toString());
 
             }
         }
         else
             qDebug()<<query->lastError().text();
-        ui->comboBoxStatus->setCurrentText(currentStatus);
+        ui->labelCurrentStatus->setText(currentStatus);
+//        ui->comboBoxStatus->setCurrentText(currentStatus);
     }
     catch(std::exception &e)
     {
@@ -229,6 +231,46 @@ void DEditTaskUser::initTableViolation(long id_avp)
     catch(std::exception &e)
     {
         qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTaskUser::slotPreviewExpertise()
+{
+    QByteArray data;
+    QString tmp;
+    QString sql;
+    sql = "SELECT \"Data\",\"FileName\" FROM \"ExpertiseData\" WHERE \"ID_AVP\" = ";
+    sql += tmp.setNum(m_idAVP); sql += ";";
+//    qDebug()<<"sql = "<<sql;
+    if(query->exec(sql))
+    {
+        if(query->next())
+        {
+            data = query->value(0).toByteArray();
+            QString pathFileName;
+            pathFileName = "./"+query->value(1).toString();
+            QFile file(pathFileName);
+            if(file.open(QFile::WriteOnly))
+            {
+                file.write(data);
+                qDebug()<<"data.size()="<<data.size();
+                file.close();
+            }
+            else
+                qDebug()<<"Не могу открыть файл: "+pathFileName;
+            if(data.size() != 0)
+            {
+                QDesktopServices::openUrl(QUrl::fromLocalFile(pathFileName));
+            }
+        }
+        else
+            QMessageBox::warning(this, tr("Внимание"),tr("Нет прикрепленной экспертизы!"),tr("Да"));
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        qDebug()<<query->lastError().text();
     }
 }
 

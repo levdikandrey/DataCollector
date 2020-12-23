@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>D_EditTaskUser</class>
- <widget class="QDialog" name="D_EditTaskUser">
+ <class>DPreviewArchive</class>
+ <widget class="QDialog" name="DPreviewArchive">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
-    <height>681</height>
+    <width>682</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Редактирование задачи</string>
+   <string>Просмотр АВП</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
@@ -36,7 +36,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Мажор</string>
+      <string>1</string>
      </property>
     </widget>
    </item>
@@ -48,88 +48,41 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QComboBox" name="comboBoxUser">
-     <item>
-      <property name="text">
-       <string>Петров С.С.</string>
-      </property>
-     </item>
+    <widget class="QLabel" name="labelFIO">
+     <property name="text">
+      <string>2</string>
+     </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label_8">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Приоритет:</string>
+      <string>ФИО, эксперта:</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QComboBox" name="comboBoxPriority">
-     <item>
-      <property name="text">
-       <string>Низкий</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Текущий статус:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="labelCurrentStatus">
+    <widget class="QLabel" name="labelExpertFIO">
      <property name="text">
       <string>TextLabel</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Назначить статус:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="comboBoxStatus">
-     <item>
-      <property name="text">
-       <string>В работе</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Процент готовности:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QSpinBox" name="spinBoxPercent">
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>Дата выполнения:</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QDateEdit" name="dateEdit"/>
+   <item row="3" column="1">
+    <widget class="QLabel" name="labelMakeDate">
+     <property name="text">
+      <string>3</string>
+     </property>
+    </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Нарушения</string>
@@ -168,7 +121,7 @@
      </layout>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <spacer name="horizontalSpacer_2">
@@ -184,7 +137,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Экспертиза:</string>
        </property>
@@ -209,7 +162,7 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="maximumSize">
       <size>
@@ -229,6 +182,9 @@
           <height>150</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
         <property name="html">
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -242,7 +198,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
@@ -263,52 +219,6 @@ p, li { white-space: pre-wrap; }
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonApply">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Применить</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/ok.png</normaloff>:/icons/icons/ok.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonCancel">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>33</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Отмена</string>
-        </property>
-        <property name="icon">
-         <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/cancel.png</normaloff>:/icons/icons/cancel.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonExit">
@@ -338,87 +248,44 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>comboBoxUser</tabstop>
-  <tabstop>comboBoxStatus</tabstop>
-  <tabstop>spinBoxPercent</tabstop>
-  <tabstop>pushButtonApply</tabstop>
-  <tabstop>pushButtonCancel</tabstop>
-  <tabstop>pushButtonExit</tabstop>
- </tabstops>
  <resources>
   <include location="resource.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>pushButtonApply</sender>
-   <signal>clicked()</signal>
-   <receiver>D_EditTaskUser</receiver>
-   <slot>slotApply()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>446</x>
-     <y>660</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>7</x>
-     <y>317</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButtonCancel</sender>
-   <signal>clicked()</signal>
-   <receiver>D_EditTaskUser</receiver>
-   <slot>slotCancel()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>572</x>
-     <y>660</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>531</x>
-     <y>214</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>pushButtonExit</sender>
    <signal>clicked()</signal>
-   <receiver>D_EditTaskUser</receiver>
-   <slot>slotExit()</slot>
+   <receiver>DPreviewArchive</receiver>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>698</x>
-     <y>660</y>
+     <x>585</x>
+     <y>545</y>
     </hint>
     <hint type="destinationlabel">
-     <x>533</x>
-     <y>269</y>
+     <x>676</x>
+     <y>541</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>toolButtonPreviewExpertise</sender>
    <signal>clicked()</signal>
-   <receiver>D_EditTaskUser</receiver>
-   <slot>slotPreviewExpertise()</slot>
+   <receiver>DPreviewArchive</receiver>
+   <slot>slotPreviewAudit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>703</x>
-     <y>418</y>
+     <x>667</x>
+     <y>322</y>
     </hint>
     <hint type="destinationlabel">
-     <x>716</x>
-     <y>432</y>
+     <x>678</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>slotApply()</slot>
-  <slot>slotCancel()</slot>
-  <slot>slotExit()</slot>
-  <slot>slotPreviewExpertise()</slot>
+  <slot>slotPreviewAudit()</slot>
  </slots>
 </ui>

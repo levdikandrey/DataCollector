@@ -360,7 +360,7 @@
        <string>Добавить задачу</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>6</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -1952,7 +1952,7 @@
          </layout>
         </item>
         <item row="1" column="0">
-         <widget class="QTableWidget" name="tableWidgetAudit_3">
+         <widget class="QTableWidget" name="tableWidgetAuditArchive">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
@@ -2664,6 +2664,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>toolButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotFindArchiveAVP()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1282</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1314</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotExit()</slot>
@@ -2690,5 +2706,6 @@
   <slot>slotEditAuditRKN()</slot>
   <slot>slotAppointExpert()</slot>
   <slot>slotFilterApply1()</slot>
+  <slot>slotFindArchiveAVP()</slot>
  </slots>
 </ui>
