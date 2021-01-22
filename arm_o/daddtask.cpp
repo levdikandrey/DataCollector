@@ -219,7 +219,7 @@ void DAddTask::initComboBoxUser()
     {
         ui->comboBoxUser->clear();
 
-        sql = "SELECT \"ID\",\"FIO\" FROM \"User\";";
+        sql = "SELECT \"ID\",\"FIO\" FROM \"User\" WHERE \"FlagJob\" = \'true\';";
 
         if(query->exec(sql))
         {

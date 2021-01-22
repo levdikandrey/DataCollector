@@ -78,7 +78,7 @@ void DUser::initTableUser()
               "\"User\".\"LastName\","
               "\"User\".\"FirstName\","
               "\"User\".\"MiddleName\" "
-              "FROM \"User\" LEFT JOIN \"Group\" ON \"User\".\"ID_Group\" = \"Group\".\"ID\";";
+              "FROM \"User\" LEFT JOIN \"Group\" ON \"User\".\"ID_Group\" = \"Group\".\"ID\" WHERE \"FlagJob\" = \'true\';";
 
         if(query->exec(sql))
         {
@@ -153,14 +153,14 @@ void DUser::slotAdd()
         try
         {
             fio = m_dAddUser->lastName(); fio += " "; fio += m_dAddUser->firstName().mid(0,1);fio += "."; fio += m_dAddUser->middleName().mid(0,1);fio += ".";
-            sql = "INSERT INTO \"User\"(\"LastName\",\"FirstName\",\"MiddleName\",\"FIO\",\"Position\",\"ID_Group\",\"Password\") VALUES(\'";
+            sql = "INSERT INTO \"User\"(\"LastName\",\"FirstName\",\"MiddleName\",\"FIO\",\"Position\",\"ID_Group\",\"Password\",\"FlagJob\") VALUES(\'";
             sql +=  m_dAddUser->lastName(); sql += "\',\'";
             sql +=  m_dAddUser->firstName(); sql += "\',\'";
             sql +=  m_dAddUser->middleName(); sql += "\',\'";
             sql +=  fio; sql += "\',\'";
             sql +=  m_dAddUser->range(); sql += "\',";
             sql +=  tmp.setNum(m_dAddUser->idGroup());
-            sql += ",\'123\');";
+            sql += ",\'123\',\'true\');";
 //            qDebug()<<"sql="<<sql;
             if(query->exec(sql))
                 initTableUser();
@@ -193,7 +193,8 @@ void DUser::slotDelete()
             {
                 try
                 {
-                    sql = "DELETE FROM \"User\" WHERE \"ID\"=";sql += ui->tableWidgetUser->item(selectedRows[0].row(),3)->text(); sql += ";";
+//                    sql = "DELETE FROM \"User\" WHERE \"ID\"=";sql += ui->tableWidgetUser->item(selectedRows[0].row(),3)->text(); sql += ";";
+                    sql = "UPDATE \"User\" SET \"FlagJob\" = \'false\' WHERE \"ID\"=";sql += ui->tableWidgetUser->item(selectedRows[0].row(),3)->text(); sql += ";";
                     qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
                     {

@@ -37,7 +37,7 @@ void DEnter::initUserComBoBox()
     ui->comboBoxUsers->clear();
     try
     {
-        sql = "SELECT * FROM \"User\";";
+        sql = "SELECT * FROM \"User\" WHERE \"FlagJob\" = \'true\';";
         if(query->exec(sql))
         {
             while(query->next())

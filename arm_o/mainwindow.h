@@ -305,6 +305,10 @@ private slots:
      */
     void slotGoToURL();
     /**
+     * @brief slotCurrentTaskChageStatus
+     */
+    void slotCurrentTaskChageStatus();
+    /**
      * @brief slotStatus
      */
     void slotStatus();

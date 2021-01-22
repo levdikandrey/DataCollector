@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    startProgressDialogThread.start();
 //    emit operateStartProgressDialog("");
 
-
+    ui->toolButtonExcel->hide();
     ui->actionClearDB->setEnabled(false);
     initDialog();
 
@@ -637,7 +637,7 @@ void MainWindow::initComboBoxUser(QComboBox *comboBox)
     comboBox->clear();
     try
     {
-        sql = "SELECT * FROM \"User\";";
+        sql = "SELECT * FROM \"User\" WHERE \"FlagJob\" = \'true\';";
         if(query->exec(sql))
         {
             while(query->next())
@@ -1539,7 +1539,9 @@ void MainWindow::initTableTask(bool)
 
                 if( (currentDT > realizationDT) && (query->value(5).toString()!="Закрыта") &&
                         (query->value(5).toString()!="Закрыта с экспертизой") &&
-                        (query->value(5).toString()!="Проверена оператором"))
+                        (query->value(5).toString()!="Проверена оператором") &&
+                        (query->value(5).toString()!="Одобрена экспертом") &&
+                        (query->value(5).toString()!="Экпертиза"))
                     setColorRowTable(ui->tableWidgetCurrentTasks,row,0xff,0xc0,0xcb);
 
                 row++;
@@ -3382,9 +3384,17 @@ void MainWindow::slotContextMenuRequestedCurrentTask(const QPoint &pos)
        icon1.addFile(QString::fromUtf8(":/icons/icons/web.png"), QSize(), QIcon::Normal, QIcon::Off);
        actionGoToURL->setIcon(icon1);
 
+       QAction * actionChageStatus = new QAction(tr("Сменить статус АВП на \"Закрыта\""), this);
+       QIcon icon2;
+       icon2.addFile(QString::fromUtf8(":/icons/icons/button_reload.png"), QSize(), QIcon::Normal, QIcon::Off);
+       actionChageStatus->setIcon(icon2);
+
        connect(actionGoToURL, SIGNAL(triggered()), this, SLOT(slotGoToURL()));
+       connect(actionChageStatus, SIGNAL(triggered()), this, SLOT(slotCurrentTaskChageStatus()));
 
        menu->addAction(actionGoToURL);
+       menu->addAction(actionChageStatus);
+
        menu->popup(ui->tableWidgetCurrentTasks->viewport()->mapToGlobal(pos));
 }
 
@@ -3791,6 +3801,47 @@ void MainWindow::slotGoToURL()
         int row = ui->tableWidgetAudit_2->selectionModel()->currentIndex().row();
         QDesktopServices::openUrl(QUrl(ui->tableWidgetAudit_2->item(row,1)->text()));
     }
+}
+
+//=========================================================
+void MainWindow::slotCurrentTaskChageStatus()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString sql="";
+    QModelIndexList selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
+    if(selectedRows.empty())
+    {
+        QMessageBox::information(this, tr("Сообщение"),tr("Вы не выбрали задачу для смены статуса!"),tr("Да"));
+        return;
+    }
+    else
+    {
+            try
+            {
+                if(QMessageBox::warning(this,"Внимание","После закрытия задача уйдет в архив.\nВы действительно хотите поменять статус?","Да","Нет") == 0)
+                {
+                    while (!selectedRows.empty())
+                    {
+                        sql = "UPDATE \"Task\" SET \"ID_TaskStatus\" = 4 WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text(); sql += ";";
+                        qDebug()<<"sql ="<<sql;
+                        if(query->exec(sql))
+                        {
+                            addRecordJournalJobAVP(1,"Закрытие задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
+                            ui->tableWidgetCurrentTasks->removeRow(selectedRows[0].row());
+                            selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
+                        }
+                        else
+                            qDebug()<<query->lastError().text();
+                    }
+                }
+            }
+            catch(std::exception &e)
+            {
+                qDebug()<<e.what();
+                qDebug()<<query->lastError().text();
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            }
+        }
 }
 
 //=========================================================
