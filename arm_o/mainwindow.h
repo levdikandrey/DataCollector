@@ -102,7 +102,7 @@ public:
     /**
      * @brief initTableArchive - функция заполнения таблицы "Архив"
      */
-    void initTableArchive();
+    void initTableArchive(int numberPage = 1);
     /**
      * @brief initAVS - функция заполнения "Выберите АВС"
      */
@@ -232,17 +232,29 @@ private slots:
      */
     void slotViolation();
     /**
-     * @brief slotNext
+     * @brief slotNext - функция отображает следующую страницу с АВП в закладке "Список АВП"
      */
     void slotNext();
     /**
-     * @brief slotPrevious
+     * @brief slotNextArchivePage - функция отображает следующую страницу с АВП в закладке "Архив"
+     */
+    void slotNextArchivePage();
+    /**
+     * @brief slotPrevious - функция отображает предыдущую страницу с АВП в закладке "Список АВП"
      */
     void slotPrevious();
     /**
-     * @brief slotChangeNumberPage
+     * @brief slotPreviousArchivePage - функция отображает предыдущую страницу с АВП в закладке "Архив"
+     */
+    void slotPreviousArchivePage();
+    /**
+     * @brief slotChangeNumberPage - функция отображает страницу с АВП в закладке "Список АВП" по номеру  страницы
      */
     void slotChangeNumberPage();
+    /**
+     * @brief slotChangeNumberPageArchive - функция отображает страницу с АВП в закладке "Архив" по номеру  страницы
+     */
+    void slotChangeNumberPageArchive();
     /**
      * @brief slotSelectAVS - функция выбора АВС
      * @param avs
@@ -288,6 +300,10 @@ private slots:
      * @brief slotFilterApply1 - функция применяет фильтры в закладке "Текущие экспертизы"
      */
     void slotFilterApply1();
+    /**
+     * @brief slotFilterApply2 - функция применяет фильтры в закладке "Архив"
+     */
+    void slotFilterApply2();
     /**
      * @brief slotCurrentChanged
      */
@@ -390,7 +406,9 @@ private:
     int progress;
     int stepProgress;
     int m_countAVP;
+    int m_countArchiveAVP;
     int m_currentNumberPage;
+    int m_currentArchiveNumberPage;
     int m_countCurrentAVP;
     int m_currentIdAVS;
     int m_currentState;
@@ -401,6 +419,7 @@ private:
 
     void initDialog();
     int countAVP(long idAVS = -1);
+    int countArchiveAVP();
     int countAVP_Analysis(int state,long idAVS);
     long idAVS(QString nameAVS);
     long getIdAVP(QString nameAVP);
@@ -429,6 +448,8 @@ private:
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);
     void initComboBoxUser(QComboBox *comboBox);
+    void initComboBoxExpert(QComboBox *comboBox);
+    void initComboBoxOperator(QComboBox *comboBox);
     void initComboBoxStatus(QComboBox *comboBox);
     void initComboBoxPriority(QComboBox *comboBox);
 

@@ -129,10 +129,10 @@ void DEditAudit::slotStateChanged(int)
     int col = ui->tableWidgetViolation->currentColumn();
 //    qDebug()<<"row = "<< row;
 //    qDebug()<<"col = "<< col;
-    QCheckBox *cb1;
     QObject* obj=QObject::sender();
     if (QCheckBox *cb=qobject_cast<QCheckBox *>(obj))
     {
+        QCheckBox *cb1;
         if(col == 3)
             cb1 = reinterpret_cast<QCheckBox *>(ui->tableWidgetViolation->cellWidget(row,4));
         else if(col == 4)

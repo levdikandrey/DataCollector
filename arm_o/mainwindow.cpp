@@ -107,7 +107,15 @@ MainWindow::MainWindow(QWidget *parent)
     initComboBoxStatus(ui->comboBoxStatus);
     initComboBoxPriority(ui->comboBoxPriority);
     initComboBoxUser(ui->comboBoxUser_2);
+    initComboBoxOperator(ui->comboBoxUser_3);
+    initComboBoxExpert(ui->comboBoxExpert);
     initComboBoxPriority(ui->comboBoxPriority_2);
+    ui->dateEditDateBegin->setDate(QDate::currentDate());
+    ui->dateEditDateBegin_3->setDate(QDate::currentDate());
+    ui->dateEditDateBegin_2->setDate(QDate::currentDate());
+    ui->dateEditDateEnd->setDate(QDate::currentDate());
+    ui->dateEditDateEnd_2->setDate(QDate::currentDate());
+    ui->dateEditDateEnd_3->setDate(QDate::currentDate());
 
     ui->tableWidgetAVP->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidgetAVP, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenuRequestedAVP(QPoint)));
@@ -176,7 +184,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_currentIdAVS = -1;
     m_currentState = -1;
     m_currentNumberPage = 1;
+    m_currentArchiveNumberPage = 1;
     m_countAVP = countAVP();
+    m_countArchiveAVP = countArchiveAVP();
 
     int page_count = (m_countAVP/1000);
     if( m_countAVP%1000 > 0)
@@ -186,6 +196,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEditNumberPage->setValidator( new QIntValidator(1,(page_count), this) );
     ui->labelCountAVP->setText(text);
     ui->pushButtonPreview->setEnabled(false);
+    if(page_count == 1)
+        ui->pushButtonNext->setEnabled(false);
+
+    int pageArchiveCount = (m_countArchiveAVP/1000);
+    if( m_countArchiveAVP%1000 > 0)
+        pageArchiveCount++;
+    text="из ";text+=tmp.setNum(pageArchiveCount); text+=" (всего АВП ";text+=tmp.setNum(m_countArchiveAVP);text+=")";
+    ui->lineEditNumberPage_2->setValidator( new QIntValidator(1,(page_count), this) );
+    ui->labelCountAVP_2->setText(text);
+    ui->pushButtonPreview_2->setEnabled(false);
+    if(pageArchiveCount == 1)
+        ui->pushButtonNext_2->setEnabled(false);
 
     m_timer.setInterval(1000);
     m_timer.setSingleShot(true);
@@ -535,17 +557,18 @@ void MainWindow::initDialog()
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(1,300);//URL
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(2, 150);//ФИО
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(3,150);//ФИО, эксперта
-    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(4,150);//Статус
-    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(5,300);//Нарушения
-    ui->tableWidgetAuditArchive->horizontalHeader()->setSectionResizeMode(6,QHeaderView::Stretch);//Комментарии
-    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(7, 0);//ID
-    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(8, 0);//ID_AVP
+    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(4,110);//Дата закрытия задачи
+    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(5,150);//Статус
+    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(6,300);//Нарушения
+    ui->tableWidgetAuditArchive->horizontalHeader()->setSectionResizeMode(7,QHeaderView::Stretch);//Комментарии
+    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(8, 0);//ID
+    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(9, 0);//ID_AVP
 }
 
 //=========================================================
 bool MainWindow::initDB()
 {
-    std::cout<<"initDB()_START"<<std::endl;
+//    std::cout<<"initDB()_START"<<std::endl;
     bool res = true;
     try
     {
@@ -598,7 +621,7 @@ bool MainWindow::initDB()
     {
         qDebug()<<e.what();
     }
-    std::cout<<"initDB()_STOP"<<std::endl;
+//    std::cout<<"initDB()_STOP"<<std::endl;
     return res;
 }
 
@@ -623,6 +646,54 @@ void MainWindow::initAVS()
        }
        else
            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void MainWindow::initComboBoxOperator(QComboBox *comboBox)
+{
+    QString sql="";
+    comboBox->clear();
+    try
+    {
+        sql = "SELECT * FROM \"User\" WHERE \"FlagJob\" = \'true\' AND (\"ID_Group\" = 5 OR \"ID_Group\" = 8 OR \"ID_Group\" = 9 OR \"ID_Group\" = 10);";
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                comboBox->addItem(query->value(1).toString());
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void MainWindow::initComboBoxExpert(QComboBox *comboBox)
+{
+    QString sql="";
+    comboBox->clear();
+    try
+    {
+        sql = "SELECT * FROM \"User\" WHERE \"FlagJob\" = \'true\' AND (\"ID_Group\" = 11 OR \"ID_Group\" = 12 OR \"ID_Group\" = 8);";
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                comboBox->addItem(query->value(1).toString());
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
     }
     catch(std::exception &e)
     {
@@ -703,9 +774,11 @@ void MainWindow::initComboBoxPriority(QComboBox *comboBox)
 }
 
 //=========================================================
-void MainWindow::initTableArchive()
+void MainWindow::initTableArchive(int numberPage )
 {
-    QString sql="";
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QString sql="",tmp;
+
     try
     {
         ui->tableWidgetAuditArchive->setSortingEnabled(false);
@@ -719,15 +792,32 @@ void MainWindow::initTableArchive()
               "ts.\"StatusName\","
               "\"Task\".\"Comment\","
               "\"Task\".\"ID\","
-              "\"Task\".\"ID_AVP\" "
+              "\"Task\".\"ID_AVP\", "
+              "\"Task\".\"DateClose\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "LEFT JOIN \"User\" ue ON \"Task\".\"ID_Expert\" = ue.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-              " WHERE ts.\"StatusName\" =\'";
-        sql += "Закрыта\' OR ts.\"StatusName\" =\'Закрыта с экспертизой\' ORDER BY \"Task\".\"ID\";";
-        qDebug()<<"sql = "<<sql;
+              " WHERE (ts.\"StatusName\" =\'";
+        sql += "Закрыта\' OR ts.\"StatusName\" =\'Закрыта с экспертизой\')";// ORDER BY \"Task\".\"ID\";";
+        if(ui->groupBoxUser_3->isChecked())
+        {
+            sql +=" AND u.\"FIO\" = \'";sql += ui->comboBoxUser_3->currentText(); sql += "\'";
+        }
+        if(ui->groupBoxExpert->isChecked())
+        {
+            sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxExpert->currentText(); sql += "\'";
+        }
+        if(ui->groupBoxDate_3->isChecked())
+        {
+            sql +=" AND (\"Task\".\"DateClose\" >='"; sql += ui->dateEditDateBegin_3->date().toString("yyyy-MM-dd");
+            sql += "\'::date AND \"Task\".\"DateClose\" <=\'";sql += ui->dateEditDateEnd_3->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
+        }
+        sql += " ORDER BY \"Task\".\"ID\" LIMIT 1000 OFFSET ";
+        sql += tmp.setNum((numberPage-1)*1000);sql+=";";
+//        qDebug()<<"sql = "<<sql;
+
         if(query->exec(sql))
         {
             int row = 0;
@@ -767,28 +857,36 @@ void MainWindow::initTableArchive()
                 newItem3->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetAuditArchive->setItem(row,3, newItem3);//ФИО, эксперта
 
+                QTableWidgetItem *newItem31 = new QTableWidgetItem();
+                QIcon icon31;
+                icon31 .addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
+                newItem31->setIcon(icon31);
+                newItem31->setText(query->value(8).toDate().toString("yyyy-MM-dd"));
+                newItem31->setFlags(newItem31->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidgetAuditArchive->setItem(row,4, newItem31);//Дата закрытия задачи
+
                 QTableWidgetItem *newItem4 = new QTableWidgetItem();
                 newItem4->setText(query->value(4).toString());
                 newItem4->setFlags(newItem4->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetAuditArchive->setItem(row,4, newItem4);//Статус
+                ui->tableWidgetAuditArchive->setItem(row,5, newItem4);//Статус
 
                 QTableWidgetItem *newItem5 = initViolations(query->value(7).toInt());
-                ui->tableWidgetAuditArchive->setItem(row,5, newItem5);//Нарушения
+                ui->tableWidgetAuditArchive->setItem(row,6, newItem5);//Нарушения
 
                 QTableWidgetItem *newItem6 = new QTableWidgetItem();
                 newItem6->setText(query->value(5).toString());
                 newItem6->setFlags(newItem6->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetAuditArchive->setItem(row,6, newItem6);//Комментарии
+                ui->tableWidgetAuditArchive->setItem(row,7, newItem6);//Комментарии
 
                 QTableWidgetItem *newItem9 = new QTableWidgetItem();
                 newItem9->setText(query->value(6).toString());
                 newItem9->setFlags(newItem9->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetAuditArchive->setItem(row,7, newItem9);//ID
+                ui->tableWidgetAuditArchive->setItem(row,8, newItem9);//ID
 
                 QTableWidgetItem *newItem10 = new QTableWidgetItem();
                 newItem10->setText(query->value(7).toString());
                 newItem10->setFlags(newItem10->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidgetAuditArchive->setItem(row,8, newItem10);//ID_AVP
+                ui->tableWidgetAuditArchive->setItem(row,9, newItem10);//ID_AVP
 
                 row++;
             }
@@ -801,6 +899,7 @@ void MainWindow::initTableArchive()
     {
         qDebug()<<e.what();
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
@@ -921,7 +1020,7 @@ void MainWindow::initTableAuditRKN()
 void MainWindow::initTableCurrentAudit()
 {
     QString sql="";
-    bool filterCheck = false;
+//    bool filterCheck = false;
     try
     {
         ui->tableWidgetAudit_4->setSortingEnabled(false);
@@ -949,22 +1048,22 @@ void MainWindow::initTableCurrentAudit()
         if(ui->groupBoxUser_2->isChecked())
         {
             sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxUser_2->currentText(); sql += "\'";
-            filterCheck = true;
+//            filterCheck = true;
         }
         if(ui->groupBoxPriority_2->isChecked())
         {
             sql +=" AND p.\"NamePriority\" = \'";sql += ui->comboBoxPriority_2->currentText(); sql += "\'";
-            filterCheck = true;
+//            filterCheck = true;
         }
         if(ui->groupBoxDate_2->isChecked())
         {
             sql +=" AND (\"Task\".\"DateAppoint\" >='"; sql += ui->dateEditDateBegin_2->date().toString("yyyy-MM-dd");
             sql += "\'::date AND \"Task\".\"DateAppoint\" <=\'";sql += ui->dateEditDateEnd_2->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
-            filterCheck = true;
+//            filterCheck = true;
         }
         sql += " ORDER BY \"Task\".\"ID\";";
 //        qDebug()<<"sql = "<<sql;
-        filterCheck = false;
+//        filterCheck = false;
         if(query->exec(sql))
         {
             int row = 0;
@@ -1381,7 +1480,7 @@ void MainWindow::initTableTask(bool)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString sql="";
-    bool filterCheck = false;
+//    bool filterCheck = false;
     try
     {
         ui->tableWidgetCurrentTasks->setSortingEnabled(false);
@@ -1411,7 +1510,7 @@ void MainWindow::initTableTask(bool)
             {
 //                sql +=" WHERE u.\"FIO\" = \'";sql += ui->comboBoxUser->currentText(); sql += "\'";
                 sql +=" AND u.\"FIO\" = \'";sql += ui->comboBoxUser->currentText(); sql += "\'";
-                filterCheck = true;
+//                filterCheck = true;
             }
             if(ui->groupBoxStatus->isChecked())
             {
@@ -1423,7 +1522,7 @@ void MainWindow::initTableTask(bool)
 //                {
                     sql +=" AND ts.\"StatusName\" = \'";sql += ui->comboBoxStatus->currentText(); sql += "\'";
 //                }
-                filterCheck = true;
+//                filterCheck = true;
             }
             if(ui->groupBoxPriority->isChecked())
             {
@@ -1435,7 +1534,7 @@ void MainWindow::initTableTask(bool)
 //                {
                     sql +=" AND p.\"NamePriority\" = \'";sql += ui->comboBoxPriority->currentText(); sql += "\'";
 //                }
-                filterCheck = true;
+//                filterCheck = true;
             }
             if(ui->groupBoxDate->isChecked())
             {
@@ -1449,7 +1548,7 @@ void MainWindow::initTableTask(bool)
                     sql +=" AND (\"Task\".\"DateAppoint\" >='"; sql += ui->dateEditDateBegin->date().toString("yyyy-MM-dd");
                     sql += "\'::date AND \"Task\".\"DateAppoint\" <=\'";sql += ui->dateEditDateEnd->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
 //                }
-                filterCheck = true;
+//                filterCheck = true;
             }
 //        }
         sql += " ORDER BY \"Task\".\"ID\";";
@@ -1566,6 +1665,29 @@ void MainWindow::setColorRowTable(QTableWidget *table, int row, int r, int g, in
     {
         table->item(row, col)->setBackground(QColor(r,g,b));
     }
+}
+
+//=========================================================
+int MainWindow::countArchiveAVP()
+{
+    int count = 0;
+    QString sql;
+    try
+    {
+        sql = "SELECT COUNT(*) FROM \"Task\" WHERE \"ID_TaskStatus\" = 4 OR \"ID_TaskStatus\" = 8;";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                count = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return count;
 }
 
 //=========================================================
@@ -1835,6 +1957,29 @@ void MainWindow::slotNext()
 }
 
 //=========================================================
+void MainWindow::slotNextArchivePage()
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QString tmp;
+    int page_count = (m_countArchiveAVP/1000);
+    qDebug()<<"page_count = "<<page_count;
+    if( m_countArchiveAVP%1000 > 0)
+        page_count++;
+
+    if(m_currentArchiveNumberPage <= page_count)
+    {
+        ui->pushButtonPreview_2->setEnabled(true);
+        m_currentArchiveNumberPage++;
+        initTableArchive(m_currentArchiveNumberPage);
+        ui->lineEditNumberPage_2->setText(tmp.setNum(m_currentArchiveNumberPage));
+        if(m_currentArchiveNumberPage == page_count)
+            ui->pushButtonNext_2->setEnabled(false);
+    }
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
 void MainWindow::slotPrevious()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -1844,10 +1989,26 @@ void MainWindow::slotPrevious()
         ui->pushButtonNext->setEnabled(true);
         m_currentNumberPage--;
         initTableAVP(m_currentNumberPage,m_currentIdAVS,m_currentState);
-//        initTableAVP(m_currentNumberPage);
         ui->lineEditNumberPage->setText(tmp.setNum(m_currentNumberPage));
         if(m_currentNumberPage == 1)
            ui->pushButtonPreview->setEnabled(false);
+    }
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void MainWindow::slotPreviousArchivePage()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QString tmp;
+    if(m_currentArchiveNumberPage>1)
+    {
+        ui->pushButtonNext_2->setEnabled(true);
+        m_currentArchiveNumberPage--;
+        initTableArchive(m_currentArchiveNumberPage);
+        ui->lineEditNumberPage_2->setText(tmp.setNum(m_currentArchiveNumberPage));
+        if(m_currentArchiveNumberPage == 1)
+           ui->pushButtonPreview_2->setEnabled(false);
     }
     QApplication::restoreOverrideCursor();
 }
@@ -1864,6 +2025,7 @@ void MainWindow::slotChangeNumberPage()
 
 //    if(ui->lineEditNumberPage->text().toInt() > page_count)
 //    {
+//        QApplication::restoreOverrideCursor();
 //        QMessageBox::warning(this,"Внимание","Не верно введен номер страницы!","Да");
 //        return;
 //    }
@@ -1887,6 +2049,46 @@ void MainWindow::slotChangeNumberPage()
         }
 
         initTableAVP(m_currentNumberPage,m_currentIdAVS,m_currentState);
+    }
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
+void MainWindow::slotChangeNumberPageArchive()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    qDebug()<<ui->lineEditNumberPage_2->text();
+    m_currentArchiveNumberPage = ui->lineEditNumberPage_2->text().toInt();
+    int page_count = (m_countArchiveAVP/1000);
+    if( m_countArchiveAVP%1000 > 0)
+        page_count++;
+
+    if(ui->lineEditNumberPage_2->text().toInt() > page_count)
+    {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::warning(this,"Внимание","Не верно введен номер страницы!","Да");
+        return;
+    }
+
+    if(m_currentArchiveNumberPage<=page_count)
+    {
+        if( (m_currentArchiveNumberPage > 1) && (m_currentArchiveNumberPage < page_count) )
+        {
+            ui->pushButtonPreview_2->setEnabled(true);
+            ui->pushButtonNext_2->setEnabled(true);
+        }
+        else if(m_currentArchiveNumberPage == 1)
+        {
+            ui->pushButtonPreview_2->setEnabled(false);
+            ui->pushButtonNext_2->setEnabled(true);
+        }
+        else if(m_currentArchiveNumberPage == page_count)
+        {
+            ui->pushButtonNext_2->setEnabled(false);
+            ui->pushButtonPreview_2->setEnabled(true);
+        }
+
+        initTableArchive(m_currentNumberPage);
     }
     QApplication::restoreOverrideCursor();
 }
@@ -2418,6 +2620,9 @@ void MainWindow::slotEditTask()
             sql += dEditTaskUser->getComment();
             sql += "\',\"DateRealization\"=\'";
             sql += dEditTaskUser->getDateRealization();
+            sql += "\',\"DateClose\"=\'";
+            QDateTime currentDate = QDateTime::currentDateTime();
+            sql += currentDate.toString("yyyy-MM-ddTHH:mm:ss");
             sql += "\' WHERE \"ID\"=";
             sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text();
             sql += ";";
@@ -2956,6 +3161,14 @@ void MainWindow::slotFilterApply1()
 }
 
 //=========================================================
+void MainWindow::slotFilterApply2()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    initTableArchive();
+    QApplication::restoreOverrideCursor();
+}
+
+//=========================================================
 void MainWindow::slotTextChanged(const QString &text)
 {
 //    if(text.length()==0)
@@ -2986,7 +3199,8 @@ void MainWindow::slotFindArchiveAVP()
               "ts.\"StatusName\","
               "\"Task\".\"Comment\","
               "\"Task\".\"ID\","
-              "\"Task\".\"ID_AVP\" "
+              "\"Task\".\"ID_AVP\", "
+              "\"Task\".\"DateClose\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
@@ -3046,28 +3260,36 @@ void MainWindow::slotFindArchiveAVP()
                     newItem3->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
                     ui->tableWidgetAuditArchive->setItem(row,3, newItem3);//ФИО, эксперта
 
+                    QTableWidgetItem *newItem31 = new QTableWidgetItem();
+                    QIcon icon31;
+                    icon31 .addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
+                    newItem31->setIcon(icon31);
+                    newItem31->setText(query->value(8).toDate().toString("yyyy-MM-dd"));
+                    newItem31->setFlags(newItem31->flags() ^ Qt::ItemIsEditable);
+                    ui->tableWidgetAuditArchive->setItem(row,4, newItem31);//Дата закрытия задачи
+
                     QTableWidgetItem *newItem4 = new QTableWidgetItem();
                     newItem4->setText(query->value(4).toString());
                     newItem4->setFlags(newItem4->flags() ^ Qt::ItemIsEditable);
-                    ui->tableWidgetAuditArchive->setItem(row,4, newItem4);//Статус
+                    ui->tableWidgetAuditArchive->setItem(row,5, newItem4);//Статус
 
                     QTableWidgetItem *newItem5 = initViolations(query->value(7).toInt());
-                    ui->tableWidgetAuditArchive->setItem(row,5, newItem5);//Нарушения
+                    ui->tableWidgetAuditArchive->setItem(row,6, newItem5);//Нарушения
 
                     QTableWidgetItem *newItem6 = new QTableWidgetItem();
                     newItem6->setText(query->value(5).toString());
                     newItem6->setFlags(newItem6->flags() ^ Qt::ItemIsEditable);
-                    ui->tableWidgetAuditArchive->setItem(row,6, newItem6);//Комментарии
+                    ui->tableWidgetAuditArchive->setItem(row,7, newItem6);//Комментарии
 
                     QTableWidgetItem *newItem9 = new QTableWidgetItem();
                     newItem9->setText(query->value(6).toString());
                     newItem9->setFlags(newItem9->flags() ^ Qt::ItemIsEditable);
-                    ui->tableWidgetAuditArchive->setItem(row,7, newItem9);//ID
+                    ui->tableWidgetAuditArchive->setItem(row,8, newItem9);//ID
 
                     QTableWidgetItem *newItem10 = new QTableWidgetItem();
                     newItem10->setText(query->value(7).toString());
                     newItem10->setFlags(newItem10->flags() ^ Qt::ItemIsEditable);
-                    ui->tableWidgetAuditArchive->setItem(row,8, newItem10);//ID_AVP
+                    ui->tableWidgetAuditArchive->setItem(row,9, newItem10);//ID_AVP
 
                     row++;
                 }
@@ -3822,7 +4044,12 @@ void MainWindow::slotCurrentTaskChageStatus()
                 {
                     while (!selectedRows.empty())
                     {
-                        sql = "UPDATE \"Task\" SET \"ID_TaskStatus\" = 4 WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text(); sql += ";";
+                        sql = "UPDATE \"Task\" SET \"ID_TaskStatus\" = 4, \"DateClose\" = \'";
+                        QDateTime currentDate = QDateTime::currentDateTime();
+                        sql += currentDate.toString("yyyy-MM-ddTHH:mm:ss");
+                        sql +="\' WHERE \"ID\"=";
+                        sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text();
+                        sql += ";";
                         qDebug()<<"sql ="<<sql;
                         if(query->exec(sql))
                         {
