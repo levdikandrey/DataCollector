@@ -360,7 +360,7 @@
        <string>Добавить задачу</string>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -1041,6 +1041,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Возраст</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>ФИО, оператора</string>
            </property>
           </column>
@@ -1226,6 +1231,11 @@
           <column>
            <property name="text">
             <string>URL</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Возраст</string>
            </property>
           </column>
           <column>
@@ -1555,6 +1565,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Возраст</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>ФИО, оператора</string>
            </property>
           </column>
@@ -1680,6 +1695,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Возраст</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>ФИО, оператора</string>
            </property>
           </column>
@@ -1790,6 +1810,11 @@
           <column>
            <property name="text">
             <string>URL</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Возраст</string>
            </property>
           </column>
           <column>

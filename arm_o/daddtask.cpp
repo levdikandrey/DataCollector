@@ -24,8 +24,9 @@ DAddTask::DAddTask(QWidget *parent)
     ui->tableWidget->horizontalHeader()->resizeSection(1, 250);//URL
     ui->tableWidget->horizontalHeader()->resizeSection(2, 80);//Год выпуска
     ui->tableWidget->horizontalHeader()->resizeSection(3, 200);//Режиссер
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->resizeSection(5, 0);
+    ui->tableWidget->horizontalHeader()->resizeSection(4, 80);//Возраст
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(5,QHeaderView::Stretch);
+    ui->tableWidget->horizontalHeader()->resizeSection(6, 0);
 
     m_flagNotJob = true;
     m_currentIdAVS = -1;
@@ -131,10 +132,10 @@ void DAddTask::slotAdd()
             for( int i=0; i<selectedRows.count();++i)
             {
      //            qDebug()<<ui->tableWidget->item(selectedRows[i].row(),0)->text();
-                 if(!isExistAVP(ui->tableWidget->item(selectedRows[i].row(),5)->text().toLong()))
+                 if(!isExistAVP(ui->tableWidget->item(selectedRows[i].row(),6)->text().toLong()))
                  {
                      ui->listWidgetJobTasks->addItem(ui->tableWidget->item(selectedRows[i].row(),0)->text());
-                     listAVP.insert(std::make_pair(ui->tableWidget->item(selectedRows[i].row(),5)->text().toLong(),ui->tableWidget->item(selectedRows[i].row(),0)->text()));
+                     listAVP.insert(std::make_pair(ui->tableWidget->item(selectedRows[i].row(),6)->text().toLong(),ui->tableWidget->item(selectedRows[i].row(),0)->text()));
                  }
             }
             //            for(auto item: listAVP)
@@ -693,7 +694,8 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
               "aa.\"YearOfRelease\","
               "aa.\"FilmMaker\","
               "avp.\"ID\", "
-              "dd.\"DownloadStatus\" "
+              "dd.\"DownloadStatus\", "
+              "aa.\"Age\" "
               "FROM \"avp\" "
               "LEFT JOIN \"DownloadData\" dd ON dd.\"ID_AVP\" = avp.\"ID\" AND dd.\"ResourceName\" =\'Kinopoisk\'"
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\"";
@@ -770,7 +772,7 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
                 newItem2->setFlags(newItem2->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(row,2, newItem2);
 
-                QTableWidgetItem *newItem3 = new QTableWidgetItem();
+                QTableWidgetItem *newItem3 = new QTableWidgetItem();// режиссер
                 QIcon icon4;
                 icon4.addFile(QString::fromUtf8(":/icons/icons/film_maker1.ico"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem3->setIcon(icon4);
@@ -778,12 +780,17 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
                 newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(row,3, newItem3);
 
+                QTableWidgetItem *newItem21 = new QTableWidgetItem(); // возраст
+                newItem21->setText(query->value(6).toString());
+                newItem21->setFlags(newItem21->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(row,4, newItem21);
+
                 QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt());
-                ui->tableWidget->setItem(row, 4, newItem4);
+                ui->tableWidget->setItem(row, 5, newItem4);
 
                 QTableWidgetItem *newItem5 = new QTableWidgetItem();
                 newItem5->setText(query->value(4).toString());
-                ui->tableWidget->setItem(row,5, newItem5);
+                ui->tableWidget->setItem(row,6, newItem5);
 
                 QTableWidgetItem *newItem11 = new QTableWidgetItem();
                 if(query->value(5).toString() == "Yes")
@@ -796,7 +803,7 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
                 else
                     newItem11->setText("Нет");
                 newItem11->setFlags(newItem11->flags() ^ Qt::ItemIsEditable);
-                ui->tableWidget->setItem(row,6, newItem11);//Рецензии
+                ui->tableWidget->setItem(row,7, newItem11);//Рецензии
 
                 row++;
             }

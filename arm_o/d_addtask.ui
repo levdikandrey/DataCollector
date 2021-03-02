@@ -330,6 +330,11 @@
      </column>
      <column>
       <property name="text">
+       <string>Возраст</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Нарушения</string>
       </property>
      </column>
