@@ -194,6 +194,11 @@ const QString DEditAudit::getComment() const
 //=========================================================
 void DEditAudit::slotApply()
 {
+    if(ui->lineEditDoc->text() == "")
+    {
+        QMessageBox::warning(this, "Внимание","Нельзя поменять статус карточки без прикрепленного экспертного заключения!","Да");
+        return;
+    }
     QString sql;
     m_strChecked ="";
     for(int row=0; row<ui->tableWidgetViolation->rowCount(); row++)

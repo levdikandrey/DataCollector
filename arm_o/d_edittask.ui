@@ -348,6 +348,9 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidgetViolation">
+        <property name="editTriggers">
+         <set>QAbstractItemView::CurrentChanged|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+        </property>
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
@@ -553,8 +556,8 @@
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>302</x>
-     <y>655</y>
+     <x>446</x>
+     <y>663</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
@@ -569,8 +572,8 @@
    <slot>slotCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>428</x>
-     <y>655</y>
+     <x>572</x>
+     <y>663</y>
     </hint>
     <hint type="destinationlabel">
      <x>510</x>
@@ -585,8 +588,8 @@
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>554</x>
-     <y>655</y>
+     <x>698</x>
+     <y>663</y>
     </hint>
     <hint type="destinationlabel">
      <x>510</x>
@@ -633,8 +636,8 @@
    <slot>slotAtachFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>594</x>
-     <y>312</y>
+     <x>699</x>
+     <y>292</y>
     </hint>
     <hint type="destinationlabel">
      <x>571</x>
@@ -649,8 +652,8 @@
    <slot>slotApplyViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>467</x>
-     <y>351</y>
+     <x>572</x>
+     <y>331</y>
     </hint>
     <hint type="destinationlabel">
      <x>569</x>
@@ -665,8 +668,8 @@
    <slot>slotCancelViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>593</x>
-     <y>351</y>
+     <x>698</x>
+     <y>331</y>
     </hint>
     <hint type="destinationlabel">
      <x>571</x>
@@ -713,8 +716,8 @@
    <slot>slotTextChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>494</x>
-     <y>306</y>
+     <x>636</x>
+     <y>286</y>
     </hint>
     <hint type="destinationlabel">
      <x>670</x>

@@ -305,6 +305,10 @@ private slots:
      */
     void slotFilterApply2();
     /**
+     * @brief slotFilterApply3 - функция применяет фильтры в закладке "Инспектр РКН"
+     */
+    void slotFilterApply3();
+    /**
      * @brief slotCurrentChanged
      */
     void slotCurrentChanged(int);
@@ -452,6 +456,7 @@ public:
     void initComboBoxOperator(QComboBox *comboBox);
     void initComboBoxStatus(QComboBox *comboBox);
     void initComboBoxPriority(QComboBox *comboBox);
+    void initComboBoxStatusArchive(QComboBox *comboBox);
 
     /**
      * @brief addRecordJournalJobAVP

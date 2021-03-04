@@ -112,7 +112,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEditDoc"/>
+      <widget class="QLineEdit" name="lineEditDoc">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label">

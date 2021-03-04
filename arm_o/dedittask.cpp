@@ -31,7 +31,35 @@ DEditTask::DEditTask(QWidget *parent)
     ui->tableWidgetViolation->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(2, 90);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(3, 0);
+    flagConnected = false;
+}
 
+//=========================================================
+void DEditTask::slotCellChanged(QTableWidgetItem* item)
+//void DEditTask::slotCellChanged(int row,int column)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    int row =item->row();
+    qDebug()<<"row = "<<item->row();
+//    qDebug()<<"colmn = "<<column;
+    QString sql="";
+    QString textViolation = item->text();
+    qDebug()<<"textViolation = "<<textViolation;
+    QString ID =ui->tableWidgetViolation->item(row,3)->text();
+    qDebug()<<"ID = "<<ID;
+    try
+    {
+        sql = "UPDATE \"AnalysisResult\" ar SET ar.\"TextViolation\" = \'";
+        sql+=textViolation;
+        sql+="\' WHERE \"ID\"=";
+        sql+=ID; sql+=";";
+        qDebug()<<"sql = "<<sql;
+        query->exec(sql);
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================
@@ -82,6 +110,12 @@ void DEditTask::initTableViolation(long id_avp)
     ui->tableWidgetViolation->clearContents();
     ui->tableWidgetViolation->setRowCount(0);
     m_idAVP = id_avp;
+//    disconnect(ui->tableWidgetViolation,SIGNAL(itemChanged(QTableWidgetItem*)),SLOT(slotCellChanged(QTableWidgetItem*)));
+    if(flagConnected == true)
+    {
+        disconnect(ui->tableWidgetViolation,SIGNAL(itemChanged(QTableWidgetItem*)),this,SLOT(slotCellChanged(QTableWidgetItem*)));
+        flagConnected = false;
+    }
 
     try
     {
@@ -103,8 +137,10 @@ void DEditTask::initTableViolation(long id_avp)
 
                     QTableWidgetItem *newItem1 = new QTableWidgetItem();
                     newItem1->setText(query->value(2).toString());
-                    newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
+//                    newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
                     ui->tableWidgetViolation->setItem(row,1, newItem1);//Описание нарушения
+//                    connect(ui->tableWidgetViolation,SIGNAL(itemChanged(QTableWidgetItem*)),SLOT(slotCellChanged(QTableWidgetItem*)));
+
 
                     QIcon icon1;
                     QPushButton *pbItem = new QPushButton(this);
@@ -131,6 +167,11 @@ void DEditTask::initTableViolation(long id_avp)
         }
         else
             qDebug()<<query->lastError().text();
+        if(flagConnected == false)
+        {
+            connect(ui->tableWidgetViolation,SIGNAL(itemChanged(QTableWidgetItem*)),this,SLOT(slotCellChanged(QTableWidgetItem*)));
+            flagConnected = true;
+        }
     }
     catch(std::exception &e)
     {

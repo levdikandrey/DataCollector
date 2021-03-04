@@ -51,6 +51,9 @@ private slots:
     void slotActivated(int);
     void slotTextChanged();
     void slotTextChanged(QString);
+    void slotCellChanged(QTableWidgetItem*);
+
+//    void slotCellChanged(int,int);
 
 private:
     Ui::D_EditTask *ui;
@@ -65,6 +68,7 @@ private:
     int m_idAVP;
     int getIdAnalysisResult();
     QByteArray getData(QString fileName);
+    bool flagConnected;
 };
 
 #endif // DEDITTASK_H
