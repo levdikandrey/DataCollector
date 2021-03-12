@@ -64,6 +64,7 @@ public:
       * @brief clear
       */
      void clear();
+     bool m_flagAnswer;
 
 public slots:
      /**
@@ -126,6 +127,7 @@ public slots:
      * @brief slotTextChanged
      */
     void slotTextChanged(QString);
+    void slotCancelExpert();
 
 private:
     Ui::DEditAudit *ui;

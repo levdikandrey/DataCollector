@@ -501,12 +501,35 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>120</width>
+          <width>150</width>
           <height>33</height>
          </size>
         </property>
         <property name="text">
-         <string>Применить</string>
+         <string>Одобрена экспертом</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/ok.png</normaloff>:/icons/icons/ok.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Отклонена экспертом</string>
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
@@ -585,8 +608,8 @@
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>339</x>
-     <y>674</y>
+     <x>293</x>
+     <y>709</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -601,8 +624,8 @@
    <slot>slotCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>674</y>
+     <x>575</x>
+     <y>709</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -617,8 +640,8 @@
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>591</x>
-     <y>674</y>
+     <x>701</x>
+     <y>709</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -649,8 +672,8 @@
    <slot>slotAddViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>30</x>
-     <y>267</y>
+     <x>39</x>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -665,8 +688,8 @@
    <slot>slotApplyViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>487</y>
+     <x>575</x>
+     <y>522</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -681,8 +704,8 @@
    <slot>slotDeleteViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>267</y>
+     <x>98</x>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -697,8 +720,8 @@
    <slot>slotCancelViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>591</x>
-     <y>487</y>
+     <x>701</x>
+     <y>522</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -713,8 +736,8 @@
    <slot>slotAtachFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>592</x>
-     <y>448</y>
+     <x>702</x>
+     <y>483</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -729,8 +752,8 @@
    <slot>slotActivated(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>592</x>
-     <y>316</y>
+     <x>702</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -745,8 +768,8 @@
    <slot>slotTextChangedViolation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>201</x>
-     <y>371</y>
+     <x>343</x>
+     <y>445</y>
     </hint>
     <hint type="destinationlabel">
      <x>1</x>
@@ -761,8 +784,8 @@
    <slot>slotTextChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>355</x>
-     <y>442</y>
+     <x>497</x>
+     <y>477</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -777,12 +800,28 @@
    <slot>slotAtachAudit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>598</x>
-     <y>210</y>
+     <x>711</x>
+     <y>263</y>
     </hint>
     <hint type="destinationlabel">
      <x>607</x>
      <y>150</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotCancelExpert()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>350</x>
+     <y>694</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>643</y>
     </hint>
    </hints>
   </connection>
@@ -801,5 +840,6 @@
   <slot>slotTextChangedViolation()</slot>
   <slot>slotTextChanged(QString)</slot>
   <slot>slotAtachAudit()</slot>
+  <slot>slotCancelExpert()</slot>
  </slots>
 </ui>

@@ -31,6 +31,7 @@ DEditAudit::DEditAudit(QWidget *parent) :
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(3, 100);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(4, 100);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(5, 0);
+    m_flagAnswer = true;
 }
 
 //=========================================================
@@ -42,6 +43,7 @@ DEditAudit::~DEditAudit()
 //=========================================================
 void DEditAudit::initTableViolation(long id_avp)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QString sql="",tmp, str;
 
     ui->tableWidgetViolation->clearContents();
@@ -51,7 +53,8 @@ void DEditAudit::initTableViolation(long id_avp)
     try
     {
         sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"ID\",c.\"Data\" FROM \"AnalysisResult\" ar "
-              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" LEFT JOIN \"Content\" c ON ar.\"ID\" = c.\"ID_AR\" WHERE ar.\"ID_AVP\"="+tmp.setNum(id_avp)+";";
+              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" LEFT JOIN \"Content\" c ON ar.\"ID\" = c.\"ID_AR\" WHERE ar.\"ID_AVP\"="+tmp.setNum(id_avp)+" AND ar.\"TextViolation\" IS NOT NULL;";
+        qDebug()<<"sql="<<sql;
         if(query->exec(sql))
         {
             int row = 0;
@@ -241,6 +244,7 @@ void DEditAudit::slotApply()
         if(!query_data->exec())
             qDebug()<<"ERROR:"<<query_data->lastError().text();
     }
+    m_flagAnswer = true;
     accept();
 }
 
@@ -289,6 +293,13 @@ void DEditAudit::slotCancel()
     ui->groupBox_2->setChecked(Qt::Unchecked);
     ui->pushButtonApply->setEnabled(false);
     ui->pushButtonCancel->setEnabled(false);
+}
+
+//=========================================================
+void DEditAudit::slotCancelExpert()
+{
+    m_flagAnswer = false;
+    accept();
 }
 
 //=========================================================
@@ -473,7 +484,7 @@ void DEditAudit::initComboBoxViolation()
     {
         ui->comboBoxViolation->clear();
 
-        sql = "SELECT \"Violation\" FROM \"Violation\";";
+        sql = "SELECT \"Violation\" FROM \"Violation\" WHERE \"ViolationType\"=2;";
 
         if(query->exec(sql))
         {

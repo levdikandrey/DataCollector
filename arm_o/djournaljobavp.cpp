@@ -104,7 +104,8 @@ void DJournalJobAVP::slotReview()
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
 
-        sql = "SELECT ss.\"DateEvent\",u.\"FIO\",ss.\"Info\",ss.\"Сategory\" FROM \"JournalJobAVP\" ss INNER JOIN \"User\" u ON ss.\"ID_User\" = u.\"ID\"";
+//        sql = "SELECT ss.\"DateEvent\",u.\"FIO\",ss.\"Info\",ss.\"Сategory\",ss.\"NameAVP\" FROM \"JournalJobAVP\" ss INNER JOIN \"User\" u ON ss.\"ID_User\" = u.\"ID\";";
+        sql = "SELECT ss.\"DateEvent\",u.\"FIO\",ss.\"Info\",ss.\"Сategory\",ss.\"NameAVP\"  FROM \"JournalJobAVP\" ss INNER JOIN \"User\" u ON ss.\"ID_User\" = u.\"ID\"";
 
         if(ui->groupBoxUser->isChecked())
         {
@@ -126,7 +127,7 @@ void DJournalJobAVP::slotReview()
             filterCheck = true;
         }
         sql += " ORDER BY ss.\"ID\";";
-//        qDebug()<<"sql = "<<sql;
+        qDebug()<<"sql = "<<sql;
 
         if(query->exec(sql))
         {
@@ -152,12 +153,36 @@ void DJournalJobAVP::slotReview()
                 ui->tableWidget->setItem(row,1, newItem1);
 
                 QTableWidgetItem *newItem3 = new QTableWidgetItem();
-                newItem3->setText(query->value(2).toString());
+                newItem3->setText(query->value(2).toString()+": "+query->value(4).toString());
                 ui->tableWidget->setItem(row,2, newItem3);
 
                 QTableWidgetItem *newItem4 = new QTableWidgetItem();
-                newItem3->setText(query->value(3).toString());
+                newItem4->setText(query->value(3).toString());
                 ui->tableWidget->setItem(row,3, newItem4);
+
+//                QTableWidgetItem *newItem = new QTableWidgetItem();
+//                QIcon icon;
+//                icon.addFile(QString::fromUtf8(":/icons/icons/date2.png"), QSize(), QIcon::Normal, QIcon::Off);
+//                newItem->setIcon(icon);
+//                newItem->setText(query->value(0).toDateTime().toString("yyyy-MM-dd HH:mm:ss"));
+//                ui->tableWidget->setItem(row,0, newItem);
+//                newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
+
+//                QTableWidgetItem *newItem1 = new QTableWidgetItem();
+//                newItem1->setFlags(newItem1->flags() ^ Qt::ItemIsEditable);
+//                QIcon icon1;
+//                icon1.addFile(QString::fromUtf8(":/icons/icons/user.png"), QSize(), QIcon::Normal, QIcon::Off);
+//                newItem1->setIcon(icon1);
+//                newItem1->setText(query->value(1).toString());
+//                ui->tableWidget->setItem(row,1, newItem1);
+
+//                QTableWidgetItem *newItem3 = new QTableWidgetItem();
+//                newItem3->setText(query->value(2).toString());
+//                ui->tableWidget->setItem(row,2, newItem3);
+
+//                QTableWidgetItem *newItem4 = new QTableWidgetItem();
+//                newItem3->setText(query->value(3).toString());
+//                ui->tableWidget->setItem(row,3, newItem4);
 
                 row++;
             }

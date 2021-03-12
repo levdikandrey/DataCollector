@@ -120,7 +120,7 @@ void DEditTask::initTableViolation(long id_avp)
     try
     {
         sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"ID\",c.\"Data\" FROM \"AnalysisResult\" ar "
-              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" LEFT JOIN \"Content\" c ON ar.\"ID\" = c.\"ID_AR\" WHERE ar.\"ID_AVP\"="+tmp.setNum(id_avp)+";";
+              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" LEFT JOIN \"Content\" c ON ar.\"ID\" = c.\"ID_AR\" WHERE ar.\"ID_AVP\"="+tmp.setNum(id_avp)+" AND ar.\"TextViolation\" IS NOT NULL;";
         if(query->exec(sql))
         {
             int row = 0;
@@ -242,7 +242,7 @@ void DEditTask::initComboBoxViolation()
     {
         ui->comboBoxViolation->clear();
 
-        sql = "SELECT \"Violation\" FROM \"Violation\";";
+        sql = "SELECT \"Violation\" FROM \"Violation\" WHERE \"ViolationType\"=2;";
 
         if(query->exec(sql))
         {
@@ -440,6 +440,7 @@ int DEditTask::getIdAnalysisResult()
 //=========================================================
 void DEditTask::slotApplyViolation()
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString sql="",tmp;
     QString s_comment="";
@@ -452,6 +453,7 @@ void DEditTask::slotApplyViolation()
         sql += tmp.setNum(m_idAVP); sql += ",";
         sql += tmp.setNum(idViolation(ui->comboBoxViolation->currentText())); sql += ",E\'";
         sql += ((MainWindow*)parent())->cImportData->decode(s_comment); sql += "\',\'100\');";
+        qDebug()<<"SQL="<<sql;
 
         if(!query->exec(sql))
         {

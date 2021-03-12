@@ -112,7 +112,7 @@ public:
      * @param id_avp - идентификатор АВП
      * @return - указатель на объект ячейки в таблице
      */
-    QTableWidgetItem* initViolations(long id_avp);
+    QTableWidgetItem* initViolations(long id_avp, int violationType);
     /**
      * @brief initDialogAccess - функция разграничения доступа пользователя к функциям программы.
      * @param userName - имя пользователя.
@@ -309,6 +309,18 @@ private slots:
      */
     void slotFilterApply3();
     /**
+     * @brief slotFilterApplyAVP - функция применяет фильтры в закладке "Список АВП"
+     */
+    void slotFilterApplyAVP();
+    /**
+     * @brief slotFilterApplyMyTask - функция применяет фильтры в закладке "Мои задачи"
+     */
+    void slotFilterApplyMyTask();
+    /**
+     * @brief slotFilterApplyExpert - функция применяет фильтры в закладке "Экспертиза"
+     */
+    void slotFilterApplyExpert();
+    /**
      * @brief slotCurrentChanged
      */
     void slotCurrentChanged(int);
@@ -455,7 +467,9 @@ public:
     void initComboBoxExpert(QComboBox *comboBox);
     void initComboBoxOperator(QComboBox *comboBox);
     void initComboBoxStatus(QComboBox *comboBox);
-    void initComboBoxPriority(QComboBox *comboBox);
+    //    void initComboBoxPriority(QComboBox *comboBox);
+    void initComboBoxAge(QComboBox *comboBox);
+    void initComboBoxViolation(QComboBox *comboBox);
     void initComboBoxStatusArchive(QComboBox *comboBox);
 
     /**

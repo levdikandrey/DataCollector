@@ -152,7 +152,7 @@ void DReportJob::initTableReportJob()
                 newItem5->setFlags(newItem5->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(row,5, newItem5);//Статус
 
-                QTableWidgetItem *newItem7 = reinterpret_cast<MainWindow*>(parent())->initViolations(query->value(8).toInt());
+                QTableWidgetItem *newItem7 = reinterpret_cast<MainWindow*>(parent())->initViolations(query->value(8).toInt(),1);
                 ui->tableWidget->setItem(row,6, newItem7);//Нарушения
 
                 QTableWidgetItem *newItem8 = new QTableWidgetItem();

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1449</width>
-    <height>796</height>
+    <width>1527</width>
+    <height>797</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -257,13 +257,110 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0" colspan="7">
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::WinPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>693</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonReload">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>33</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Обновить данные</string>
+         </property>
+         <property name="text">
+          <string>Обновить</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resource.qrc">
+           <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonExit">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>33</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Выход из приложения</string>
+         </property>
+         <property name="text">
+          <string>Выход</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resource.qrc">
+           <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="1" column="0" colspan="7">
      <widget class="QTabWidget" name="tabWidget">
       <property name="toolTip">
        <string>Добавить задачу</string>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>6</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -321,14 +418,115 @@
            </widget>
           </item>
           <item>
+           <widget class="QGroupBox" name="groupBox_9">
+            <property name="title">
+             <string>Фильтры</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <item>
+              <widget class="QGroupBox" name="groupBoxAgeAVP">
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>Знак</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_51">
+                <item row="0" column="0">
+                 <widget class="QComboBox" name="comboBoxAgeAVP"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBoxYearOfReleaseAVP">
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>Год выпуска</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_52">
+                <item row="0" column="0">
+                 <widget class="QSpinBox" name="spinBoxYearOfReleaseAVP">
+                  <property name="minimum">
+                   <number>1900</number>
+                  </property>
+                  <property name="maximum">
+                   <number>2100</number>
+                  </property>
+                  <property name="value">
+                   <number>2000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_55">
+               <item row="0" column="0">
+                <spacer name="verticalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>18</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="0">
+                <widget class="QPushButton" name="pushButtonReview_7">
+                 <property name="text">
+                  <string>Обновить</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_7">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>772</width>
-              <height>20</height>
+              <width>98</width>
+              <height>47</height>
              </size>
             </property>
            </spacer>
@@ -456,7 +654,7 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
            </property>
           </column>
           <column>
@@ -782,15 +980,15 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBoxPriority">
+            <widget class="QGroupBox" name="groupBoxAge">
              <property name="minimumSize">
               <size>
-               <width>200</width>
+               <width>100</width>
                <height>0</height>
               </size>
              </property>
              <property name="title">
-              <string>По приоритету</string>
+              <string>Знак</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -800,7 +998,65 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
               <item row="0" column="0">
-               <widget class="QComboBox" name="comboBoxPriority"/>
+               <widget class="QComboBox" name="comboBoxAge"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxYearOfRelease">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Год выпуска</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_28">
+              <item row="0" column="0">
+               <widget class="QSpinBox" name="spinBox">
+                <property name="minimum">
+                 <number>1900</number>
+                </property>
+                <property name="maximum">
+                 <number>2100</number>
+                </property>
+                <property name="value">
+                 <number>2000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxViolation">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Нарушения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_29">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBox"/>
               </item>
              </layout>
             </widget>
@@ -817,7 +1073,7 @@
               </size>
              </property>
              <property name="title">
-              <string>По дате</string>
+              <string>По дате назначения</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -826,20 +1082,6 @@
               <bool>false</bool>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
-              <item row="0" column="3">
-               <widget class="QDateEdit" name="dateEditDateEnd">
-                <property name="dateTime">
-                 <datetime>
-                  <hour>0</hour>
-                  <minute>0</minute>
-                  <second>0</second>
-                  <year>2020</year>
-                  <month>1</month>
-                  <day>1</day>
-                 </datetime>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="1">
                <widget class="QDateEdit" name="dateEditDateBegin">
                 <property name="dateTime">
@@ -854,6 +1096,13 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>По:</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label">
                 <property name="text">
@@ -861,10 +1110,17 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>По:</string>
+              <item row="0" column="3">
+               <widget class="QDateEdit" name="dateEditDateEnd">
+                <property name="dateTime">
+                 <datetime>
+                  <hour>0</hour>
+                  <minute>0</minute>
+                  <second>0</second>
+                  <year>2020</year>
+                  <month>1</month>
+                  <day>1</day>
+                 </datetime>
                 </property>
                </widget>
               </item>
@@ -918,7 +1174,59 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0" colspan="5">
+        <item row="0" column="5">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>Название АВП:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="6">
+         <widget class="QLineEdit" name="lineEditFindString_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="7">
+         <widget class="QToolButton" name="toolButton_3">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="8">
          <widget class="QTableWidget" name="tableWidgetCurrentTasks">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -944,7 +1252,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Год выпуска</string>
            </property>
           </column>
           <column>
@@ -984,6 +1297,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Подтипы нарушений</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Комментарии</string>
            </property>
           </column>
@@ -1001,6 +1319,12 @@
         </item>
         <item row="2" column="0">
          <widget class="QPushButton" name="pushButtonNew">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>120</width>
@@ -1030,6 +1354,12 @@
         </item>
         <item row="2" column="1">
          <widget class="QPushButton" name="pushButtonEdit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>120</width>
@@ -1062,6 +1392,12 @@
         </item>
         <item row="2" column="2">
          <widget class="QPushButton" name="pushButtonDelete">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>120</width>
@@ -1092,7 +1428,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="3" colspan="2">
+        <item row="2" column="3" colspan="5">
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -1112,7 +1448,52 @@
         <string>Мои задачи</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0" colspan="3">
+        <item row="0" column="7">
+         <widget class="QToolButton" name="toolButton_4">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="6">
+         <widget class="QLineEdit" name="lineEditFindString_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="8">
          <widget class="QTableWidget" name="tableWidgetMyTasks">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -1138,7 +1519,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Год выпуска</string>
            </property>
           </column>
           <column>
@@ -1173,6 +1559,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Подтипы нарушений</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Комментарии</string>
            </property>
           </column>
@@ -1203,8 +1594,43 @@
           </column>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="1">
+         <widget class="QPushButton" name="pushButtonAddAVP_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>170</width>
+            <height>33</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Добавить АВП</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
          <widget class="QPushButton" name="pushButtonEditOperator">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>170</width>
@@ -1226,30 +1652,20 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="pushButtonAddAVP_2">
-          <property name="minimumSize">
+        <item row="0" column="4">
+         <spacer name="horizontalSpacer_17">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
            <size>
-            <width>120</width>
-            <height>33</height>
+            <width>8</width>
+            <height>20</height>
            </size>
           </property>
-          <property name="text">
-           <string>Добавить АВП</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resource.qrc">
-            <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-         </widget>
+         </spacer>
         </item>
-        <item row="1" column="2">
+        <item row="2" column="2" colspan="6">
          <spacer name="horizontalSpacer_5">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -1257,6 +1673,271 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>900</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="5">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>Название АВП:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QGroupBox" name="groupBox_7">
+          <property name="title">
+           <string>Фильтры</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <widget class="QGroupBox" name="groupBoxUserMyTask">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>По операторам</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_30">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxUserMyTask"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxStatusMyTask">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>По статусу</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_31">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxStatusMyTask"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxAgeMyTask">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Знак</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_32">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxAgeMyTask"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxYearOfReleaseMyTask">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Год выпуска</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_33">
+              <item row="0" column="0">
+               <widget class="QSpinBox" name="spinBoxYearOfReleaseMyTask">
+                <property name="minimum">
+                 <number>1900</number>
+                </property>
+                <property name="maximum">
+                 <number>2100</number>
+                </property>
+                <property name="value">
+                 <number>2000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxViolationMyTask">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Нарушения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_34">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxViolationMyTask"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxDateMyTask">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>220</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>По дате назначения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_35">
+              <item row="0" column="1">
+               <widget class="QDateEdit" name="dateEditDateBeginMyTask">
+                <property name="dateTime">
+                 <datetime>
+                  <hour>0</hour>
+                  <minute>0</minute>
+                  <second>0</second>
+                  <year>2020</year>
+                  <month>1</month>
+                  <day>1</day>
+                 </datetime>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>По:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>С:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QDateEdit" name="dateEditDateEndMyTask">
+                <property name="dateTime">
+                 <datetime>
+                  <hour>0</hour>
+                  <minute>0</minute>
+                  <second>0</second>
+                  <year>2020</year>
+                  <month>1</month>
+                  <day>1</day>
+                 </datetime>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_36">
+             <item row="0" column="0">
+              <spacer name="verticalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Minimum</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>18</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="pushButtonReview_5">
+               <property name="text">
+                <string>Обновить</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resource.qrc">
+                 <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <spacer name="horizontalSpacer_19">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
@@ -1314,7 +1995,7 @@
               </size>
              </property>
              <property name="title">
-              <string>По приоритету</string>
+              <string>По операторам</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -1324,7 +2005,89 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
               <item row="0" column="0">
-               <widget class="QComboBox" name="comboBoxPriority_2"/>
+               <widget class="QComboBox" name="comboBoxOperator"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxAgeCurrentExpert">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Знак</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_39">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxAgeCurrentExpert"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxYearOfRelease_3">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Год выпуска</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_38">
+              <item row="0" column="0">
+               <widget class="QSpinBox" name="spinBox_3">
+                <property name="minimum">
+                 <number>1900</number>
+                </property>
+                <property name="maximum">
+                 <number>2100</number>
+                </property>
+                <property name="value">
+                 <number>2000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxViolation_3">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Нарушения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_37">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxViolationCurrentExpert"/>
               </item>
              </layout>
             </widget>
@@ -1442,7 +2205,59 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0" colspan="3">
+        <item row="0" column="3">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Название АВП:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLineEdit" name="lineEditFindString_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QToolButton" name="toolButton_5">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="6">
          <widget class="QTableWidget" name="tableWidgetAudit_4">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -1468,7 +2283,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Год выпуска</string>
            </property>
           </column>
           <column>
@@ -1504,6 +2324,11 @@
           <column>
            <property name="text">
             <string>Нарушения</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Подтипы нарушений</string>
            </property>
           </column>
           <column>
@@ -1552,7 +2377,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2">
+        <item row="2" column="1" colspan="5">
          <spacer name="horizontalSpacer_14">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -1573,6 +2398,289 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_10">
         <item row="0" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_8">
+          <property name="title">
+           <string>Фильтры</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QGroupBox" name="groupBoxUserExpert">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>По операторам</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_40">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxUserExpert"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxAgeExpert">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Знак</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_42">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxAgeExpert"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxYearOfReleaseExpert">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Год выпуска</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_43">
+              <item row="0" column="0">
+               <widget class="QSpinBox" name="spinBox_4">
+                <property name="minimum">
+                 <number>1900</number>
+                </property>
+                <property name="maximum">
+                 <number>2100</number>
+                </property>
+                <property name="value">
+                 <number>2000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxViolationExpert">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Нарушения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_44">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxViolationExpert"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxDateExpert">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>220</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>По дате назначения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_45">
+              <item row="0" column="3">
+               <widget class="QDateEdit" name="dateEditDateEndExpert">
+                <property name="dateTime">
+                 <datetime>
+                  <hour>0</hour>
+                  <minute>0</minute>
+                  <second>0</second>
+                  <year>2020</year>
+                  <month>1</month>
+                  <day>1</day>
+                 </datetime>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QDateEdit" name="dateEditDateBeginExpert">
+                <property name="dateTime">
+                 <datetime>
+                  <hour>0</hour>
+                  <minute>0</minute>
+                  <second>0</second>
+                  <year>2020</year>
+                  <month>1</month>
+                  <day>1</day>
+                 </datetime>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>С:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_20">
+                <property name="text">
+                 <string>По:</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_46">
+             <item row="0" column="0">
+              <spacer name="verticalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Minimum</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>18</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="pushButtonReview_6">
+               <property name="text">
+                <string>Обновить</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resource.qrc">
+                 <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_18">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>198</width>
+            <height>25</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>Название АВП:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLineEdit" name="lineEditFindString_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QToolButton" name="toolButton_6">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="6">
          <widget class="QTableWidget" name="tableWidgetAudit">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -1598,7 +2706,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Год выпуска</string>
            </property>
           </column>
           <column>
@@ -1633,6 +2746,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Подтипы нарушений</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Комментарии</string>
            </property>
           </column>
@@ -1648,21 +2766,14 @@
           </column>
          </widget>
         </item>
-        <item row="1" column="1">
-         <spacer name="horizontalSpacer_9">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>1035</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QPushButton" name="pushButtonEditAuditor">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>170</width>
@@ -1683,6 +2794,19 @@
            </size>
           </property>
          </widget>
+        </item>
+        <item row="2" column="1" colspan="5">
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>1035</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1728,7 +2852,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBoxPriority_3">
+            <widget class="QGroupBox" name="groupBoxUserRKN">
              <property name="minimumSize">
               <size>
                <width>200</width>
@@ -1736,7 +2860,7 @@
               </size>
              </property>
              <property name="title">
-              <string>По приоритету</string>
+              <string>По операторам</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -1744,15 +2868,97 @@
              <property name="checked">
               <bool>false</bool>
              </property>
-             <layout class="QGridLayout" name="gridLayout_25">
+             <layout class="QGridLayout" name="gridLayout_50">
               <item row="0" column="0">
-               <widget class="QComboBox" name="comboBoxPriority_3"/>
+               <widget class="QComboBox" name="comboBoxOperatorRKN"/>
               </item>
              </layout>
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBoxDate_4">
+            <widget class="QGroupBox" name="groupBoxAgeRKN">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Знак</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_53">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxAgeRKN"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxYearOfReleaseRKN">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Год выпуска</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_54">
+              <item row="0" column="0">
+               <widget class="QSpinBox" name="spinBox_6">
+                <property name="minimum">
+                 <number>1900</number>
+                </property>
+                <property name="maximum">
+                 <number>2100</number>
+                </property>
+                <property name="value">
+                 <number>2000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxViolationRKN">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Нарушения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_56">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxViolationRKN"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBoxDateRKN">
              <property name="enabled">
               <bool>true</bool>
              </property>
@@ -1858,13 +3064,65 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>652</width>
+            <width>3</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="1" column="0" colspan="3">
+        <item row="0" column="3">
+         <widget class="QLabel" name="label_21">
+          <property name="text">
+           <string>Название АВП:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLineEdit" name="lineEditFindString_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QToolButton" name="toolButton_7">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Поиск АВП</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/icons/find.png</normaloff>:/icons/icons/find.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="6">
          <widget class="QTableWidget" name="tableWidgetAudit_2">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -1890,7 +3148,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Год выпуска</string>
            </property>
           </column>
           <column>
@@ -1926,6 +3189,11 @@
           <column>
            <property name="text">
             <string>Нарушения</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Подтипы нарушений</string>
            </property>
           </column>
           <column>
@@ -1974,7 +3242,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2">
+        <item row="2" column="1" colspan="5">
          <spacer name="horizontalSpacer_10">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -2030,32 +3298,36 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QGroupBox" name="groupBoxExpert">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>200</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="title">
-              <string>По экспертам</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_14">
-              <item row="0" column="0">
-               <widget class="QComboBox" name="comboBoxExpert"/>
-              </item>
-             </layout>
-            </widget>
+           <item row="0" column="7">
+            <layout class="QGridLayout" name="gridLayout_21">
+             <item row="0" column="0">
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Minimum</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>18</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="pushButtonReview_3">
+               <property name="text">
+                <string>Обновить</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resource.qrc">
+                 <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item row="0" column="2">
             <widget class="QGroupBox" name="groupBoxStatusArchive">
@@ -2085,6 +3357,30 @@
             </widget>
            </item>
            <item row="0" column="3">
+            <widget class="QGroupBox" name="groupBoxAgeArchive">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Знак</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_47">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxAgeArchive"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="6">
             <widget class="QGroupBox" name="groupBoxDate_3">
              <property name="enabled">
               <bool>true</bool>
@@ -2119,20 +3415,6 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>С:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>По:</string>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="3">
                <widget class="QDateEdit" name="dateEditDateEnd_3">
                 <property name="dateTime">
@@ -2147,44 +3429,112 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>По:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>С:</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
            <item row="0" column="4">
-            <layout class="QGridLayout" name="gridLayout_21">
-             <item row="0" column="0">
-              <spacer name="verticalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Minimum</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>18</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPushButton" name="pushButtonReview_3">
-               <property name="text">
-                <string>Обновить</string>
-               </property>
-               <property name="icon">
-                <iconset resource="resource.qrc">
-                 <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QGroupBox" name="groupBoxYearOfReleaseArchive">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Год выпуска</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_48">
+              <item row="0" column="0">
+               <widget class="QSpinBox" name="spinBoxYearOfReleaseArchive">
+                <property name="minimum">
+                 <number>1900</number>
+                </property>
+                <property name="maximum">
+                 <number>2100</number>
+                </property>
+                <property name="value">
+                 <number>2000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QGroupBox" name="groupBoxExpert">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>По экспертам</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_14">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxExpert"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="5">
+            <widget class="QGroupBox" name="groupBoxViolationArchive">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Нарушения</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_49">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBoxViolationArchive"/>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <spacer name="horizontalSpacer_13">
@@ -2253,7 +3603,7 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="0" colspan="2">
+        <item row="2" column="0">
          <widget class="QTableWidget" name="tableWidgetAuditArchive">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -2279,7 +3629,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Возраст</string>
+            <string>Знак</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Год выпуска</string>
            </property>
           </column>
           <column>
@@ -2309,6 +3664,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Подтипы нарушений</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Комментарии</string>
            </property>
           </column>
@@ -2324,7 +3684,7 @@
           </column>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="3" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
            <spacer name="horizontalSpacer_11">
@@ -2452,103 +3812,6 @@
       </widget>
      </widget>
     </item>
-    <item row="2" column="0" colspan="7">
-     <widget class="QFrame" name="frame">
-      <property name="frameShape">
-       <enum>QFrame::WinPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>693</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonReload">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>33</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Обновить данные</string>
-         </property>
-         <property name="text">
-          <string>Обновить</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resource.qrc">
-           <normaloff>:/icons/icons/button_reload.png</normaloff>:/icons/icons/button_reload.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonExit">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>33</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Выход из приложения</string>
-         </property>
-         <property name="text">
-          <string>Выход</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resource.qrc">
-           <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -2556,7 +3819,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1449</width>
+     <width>1527</width>
      <height>21</height>
     </rect>
    </property>
@@ -2804,8 +4067,8 @@
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1355</x>
-     <y>750</y>
+     <x>1427</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>892</x>
@@ -2868,8 +4131,8 @@
    <slot>slotEditTask()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>299</x>
-     <y>671</y>
+     <x>187</x>
+     <y>669</y>
     </hint>
     <hint type="destinationlabel">
      <x>8</x>
@@ -2884,8 +4147,8 @@
    <slot>slotDeleteTask()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>546</x>
-     <y>673</y>
+     <x>323</x>
+     <y>671</y>
     </hint>
     <hint type="destinationlabel">
      <x>278</x>
@@ -2981,7 +4244,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>412</x>
-     <y>691</y>
+     <y>689</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -2996,8 +4259,8 @@
    <slot>slotReload()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1302</x>
-     <y>755</y>
+     <x>1374</x>
+     <y>753</y>
     </hint>
     <hint type="destinationlabel">
      <x>1241</x>
@@ -3028,8 +4291,8 @@
    <slot>slotNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>865</x>
-     <y>691</y>
+     <x>901</x>
+     <y>689</y>
     </hint>
     <hint type="destinationlabel">
      <x>787</x>
@@ -3044,8 +4307,8 @@
    <slot>slotPrevious()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>527</x>
-     <y>691</y>
+     <x>563</x>
+     <y>689</y>
     </hint>
     <hint type="destinationlabel">
      <x>379</x>
@@ -3060,8 +4323,8 @@
    <slot>slotChangeNumberPage()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>708</x>
-     <y>684</y>
+     <x>744</x>
+     <y>682</y>
     </hint>
     <hint type="destinationlabel">
      <x>534</x>
@@ -3076,8 +4339,8 @@
    <slot>slotSelectAVS(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1132</x>
-     <y>674</y>
+     <x>1204</x>
+     <y>672</y>
     </hint>
     <hint type="destinationlabel">
      <x>963</x>
@@ -3092,8 +4355,8 @@
    <slot>slotFindAVP()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1425</x>
-     <y>138</y>
+     <x>1497</x>
+     <y>156</y>
     </hint>
     <hint type="destinationlabel">
      <x>1248</x>
@@ -3108,7 +4371,7 @@
    <slot>slotFilterApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>926</x>
+     <x>1138</x>
      <y>163</y>
     </hint>
     <hint type="destinationlabel">
@@ -3188,7 +4451,7 @@
    <slot>slotFilterApply1()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>724</x>
+     <x>1134</x>
      <y>161</y>
     </hint>
     <hint type="destinationlabel">
@@ -3204,8 +4467,8 @@
    <slot>slotFindArchiveAVP()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1425</x>
-     <y>155</y>
+     <x>1497</x>
+     <y>217</y>
     </hint>
     <hint type="destinationlabel">
      <x>1314</x>
@@ -3220,7 +4483,7 @@
    <slot>slotFilterApply2()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>933</x>
+     <x>1410</x>
      <y>167</y>
     </hint>
     <hint type="destinationlabel">
@@ -3268,8 +4531,8 @@
    <slot>slotChangeNumberPageArchive()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>682</x>
-     <y>677</y>
+     <x>718</x>
+     <y>675</y>
     </hint>
     <hint type="destinationlabel">
      <x>1319</x>
@@ -3290,6 +4553,54 @@
     <hint type="destinationlabel">
      <x>1</x>
      <y>450</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonReview_7</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotFilterApplyAVP()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>550</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonReview_5</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotFilterApplyMyTask()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1137</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonReview_6</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotFilterApplyExpert()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>931</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>374</y>
     </hint>
    </hints>
   </connection>
@@ -3325,5 +4636,8 @@
   <slot>slotPreviousArchivePage()</slot>
   <slot>slotChangeNumberPageArchive()</slot>
   <slot>slotFilterApply3()</slot>
+  <slot>slotFilterApplyAVP()</slot>
+  <slot>slotFilterApplyMyTask()</slot>
+  <slot>slotFilterApplyExpert()</slot>
  </slots>
 </ui>

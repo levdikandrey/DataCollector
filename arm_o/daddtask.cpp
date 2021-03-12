@@ -503,7 +503,7 @@ void DAddTask::slotFindAVP()
                     newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
                     ui->tableWidget->setItem(row,3, newItem3);
 
-                    QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt());
+                    QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt(),1);
                     ui->tableWidget->setItem(row, 4, newItem4);
 
                     QTableWidgetItem *newItem5 = new QTableWidgetItem();
@@ -785,7 +785,7 @@ void DAddTask::initTableListAVP(int numberPage, long idAVS, int state)
                 newItem21->setFlags(newItem21->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(row,4, newItem21);
 
-                QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt());
+                QTableWidgetItem *newItem4 = ((MainWindow*)parent())->initViolations(query->value(4).toInt(),1);
                 ui->tableWidget->setItem(row, 5, newItem4);
 
                 QTableWidgetItem *newItem5 = new QTableWidgetItem();
