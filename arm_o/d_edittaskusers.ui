@@ -130,6 +130,79 @@
     <widget class="QDateEdit" name="dateEdit"/>
    </item>
    <item row="7" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBoxAttribute">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="6">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="3">
+       <widget class="QRadioButton" name="radioButton_3">
+        <property name="text">
+         <string>Взят в аренду</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="radioButton_2">
+        <property name="text">
+         <string>Куплен</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>дней</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QSpinBox" name="spinBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="radioButton">
+        <property name="text">
+         <string>Платный</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radioButton_4">
+        <property name="text">
+         <string>Бесплатный</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Нарушения</string>
@@ -168,7 +241,7 @@
      </layout>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <spacer name="horizontalSpacer_2">
@@ -209,7 +282,7 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="10" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="maximumSize">
       <size>
@@ -242,7 +315,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
@@ -405,12 +478,28 @@ p, li { white-space: pre-wrap; }
    <slot>slotPreviewExpertise()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>703</x>
-     <y>418</y>
+     <x>708</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>716</x>
      <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>D_EditTaskUser</receiver>
+   <slot>slotValueChangedDay(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>373</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>415</y>
     </hint>
    </hints>
   </connection>
@@ -420,5 +509,6 @@ p, li { white-space: pre-wrap; }
   <slot>slotCancel()</slot>
   <slot>slotExit()</slot>
   <slot>slotPreviewExpertise()</slot>
+  <slot>slotValueChangedDay(int)</slot>
  </slots>
 </ui>

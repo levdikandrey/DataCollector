@@ -18,6 +18,7 @@ public:
     DEditTask(QWidget *parent = nullptr);
     ~DEditTask();
     void initTableViolation(long id_avp);
+    void initTableAttribute(long id_avp);
     void initComboBoxStatus(QString currentStatus);
     void initComboBoxViolation();
 
@@ -35,6 +36,23 @@ public:
     void showViolationGroup();
 
 private slots:
+    /**
+     * @brief slotFree - функция устанавливает признак АВП в состояние - бесплатный. В БД значение 0.
+     */
+    void slotFree(bool);
+    /**
+     * @brief slotPaid - функция устанавливает признак АВП в состояние - платный. В БД значение 1.
+     */
+    void slotPaid(bool);
+    /**
+     * @brief slotPurchased - функция устанавливает признак АВП в состояние - куплен. В БД значение 2.
+     */
+    void slotPurchased(bool);
+    /**
+     * @brief slotRent - функция устанавливает признак АВП в состояние - аренда. В БД значение 3.
+     */
+    void slotRent(bool);
+
     void slotViewPicture();
     void slotApplyViolation();
     void slotCancelViolation();
@@ -47,6 +65,10 @@ private slots:
 
     void slotStatusActivated(int);
     void slotValueChanged(int);
+    /**
+     * @brief slotValueChangedDay - функция устанавливает количество дней аренды АВП.
+     */
+    void slotValueChangedDay(int);
 
     void slotActivated(int);
     void slotTextChanged();

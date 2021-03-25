@@ -18,6 +18,11 @@ DEnter::DEnter(QWidget *parent)
     , ui(new Ui::D_Enter)
 {
     ui->setupUi(this);
+//    if(query != nullptr)
+//    {
+//        delete query;
+//        query = nullptr;
+//    }
     query = new QSqlQuery(db);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     initUserComBoBox();

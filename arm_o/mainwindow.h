@@ -33,7 +33,7 @@
 #include "dappointexpert.h"
 #include "dstartprogressdialog.h"
 #include "dpreviewarchive.h"
-
+#include "dmanualconnecttestdb.h"
 
 #include "client.h"
 #include "aprotocol.h"
@@ -280,6 +280,12 @@ private slots:
      * @brief slotFindAVP - функция ищет АВП по названию
      */
     void slotFindAVP();
+    void slotFindAVP2();
+    void slotFindAVP3();
+    void slotFindAVP4();
+    void slotFindAVP5();
+    void slotFindAVP6();
+    void slotFindAVP7();
     /**
      * @brief slotFindArchiveAVP - функция ищет АВП по названию в архиве
      */
@@ -292,6 +298,12 @@ private slots:
      * @brief slotTextChanged1
      */
     void slotTextChanged1(const QString&);
+    void slotTextChanged2(const QString&);
+    void slotTextChanged3(const QString&);
+    void slotTextChanged4(const QString&);
+    void slotTextChanged5(const QString&);
+    void slotTextChanged6(const QString&);
+    void slotTextChanged7(const QString&);
     /**
      * @brief slotFilterApply - функция применяет фильтры в закладке "Текущие задачи"
      */
@@ -364,6 +376,16 @@ private slots:
     void slotInitDialog();
     void slotAppointExpert();
 
+    void slotClearFilter();
+    void slotClearFilter2();
+    void slotClearFilter3();
+    void slotClearFilter4();
+    void slotClearFilter5();
+    void slotClearFilter6();
+    void slotClearFilter7();
+
+    void slotManualConnectToDB();
+
 public slots:
     /**
      * @brief handleResults
@@ -412,6 +434,7 @@ private:
     DReportAllStatistics *dReportAllStatistics;
     DAppointExpert *dAppointExpert;
     DPreviewArchive *dPreviewArchive;
+    DManualConnectTestDB *dManualConnectTestDB;
 
     Client *m_client;
 
@@ -431,6 +454,12 @@ private:
 
     QTimer m_timer;
     QTimer m_timer1;
+    QTimer m_timer2;
+    QTimer m_timer3;
+    QTimer m_timer4;
+    QTimer m_timer5;
+    QTimer m_timer6;
+    QTimer m_timer7;
     QTimer m_timerStartInitDialog;
 
     void initDialog();
@@ -442,6 +471,8 @@ private:
     int getIdUser(QString userName);
     int getIdTaskStatus(QString taskStatus);
     int getIdPriority(QString namePriority);
+    int getIdAttribute(QString textAttribute);
+
 
 //    void initComboBoxUser(QComboBox *comboBox);
 //    void initComboBoxStatus(QComboBox *comboBox);
@@ -467,7 +498,7 @@ public:
     void initComboBoxExpert(QComboBox *comboBox);
     void initComboBoxOperator(QComboBox *comboBox);
     void initComboBoxStatus(QComboBox *comboBox);
-    //    void initComboBoxPriority(QComboBox *comboBox);
+    void initComboBoxAttribute(QComboBox *comboBox);
     void initComboBoxAge(QComboBox *comboBox);
     void initComboBoxViolation(QComboBox *comboBox);
     void initComboBoxStatusArchive(QComboBox *comboBox);

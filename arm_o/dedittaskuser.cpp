@@ -1,5 +1,6 @@
 #include "dedittaskuser.h"
 #include "ui_d_edittaskusers.h"
+#include "mainwindow.h"
 
 #include <QMessageBox>
 #include <QDebug>
@@ -33,11 +34,18 @@ DEditTaskUser::DEditTaskUser(QWidget *parent)
     flagEditComment = false;
     flagEditDate = false;
 
+    connect(ui->radioButton_4,SIGNAL(clicked(bool)), SLOT(slotFree(bool)));
+    connect(ui->radioButton,SIGNAL(clicked(bool)), SLOT(slotPaid(bool)));
+    connect(ui->radioButton_2,SIGNAL(clicked(bool)), SLOT(slotPurchased(bool)));
+    connect(ui->radioButton_3,SIGNAL(clicked(bool)), SLOT(slotRent(bool)));
+
     connect(ui->comboBoxUser, QOverload<int>::of(&QComboBox::activated),[=](int){ flagEditOperator = true; });
     connect(ui->comboBoxStatus, QOverload<int>::of(&QComboBox::activated),[=](int){ flagEditStatus = true; });
     connect(ui->comboBoxPriority, QOverload<int>::of(&QComboBox::activated),[=](int){ flagEditPriority = true; });
     connect(ui->spinBoxPercent, QOverload<int>::of(&QSpinBox::valueChanged),[=](int){flagEditPercent = true; });
     connect(ui->dateEdit, SIGNAL(dateChanged(const QDate &)), this, SLOT(slotDateChanged(const  QDate &)));
+    ui->label_3->hide();
+    ui->spinBoxPercent->hide();
 }
 
 //=========================================================
@@ -45,6 +53,172 @@ DEditTaskUser::~DEditTaskUser()
 {
     delete query;
     delete ui;
+}
+
+//=========================================================
+void DEditTaskUser::initTableAttribute(long id_avp)
+{
+    QString sql="",tmp;
+    try
+    {
+        ui->radioButton_4->setChecked(true);
+        sql = "SELECT \"Attribute\",\"QuantityDay\" FROM avp WHERE \"ID\"=";
+        sql += tmp.setNum(id_avp);
+        sql += ";";
+        qDebug()<<"sql="<<sql;
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                if(query->value(0).toInt() == 0)
+                {
+                    ui->radioButton_4->setChecked(true);
+                    ui->spinBox->setEnabled(false);
+                }
+                else if(query->value(0).toInt() == 1)
+                {
+                    ui->radioButton->setChecked(true);
+                    ui->spinBox->setEnabled(false);
+                }
+                else if(query->value(0).toInt() == 2)
+                {
+                    ui->radioButton_2->setChecked(true);
+                    ui->spinBox->setEnabled(false);
+                }
+                else if(query->value(0).toInt() == 3)
+                {
+                    ui->radioButton_3->setChecked(true);
+                    ui->spinBox->setEnabled(true);
+                    ui->spinBox->setValue(query->value(1).toInt());
+                }
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTaskUser::slotFree(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(false);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 0 ";
+        sql+="WHERE \"ID\"=";
+        sql+=tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTaskUser::slotPaid(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(false);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 1 ";
+        sql+="WHERE \"ID\"=";
+        sql+=tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTaskUser::slotPurchased(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(false);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 2 ";
+        sql+="WHERE \"ID\"=";
+        sql+=tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTaskUser::slotRent(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(true);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 3, \"QuantityDay\"=";
+        sql += tmp.setNum(ui->spinBox->value());
+        sql += " WHERE \"ID\"=";
+        sql += tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTaskUser::slotValueChangedDay(int day)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"QuantityDay\"=";
+        sql += tmp.setNum(day);
+        sql += " WHERE \"ID\"=";
+        sql += tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================

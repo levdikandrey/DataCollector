@@ -23,6 +23,7 @@ public:
     void initComboBoxStatus(QString currentStatus);
     void initTableViolation(long id_avp);
     void initDateRealization(long id_avp);
+    void initTableAttribute(long id_avp);
 
     void setNameAVP(QString nameAVP);
     void setPercent(QString percent);
@@ -50,6 +51,27 @@ private slots:
     void slotExit();
     void slotDateChanged(const QDate &);
     void slotPreviewExpertise();
+    /**
+     * @brief slotFree - функция устанавливает признак АВП в состояние - бесплатный. В БД значение 0.
+     */
+    void slotFree(bool);
+    /**
+     * @brief slotPaid - функция устанавливает признак АВП в состояние - платный. В БД значение 1.
+     */
+    void slotPaid(bool);
+    /**
+     * @brief slotPurchased - функция устанавливает признак АВП в состояние - куплен. В БД значение 2.
+     */
+    void slotPurchased(bool);
+    /**
+     * @brief slotRent - функция устанавливает признак АВП в состояние - аренда. В БД значение 3.
+     */
+    void slotRent(bool);
+    /**
+     * @brief slotValueChangedDay - функция устанавливает количество дней аренды АВП.
+     */
+    void slotValueChangedDay(int);
+
 
 private:
     Ui::D_EditTaskUser *ui;

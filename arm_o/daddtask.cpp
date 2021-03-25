@@ -276,7 +276,7 @@ void DAddTask::initComboBoxStatus()
     {
         ui->comboBoxStatus->clear();
 
-        sql = "SELECT \"StatusName\",\"ID\" FROM \"TaskStatus\";";
+        sql = "SELECT \"StatusName\",\"ID\" FROM \"TaskStatus\" WHERE \"StatusName\"='Назначена';";
 
         if(query->exec(sql))
         {

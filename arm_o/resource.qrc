@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>icons/connectDB.png</file>
     <file>icons/analysis.png</file>
     <file>icons/wait.png</file>
     <file>icons/date2.png</file>

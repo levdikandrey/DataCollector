@@ -156,11 +156,17 @@ void DViolation::slotAdd()
         try
         {
             if(m_typeDictionary == 1)
-                sql = "INSERT INTO \"Violation\"(\"Violation\") VALUES(\'";
+            {
+                sql = "INSERT INTO \"Violation\"(\"Violation\",\"ViolationType\") VALUES(\'";
+                sql +=  m_dAddViolation->violation();
+                sql += "\',2);";
+            }
             else if(m_typeDictionary == 2)
+            {
                 sql = "INSERT INTO \"TaskStatus\"(\"StatusName\") VALUES(\'";
-            sql +=  m_dAddViolation->violation();
-            sql += "\');";
+                sql +=  m_dAddViolation->violation();
+                sql += "\');";
+            }
             qDebug()<<"sql="<<sql;
             if(query->exec(sql))
             {

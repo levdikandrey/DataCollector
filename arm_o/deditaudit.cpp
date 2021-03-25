@@ -44,7 +44,9 @@ DEditAudit::~DEditAudit()
 void DEditAudit::initTableViolation(long id_avp)
 {
     qDebug()<<__PRETTY_FUNCTION__;
+    qDebug()<<"id_avp="<<id_avp;
     QString sql="",tmp, str;
+    bool flagEdit = false;
 
     ui->tableWidgetViolation->clearContents();
     ui->tableWidgetViolation->setRowCount(0);
@@ -52,7 +54,7 @@ void DEditAudit::initTableViolation(long id_avp)
 
     try
     {
-        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"ID\",c.\"Data\" FROM \"AnalysisResult\" ar "
+        sql = "SELECT v.\"Violation\",ar.\"Percent\",ar.\"TextViolation\",ar.\"ID\",c.\"Data\",ar.\"CheckExpert\",ar.\"CheckExpertCancel\" FROM \"AnalysisResult\" ar "
               "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\"=v.\"ID\" LEFT JOIN \"Content\" c ON ar.\"ID\" = c.\"ID_AR\" WHERE ar.\"ID_AVP\"="+tmp.setNum(id_avp)+" AND ar.\"TextViolation\" IS NOT NULL;";
         qDebug()<<"sql="<<sql;
         if(query->exec(sql))
@@ -60,8 +62,6 @@ void DEditAudit::initTableViolation(long id_avp)
             int row = 0;
             while(query->next())
             {
-//                if(query->value(0).toString()!="Не обнаружено")
-//                {
                     ui->tableWidgetViolation->setRowCount(row+1);
 
                     QTableWidgetItem *newItem = new QTableWidgetItem();
@@ -90,10 +90,20 @@ void DEditAudit::initTableViolation(long id_avp)
                     ui->tableWidgetViolation->setCellWidget(row,2, pbItem);//Снимок экрана
 
                     QCheckBox *cbItem = new QCheckBox(this);
+                    if(query->value(5).toBool())
+                    {
+                        cbItem->setCheckState(Qt::Checked);
+                        flagEdit = true;
+                    }
                     connect(cbItem, SIGNAL(stateChanged(int)),this,SLOT(slotStateChanged(int)));
                     ui->tableWidgetViolation->setCellWidget(row,3, cbItem);
 
                     QCheckBox *cbItem1 = new QCheckBox(this);
+                    if((!query->value(5).isNull()) && (!query->value(5).toBool()))
+                    {
+                        cbItem1->setCheckState(Qt::Checked);
+                        flagEdit = true;
+                    }
                     connect(cbItem1, SIGNAL(stateChanged(int)),this,SLOT(slotStateChanged(int)));
                     ui->tableWidgetViolation->setCellWidget(row,4, cbItem1);
 
@@ -102,9 +112,11 @@ void DEditAudit::initTableViolation(long id_avp)
                     newItem3->setFlags(newItem3->flags() ^ Qt::ItemIsEditable);
                     ui->tableWidgetViolation->setItem(row,5, newItem3);//ID
                     row++;
-//                }
             }
-
+            if(flagEdit == true)
+                ui->pushButtonApply->setEnabled(true);
+            else
+                ui->pushButtonApply->setEnabled(false);
         }
         else
             qDebug()<<query->lastError().text();
@@ -125,13 +137,14 @@ void DEditAudit::slotTextChanged()
 //=========================================================
 void DEditAudit::slotStateChanged(int)
 {
+    QString sql;
     ui->pushButtonApply->setEnabled(true);
     ui->pushButtonCancel->setEnabled(true);
     QModelIndexList selectedRows = ui->tableWidgetViolation->selectionModel()->selectedRows();
     int row = selectedRows[0].row();
     int col = ui->tableWidgetViolation->currentColumn();
-//    qDebug()<<"row = "<< row;
-//    qDebug()<<"col = "<< col;
+    qDebug()<<"row = "<< row;
+    qDebug()<<"col = "<< col;
     QObject* obj=QObject::sender();
     if (QCheckBox *cb=qobject_cast<QCheckBox *>(obj))
     {
@@ -148,6 +161,30 @@ void DEditAudit::slotStateChanged(int)
 //        else
 //            cb1->setCheckState(Qt::Checked);
     }
+    if(reinterpret_cast<QCheckBox *>(ui->tableWidgetViolation->cellWidget(row,3))->isChecked())
+    {
+           sql = "UPDATE \"AnalysisResult\" SET \"CheckExpert\"=\'true\'";
+           sql += " WHERE \"ID\"=";
+           sql += ui->tableWidgetViolation->item(row,5)->text();
+           sql += ";";
+     }
+     else if(reinterpret_cast<QCheckBox *>(ui->tableWidgetViolation->cellWidget(row,4))->isChecked())
+     {
+        sql = "UPDATE \"AnalysisResult\" SET \"CheckExpert\"=\'false\'";
+        sql += " WHERE \"ID\"=";
+        sql += ui->tableWidgetViolation->item(row,5)->text();
+        sql += ";";
+     }
+     else
+     {
+        sql = "UPDATE \"AnalysisResult\" SET \"CheckExpert\"= NULL";
+        sql += " WHERE \"ID\"=";
+        sql += ui->tableWidgetViolation->item(row,5)->text();
+        sql += ";";
+     }
+    qDebug()<<"sql="<<sql;
+    if(!query->exec(sql))
+        qDebug()<<query->lastError().text();
 }
 
 //=========================================================

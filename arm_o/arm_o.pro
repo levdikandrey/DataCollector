@@ -28,6 +28,7 @@ SOURCES += \
     deditavp.cpp \
     djournaljobavp.cpp \
     djournalsession.cpp \
+    dmanualconnecttestdb.cpp \
     dpreviewarchive.cpp \
     dreportallstatistics.cpp \
     dreportjob.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     deditavp.h \
     djournaljobavp.h \
     djournalsession.h \
+    dmanualconnecttestdb.h \
     dpreviewarchive.h \
     dreportallstatistics.h \
     dreportjob.h \
@@ -108,6 +110,7 @@ FORMS += \
     d_importdata.ui \
     d_journaljobavp.ui \
     d_journalsession.ui \
+    d_manualconnecttestdb.ui \
     d_previewarchive.ui \
     d_reportallstatistics.ui \
     d_reportjob.ui \

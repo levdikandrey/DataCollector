@@ -32,7 +32,134 @@ DEditTask::DEditTask(QWidget *parent)
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(2, 90);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(3, 0);
     flagConnected = false;
+
+    connect(ui->radioButton_4,SIGNAL(clicked(bool)), SLOT(slotFree(bool)));
+    connect(ui->radioButton,SIGNAL(clicked(bool)), SLOT(slotPaid(bool)));
+    connect(ui->radioButton_2,SIGNAL(clicked(bool)), SLOT(slotPurchased(bool)));
+    connect(ui->radioButton_3,SIGNAL(clicked(bool)), SLOT(slotRent(bool)));
+    ui->label_3->hide();
+    ui->spinBoxPercent->hide();
 }
+
+//=========================================================
+void DEditTask::slotFree(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(false);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 0 ";
+        sql+="WHERE \"ID\"=";
+        sql+=tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableMyTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTask::slotPaid(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(false);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 1 ";
+        sql+="WHERE \"ID\"=";
+        sql+=tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableMyTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTask::slotPurchased(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(false);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 2 ";
+        sql+="WHERE \"ID\"=";
+        sql+=tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableMyTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTask::slotRent(bool f)
+{
+    if(!f)
+        return;
+    qDebug()<<__PRETTY_FUNCTION__;
+    ui->spinBox->setEnabled(true);
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"Attribute\" = 3, \"QuantityDay\"=";
+        sql += tmp.setNum(ui->spinBox->value());
+        sql += " WHERE \"ID\"=";
+        sql += tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableMyTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
+void DEditTask::slotValueChangedDay(int day)
+{
+    qDebug()<<__PRETTY_FUNCTION__;
+    QString sql="",tmp;
+    try
+    {
+        sql = "UPDATE avp SET \"QuantityDay\"=";
+        sql += tmp.setNum(day);
+        sql += " WHERE \"ID\"=";
+        sql += tmp.setNum(m_idAVP); sql+=";";
+        qDebug()<<"sql = "<<sql;
+        if(!query->exec(sql))
+            qDebug()<<query->lastError().text();
+        ((MainWindow*)parent())->initTableMyTask();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
 
 //=========================================================
 void DEditTask::slotCellChanged(QTableWidgetItem* item)
@@ -88,7 +215,7 @@ long DEditTask::idViolation(QString nameViolation)
     long id = -1;
     sql = "SELECT \"ID\" FROM \"Violation\" WHERE \"Violation\" = \'";
     sql += nameViolation; sql += "\';";
-//    qDebug()<<"sql="<<sql;
+    //    qDebug()<<"sql="<<sql;
     if(query->exec(sql))
     {
         while(query->next())
@@ -100,6 +227,53 @@ long DEditTask::idViolation(QString nameViolation)
         qDebug()<<query->lastError().text();
 //    qDebug()<<"id="<<id;
     return id;
+}
+
+//=========================================================
+void DEditTask::initTableAttribute(long id_avp)
+{
+    QString sql="",tmp;
+    try
+    {
+        ui->radioButton_4->setChecked(true);
+        sql = "SELECT \"Attribute\",\"QuantityDay\" FROM avp WHERE \"ID\"=";
+        sql += tmp.setNum(id_avp);
+        sql += ";";
+        qDebug()<<"sql="<<sql;
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                if(query->value(0).toInt() == 0)
+                {
+                    ui->radioButton_4->setChecked(true);
+                    ui->spinBox->setEnabled(false);
+                }
+                else if(query->value(0).toInt() == 1)
+                {
+                    ui->radioButton->setChecked(true);
+                    ui->spinBox->setEnabled(false);
+                }
+                else if(query->value(0).toInt() == 2)
+                {
+                    ui->radioButton_2->setChecked(true);
+                    ui->spinBox->setEnabled(false);
+                }
+                else if(query->value(0).toInt() == 3)
+                {
+                    ui->radioButton_3->setChecked(true);
+                    ui->spinBox->setEnabled(true);
+                    ui->spinBox->setValue(query->value(1).toInt());
+                }
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================
@@ -194,7 +368,16 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
         {
             while(query->next())
             {
-                if((query->value(1).toInt() != 4) && (query->value(1).toInt() != 6) && (query->value(1).toInt() != 7) && (query->value(1).toInt() != 8) && (query->value(1).toInt() != 9))
+                if((query->value(1).toInt() != 4) &&
+                        (query->value(1).toInt() != 6) &&
+                        (query->value(1).toInt() != 7) &&
+                        (query->value(1).toInt() != 8) &&
+//                        (query->value(1).toInt() != 1) &&
+                        (query->value(1).toInt() != 11) &&
+                        (query->value(1).toInt() != 16) &&
+                        (query->value(1).toInt() != 17) &&
+                        (query->value(1).toInt() != 18) &&
+                        (query->value(1).toInt() != 9))
                     ui->comboBoxStatus->addItem(query->value(0).toString());
 
             }
