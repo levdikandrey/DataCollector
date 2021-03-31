@@ -249,7 +249,7 @@
           <string>Добавить задачу</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <property name="tabBarAutoHide">
           <bool>false</bool>
@@ -3344,7 +3344,7 @@
                  </size>
                 </property>
                 <property name="title">
-                 <string>По  дате закрытия</string>
+                 <string>По  дате экспертного исследования</string>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
@@ -3601,7 +3601,7 @@
              </column>
              <column>
               <property name="text">
-               <string>Дата закрытия</string>
+               <string>Дата исследования</string>
               </property>
              </column>
              <column>
@@ -3937,6 +3937,7 @@
     </property>
     <addaction name="actionReportAVP"/>
     <addaction name="actionReportAllStatistics"/>
+    <addaction name="actionReportAllViolationAVP"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -4136,6 +4137,11 @@
    </property>
    <property name="text">
     <string>Настройка подключения к БД</string>
+   </property>
+  </action>
+  <action name="actionReportAllViolationAVP">
+   <property name="text">
+    <string>Отчет общей статистики АВП с нарушениями</string>
    </property>
   </action>
  </widget>
@@ -4454,7 +4460,7 @@
    <slot>slotFilterApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1202</x>
+     <x>1328</x>
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
@@ -4534,7 +4540,7 @@
    <slot>slotFilterApply1()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1202</x>
+     <x>1328</x>
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
@@ -4630,7 +4636,7 @@
    <slot>slotFilterApply3()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1208</x>
+     <x>1339</x>
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
@@ -4678,7 +4684,7 @@
    <slot>slotFilterApplyExpert()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1007</x>
+     <x>1133</x>
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
@@ -4710,7 +4716,7 @@
    <slot>slotClearFilter2()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1202</x>
+     <x>1328</x>
      <y>158</y>
     </hint>
     <hint type="destinationlabel">
@@ -4742,7 +4748,7 @@
    <slot>slotClearFilter4()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1202</x>
+     <x>1328</x>
      <y>158</y>
     </hint>
     <hint type="destinationlabel">
@@ -4758,7 +4764,7 @@
    <slot>slotClearFilter5()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1007</x>
+     <x>1133</x>
      <y>158</y>
     </hint>
     <hint type="destinationlabel">
@@ -4774,7 +4780,7 @@
    <slot>slotClearFilter6()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1208</x>
+     <x>1339</x>
      <y>158</y>
     </hint>
     <hint type="destinationlabel">

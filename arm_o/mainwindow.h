@@ -34,6 +34,7 @@
 #include "dstartprogressdialog.h"
 #include "dpreviewarchive.h"
 #include "dmanualconnecttestdb.h"
+#include "dreportallviolationavp.h"
 
 #include "client.h"
 #include "aprotocol.h"
@@ -370,6 +371,7 @@ private slots:
     void slotChangePassword();
     void slotMakeReport();
     void slotMakeReportAll();
+    void slotMakeReportAllViolationAVP();
 
     void slotJournalSession();
     void slotJournalJob();
@@ -435,6 +437,7 @@ private:
     DAppointExpert *dAppointExpert;
     DPreviewArchive *dPreviewArchive;
     DManualConnectTestDB *dManualConnectTestDB;
+    DReportAllViolationAVP *dReportAllViolationAVP;
 
     Client *m_client;
 

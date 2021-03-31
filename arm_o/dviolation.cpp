@@ -145,11 +145,19 @@ DViolation::~DViolation()
 //=========================================================
 void DViolation::slotAdd()
 {
-    QString sql = "";
+    QString sql = "",tmp;
     if(m_typeDictionary == 1)
+    {
+        m_dAddViolation->setMaximumHeight(16777215);
         m_dAddViolation->setTitle("Добавление нарушения");
+        m_dAddViolation->showItem();
+    }
     else if(m_typeDictionary == 2)
+    {
+        m_dAddViolation->setMaximumHeight(120);
         m_dAddViolation->setTitle("Добавление статуса");
+        m_dAddViolation->hideItem();
+    }
     m_dAddViolation->setViolation("");
     if( m_dAddViolation->exec() == QDialog::Accepted )
     {
@@ -157,9 +165,13 @@ void DViolation::slotAdd()
         {
             if(m_typeDictionary == 1)
             {
-                sql = "INSERT INTO \"Violation\"(\"Violation\",\"ViolationType\") VALUES(\'";
+                sql = "INSERT INTO \"Violation\"(\"Violation\",\"ViolationType\",\"LawText\") VALUES(\'";
                 sql +=  m_dAddViolation->violation();
-                sql += "\',2);";
+                sql += "\',";
+                sql += tmp.setNum(m_dAddViolation->getType());
+                sql += ",\'";
+                sql += m_dAddViolation->getLawText();
+                sql += "\');";
             }
             else if(m_typeDictionary == 2)
             {
@@ -255,16 +267,27 @@ void DViolation::slotEdit()
     {
         m_dAddViolation->setViolation(ui->tableWidgetViolation->item(selectedRows[0].row(),0)->text());
         if(m_typeDictionary == 1)
+        {
+            m_dAddViolation->setMaximumHeight(16777215);
             m_dAddViolation->setTitle("Редактирование нарушения");
+            m_dAddViolation->showItemEdit();
+        }
         else if(m_typeDictionary == 2)
+        {
+            m_dAddViolation->setMaximumHeight(120);
             m_dAddViolation->setTitle("Редактирование статуса");
+            m_dAddViolation->hideItem();
+        }
 
         if(m_dAddViolation->exec() == QDialog::Accepted)
         {
             if(m_typeDictionary == 1)
             {
                 sql = "UPDATE \"Violation\" SET \"Violation\"=\'";
-                sql += m_dAddViolation->violation(); sql += "\' WHERE \"ID\"=";
+                sql += m_dAddViolation->violation();
+                sql += "\',\"LawText\"=\'";
+                sql += m_dAddViolation->getLawText();
+                sql += "\' WHERE \"ID\"=";
                 sql += ui->tableWidgetViolation->item(selectedRows[0].row(),1)->text();
                 sql += ";";
             }

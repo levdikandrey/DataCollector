@@ -141,7 +141,16 @@ void DReportAllStatistics::slotMakeReport()
 
              QXlsx::Document xlsx(nameReport);
              qDebug()<<"rowCount="<<ui->tableWidget->rowCount();
-             for(int i=0; i<ui->tableWidget->rowCount();++i)
+             xlsx.setColumnWidth(1,20);
+             xlsx.setColumnWidth(2,20);
+             xlsx.setColumnWidth(3,50);
+             xlsx.setColumnWidth(4,50);
+             xlsx.setRowHeight(1,30);
+             xlsx.write(1,1,QVariant("\nДата и время\n"));
+             xlsx.write(1,2,QVariant("ФИО, оператора"));
+             xlsx.write(1,3,QVariant("Название АВП"));
+             xlsx.write(1,4,QVariant("Действия"));
+             for(int i=1; i<ui->tableWidget->rowCount();++i)
              {
 //                     qDebug()<<"i="<<i;
                  xlsx.write(i+1,1,QVariant(ui->tableWidget->item(i,0)->text()));

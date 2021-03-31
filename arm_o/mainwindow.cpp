@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionChangePassword, SIGNAL(triggered()), SLOT(slotChangePassword()));
     connect(ui->actionReportAVP, SIGNAL(triggered()), SLOT(slotMakeReport()));
     connect(ui->actionReportAllStatistics, SIGNAL(triggered()), SLOT(slotMakeReportAll()));
+    connect(ui->actionReportAllViolationAVP, SIGNAL(triggered()), SLOT(slotMakeReportAllViolationAVP()));
     connect(ui->actionJournalSession, SIGNAL(triggered()), SLOT(slotJournalSession()));
     connect(ui->actionJournalJob, SIGNAL(triggered()), SLOT(slotJournalJob()));
     connect(ui->actionManualConnectToDB,SIGNAL(triggered()),SLOT(slotManualConnectToDB()));
@@ -247,6 +248,7 @@ MainWindow::MainWindow(QWidget *parent)
     dJournalJobAVP = new DJournalJobAVP(this);
     dReportJob = new DReportJob(this);
     dReportAllStatistics = new DReportAllStatistics(this);
+    dReportAllViolationAVP = new DReportAllViolationAVP(this);
     dAppointExpert = new DAppointExpert(this);
     dPreviewArchive = new DPreviewArchive(this);
     dManualConnectTestDB = new DManualConnectTestDB();
@@ -700,7 +702,7 @@ void MainWindow::initDialog()
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(4, 150);//ФИО
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(5,110);//Дата назначения
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(6,90);//Приоритет
-    ui->tableWidgetAudit->horizontalHeader()->resizeSection(7,100);//Статус
+    ui->tableWidgetAudit->horizontalHeader()->resizeSection(7,150);//Статус
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(8,120);//Признак АВП
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(9,200);//Нарушения
     ui->tableWidgetAudit->horizontalHeader()->resizeSection(10,200);//Подтипы Нарушения
@@ -712,11 +714,11 @@ void MainWindow::initDialog()
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(1,170);//URL
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(2, 60);//Знак
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(3, 80);//Год выпуска
-    ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(4, 150);//ФИО
-    ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(5, 150);//ФИО Эксперта
+    ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(4, 140);//ФИО
+    ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(5, 140);//ФИО Эксперта
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(6,110);//Дата назначения
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(7,90);//Приоритет
-    ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(8,100);//Статус
+    ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(8,150);//Статус
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(9,120);//Признак АВП
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(10,200);//Нарушения
     ui->tableWidgetAudit_4->horizontalHeader()->resizeSection(11,200);//Подтипы Нарушений
@@ -980,7 +982,7 @@ void MainWindow::initComboBoxStatusArchive(QComboBox *comboBox)
     comboBox->clear();
     try
     {
-        sql = "SELECT * FROM \"TaskStatus\" WHERE \"StatusType\"=1;";
+        sql = "SELECT * FROM \"TaskStatus\" WHERE \"StatusType\"=1 OR \"StatusType\"=2;";
         if(query->exec(sql))
         {
             while(query->next())
@@ -1104,7 +1106,7 @@ void MainWindow::initTableArchive(int numberPage )
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "LEFT JOIN \"User\" ue ON \"Task\".\"ID_Expert\" = ue.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-              " WHERE ts.\"StatusType\" =1";
+              " WHERE (ts.\"StatusType\" =1 OR ts.\"StatusType\" =2)";
         if(ui->groupBoxUser_3->isChecked())
         {
             sql +=" AND u.\"FIO\" = \'";sql += ui->comboBoxUser_3->currentText(); sql += "\'";
@@ -1459,8 +1461,10 @@ void MainWindow::initTableCurrentAudit()
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "LEFT JOIN \"User\" ue ON \"Task\".\"ID_Expert\" = ue.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusName\" =\'";
-        sql += "Экспертиза\'";
+              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE (ts.\"StatusName\" =\'Экспертиза\' "
+              "OR ts.\"StatusName\" =\'Одобрена экспертом\' "
+              "OR ts.\"StatusName\" =\'Отклонена экспертом\' "
+              "OR ts.\"StatusName\" =\'Отложена экспертом\')";
         if(ui->groupBoxUser_2->isChecked())
         {
             sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxUser_2->currentText(); sql += "\'";
@@ -2097,7 +2101,7 @@ void MainWindow::initTableTask(bool)
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusType\" IS NULL";
+              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusType\" = 3 ";
 //              "ts.\"StatusName\" !=\'";
 //        sql += "Закрыта\' AND ts.\"StatusName\" !=\'Закрыта с экспертизой\'";
             if(ui->groupBoxUser->isChecked())
@@ -3699,6 +3703,12 @@ void MainWindow::slotSettingsDB()
 void MainWindow::slotMakeReportAll()
 {
     dReportAllStatistics->showMaximized();
+}
+
+//=========================================================
+void MainWindow::slotMakeReportAllViolationAVP()
+{
+    dReportAllViolationAVP->showMaximized();
 }
 
 //=========================================================

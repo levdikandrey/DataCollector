@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DReportAllStatistics</class>
- <widget class="QDialog" name="DReportAllStatistics">
+ <class>DReportAllViolationAVP</class>
+ <widget class="QDialog" name="DReportAllViolationAVP">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1231</width>
-    <height>843</height>
+    <width>1267</width>
+    <height>866</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Отчеты общей статистики</string>
+   <string>Отчеты общей статистики АВП с нарушениями</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -24,7 +24,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <widget class="QGroupBox" name="groupBoxUser">
+       <widget class="QGroupBox" name="groupBoxViolation">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -35,7 +35,7 @@
          </size>
         </property>
         <property name="title">
-         <string>По операторам</string>
+         <string>По нарушениям</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -45,7 +45,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
-          <widget class="QComboBox" name="comboBoxUser">
+          <widget class="QComboBox" name="comboBoxViolation">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -69,7 +69,7 @@
          </size>
         </property>
         <property name="title">
-         <string>По дате</string>
+         <string>По дате проведения экспертного исследования</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -191,22 +191,57 @@
      </property>
      <column>
       <property name="text">
-       <string>Дата и время</string>
+       <string>Дата отчета</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>ФИО, оператора</string>
+       <string>Дата исследования</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Название АВП</string>
+       <string>Наименование АВС</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Действия</string>
+       <string>Наименование АВП</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Тип нарушения</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Описание нарушения законодательства</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Принятые меры</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Время нарушения</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Ссылка на АВП</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Комментарий РКН</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Статус отправки</string>
       </property>
      </column>
     </widget>
@@ -291,48 +326,48 @@
   <connection>
    <sender>pushButtonExit</sender>
    <signal>clicked()</signal>
-   <receiver>DReportAllStatistics</receiver>
+   <receiver>DReportAllViolationAVP</receiver>
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1159</x>
-     <y>798</y>
+     <x>1182</x>
+     <y>841</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1225</x>
-     <y>811</y>
+     <x>1261</x>
+     <y>743</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton</sender>
    <signal>clicked()</signal>
-   <receiver>DReportAllStatistics</receiver>
+   <receiver>DReportAllViolationAVP</receiver>
    <slot>slotMakeReport()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1011</x>
-     <y>808</y>
+     <x>1088</x>
+     <y>835</y>
     </hint>
     <hint type="destinationlabel">
-     <x>967</x>
-     <y>837</y>
+     <x>1261</x>
+     <y>621</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButtonReview</sender>
    <signal>clicked()</signal>
-   <receiver>DReportAllStatistics</receiver>
+   <receiver>DReportAllViolationAVP</receiver>
    <slot>slotReview()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1186</x>
-     <y>78</y>
+     <x>1207</x>
+     <y>64</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1228</x>
-     <y>82</y>
+     <x>1263</x>
+     <y>112</y>
     </hint>
    </hints>
   </connection>

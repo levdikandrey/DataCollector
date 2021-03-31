@@ -301,7 +301,10 @@ void DEditTaskUser::initComboBoxStatus(QString currentStatus)
         {
             while(query->next())
             {
-                if((query->value(1).toInt() != 5) && (query->value(1).toInt() != 6) && (query->value(1).toInt() != 9))
+                if((query->value(1).toInt() != 5) &&
+                        (query->value(1).toInt() != 6) &&
+                        (query->value(1).toInt() != 11) &&
+                        (query->value(1).toInt() != 9))
                     ui->comboBoxStatus->addItem(query->value(0).toString());
 
             }
@@ -309,7 +312,7 @@ void DEditTaskUser::initComboBoxStatus(QString currentStatus)
         else
             qDebug()<<query->lastError().text();
         ui->labelCurrentStatus->setText(currentStatus);
-//        ui->comboBoxStatus->setCurrentText(currentStatus);
+        ui->comboBoxStatus->setCurrentText(currentStatus);
     }
     catch(std::exception &e)
     {

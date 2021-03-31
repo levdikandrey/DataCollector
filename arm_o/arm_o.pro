@@ -31,6 +31,7 @@ SOURCES += \
     dmanualconnecttestdb.cpp \
     dpreviewarchive.cpp \
     dreportallstatistics.cpp \
+    dreportallviolationavp.cpp \
     dreportjob.cpp \
     dsettingsdb.cpp \
     dstartprogressdialog.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     dmanualconnecttestdb.h \
     dpreviewarchive.h \
     dreportallstatistics.h \
+    dreportallviolationavp.h \
     dreportjob.h \
     dsettingsdb.h \
     dstartprogressdialog.h \
@@ -113,6 +115,7 @@ FORMS += \
     d_manualconnecttestdb.ui \
     d_previewarchive.ui \
     d_reportallstatistics.ui \
+    d_reportallviolationavp.ui \
     d_reportjob.ui \
     d_settingsdb.ui \
     d_user.ui \

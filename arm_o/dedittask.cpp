@@ -368,8 +368,8 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
         {
             while(query->next())
             {
-                if((query->value(1).toInt() != 4) &&
-                        (query->value(1).toInt() != 6) &&
+                if((query->value(1).toInt() != 6) &&
+//                        (query->value(1).toInt() != 6) &&
                         (query->value(1).toInt() != 7) &&
                         (query->value(1).toInt() != 8) &&
 //                        (query->value(1).toInt() != 1) &&
@@ -384,6 +384,7 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
         }
         else
             qDebug()<<query->lastError().text();
+        ui->labelCurrentStatus->setText(currentStatus);
         ui->comboBoxStatus->setCurrentText(currentStatus);
         if(currentStatus == "Одобрена экспертом")
         {
@@ -391,7 +392,7 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
             ui->comboBoxStatus->addItem("Одобрена экспертом");
             ui->comboBoxStatus->setCurrentText(currentStatus);
 
-            ui->spinBoxPercent->setValue(100);
+//            ui->spinBoxPercent->setValue(100);
 //            ui->spinBoxPercent->setEnabled(false);
 
             ui->groupBox->hide();
@@ -632,10 +633,12 @@ void DEditTask::slotApplyViolation()
         s_comment ="Таймкод: с " + ui->timeEditBegin->time().toString("HH:mm:ss") + " по "
                 + ui->timeEditEnd->time().toString("HH:mm:ss") +". "
                 + ui->textEditViolation->toPlainText();
-        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\", \"ID_Violation\",\"TextViolation\",\"Percent\") VALUES(";
+        sql = "INSERT INTO \"AnalysisResult\"(\"ID_AVP\", \"ID_Violation\",\"TextViolation\",\"Percent\",\"TimeBegin\",\"TimeEnd\") VALUES(";
         sql += tmp.setNum(m_idAVP); sql += ",";
         sql += tmp.setNum(idViolation(ui->comboBoxViolation->currentText())); sql += ",E\'";
-        sql += ((MainWindow*)parent())->cImportData->decode(s_comment); sql += "\',\'100\');";
+        sql += ((MainWindow*)parent())->cImportData->decode(s_comment); sql += "\',\'100\',\'";
+        sql += ui->timeEditBegin->time().toString("HH:mm:ss");sql += "\',\'";
+        sql += ui->timeEditEnd->time().toString("HH:mm:ss");sql +="\');";
         qDebug()<<"SQL="<<sql;
 
         if(!query->exec(sql))

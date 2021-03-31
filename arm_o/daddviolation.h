@@ -14,9 +14,16 @@ class DAddViolation : public QDialog
 public:
     explicit DAddViolation(QWidget *parent = nullptr);
     ~DAddViolation();
-    const QString violation() const;
+    void showItem();
+    void showItemEdit();
+    void hideItem();
+
     void setViolation(QString violation);
     void setTitle(QString title);
+
+    int getType() const;
+    const QString violation() const;
+    const QString getLawText() const;
 
 public slots:
     void slotApply();
