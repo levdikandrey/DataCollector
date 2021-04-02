@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>icons/attach2.png</file>
+    <file>icons/attach1.png</file>
+    <file>icons/reviewEx.png</file>
+    <file>icons/Preview_26993.png</file>
     <file>icons/connectDB.png</file>
     <file>icons/analysis.png</file>
     <file>icons/wait.png</file>

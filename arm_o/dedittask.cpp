@@ -372,7 +372,7 @@ void DEditTask::initComboBoxStatus(QString currentStatus)
 //                        (query->value(1).toInt() != 6) &&
                         (query->value(1).toInt() != 7) &&
                         (query->value(1).toInt() != 8) &&
-//                        (query->value(1).toInt() != 1) &&
+                        (query->value(1).toInt() != 19) &&
                         (query->value(1).toInt() != 11) &&
                         (query->value(1).toInt() != 16) &&
                         (query->value(1).toInt() != 17) &&

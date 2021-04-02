@@ -276,7 +276,13 @@
        </property>
        <property name="icon">
         <iconset resource="resource.qrc">
-         <normaloff>:/icons/icons/attach.png</normaloff>:/icons/icons/attach.png</iconset>
+         <normaloff>:/icons/icons/attach2.png</normaloff>:/icons/icons/attach2.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
       </widget>
      </item>

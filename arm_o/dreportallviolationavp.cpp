@@ -20,7 +20,7 @@ DReportAllViolationAVP::DReportAllViolationAVP(QWidget *parent) :
     query1 = new QSqlQuery(db);
     initDialog();
     reinterpret_cast<MainWindow*>(parent)->initComboBoxViolation(ui->comboBoxViolation);
-    initTableReportViolationAVP();
+//    initTableReportViolationAVP();
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 

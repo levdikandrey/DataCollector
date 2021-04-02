@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QProcess>
 #include <QFileDialog>
+#include <QDesktopServices>
 
 extern QSqlDatabase db;
 //=========================================================
@@ -265,22 +266,22 @@ void DEditAudit::slotApply()
 
     }
 
-    if(ui->lineEditDoc->text().length()>0)
-    {
-        QString fileName;
-        QStringList list = ui->lineEditDoc->text().split("/");
-        fileName = list.at(list.count()-1);
-        qDebug()<<"fileName="<<fileName;
-        sql = "INSERT INTO \"ExpertiseData\"(\"Data\",\"ID_AVP\",\"FileName\") VALUES(:Data,:ID_AVP,:FileName);";
-        query_data->prepare(sql);
-        query_data->bindValue(":Data", getData(ui->lineEditDoc->text()));
-        query_data->bindValue(":ID_AVP", m_idAVP);
-        query_data->bindValue(":FileName", fileName);
+//    if(ui->lineEditDoc->text().length()>0)
+//    {
+//        QString fileName;
+//        QStringList list = ui->lineEditDoc->text().split("/");
+//        fileName = list.at(list.count()-1);
+//        qDebug()<<"fileName="<<fileName;
+//        sql = "INSERT INTO \"ExpertiseData\"(\"Data\",\"ID_AVP\",\"FileName\") VALUES(:Data,:ID_AVP,:FileName);";
+//        query_data->prepare(sql);
+//        query_data->bindValue(":Data", getData(ui->lineEditDoc->text()));
+//        query_data->bindValue(":ID_AVP", m_idAVP);
+//        query_data->bindValue(":FileName", fileName);
 
-        qDebug()<<"sql="<<sql;
-        if(!query_data->exec())
-            qDebug()<<"ERROR:"<<query_data->lastError().text();
-    }
+//        qDebug()<<"sql="<<sql;
+//        if(!query_data->exec())
+//            qDebug()<<"ERROR:"<<query_data->lastError().text();
+//    }
     m_flagAnswer = true;
     accept();
 }
@@ -295,6 +296,34 @@ void DEditAudit::showViolationGroup()
 void DEditAudit::hideViolationGroup()
 {
     ui->groupBox_3->hide();
+}
+
+//=========================================================
+void DEditAudit::hideCurrentExpert()
+{
+    ui->pushButtonApply->hide();
+    ui->pushButton->hide();
+    ui->pushButtonOk->show();
+    ui->pushButtonReturn->show();
+    ui->label_10->show();
+    ui->labelCurrentStatus->show();
+    ui->label_11->show();
+    ui->comboBoxStatus->show();
+    ui->pushButtonChageStatus->show();
+}
+
+//=========================================================
+void DEditAudit::hideExpert()
+{
+    ui->pushButtonApply->show();
+    ui->pushButton->show();
+    ui->pushButtonOk->hide();
+    ui->pushButtonReturn->hide();
+    ui->label_10->hide();
+    ui->labelCurrentStatus->hide();
+    ui->label_11->hide();
+    ui->comboBoxStatus->hide();
+    ui->pushButtonChageStatus->hide();
 }
 
 //=========================================================
@@ -337,6 +366,195 @@ void DEditAudit::slotCancelExpert()
 {
     m_flagAnswer = false;
     accept();
+}
+
+//=========================================================
+void DEditAudit::slotChangeStatus()
+{
+    QString sql,tmp;
+    try
+    {
+        sql = "UPDATE \"Task\" SET \"ID_TaskStatus\"=";
+        sql += tmp.setNum(getIdTaskStatus(ui->comboBoxStatus->currentText()));
+        sql += " WHERE \"ID\"=";
+        sql += tmp.setNum(m_idTask); sql += ";";
+        qDebug()<<"sql="<<sql;
+        if(!query->exec(sql))
+        {
+            qDebug()<<query->lastError().text();
+            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        }
+        else
+        {
+            ui->labelCurrentStatus->setText(ui->comboBoxStatus->currentText());
+            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса \"Текущие экспертизы\" АВП",ui->labelNameAVP->text());
+            ((MainWindow*)parent())->initTableCurrentAudit();
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+        qDebug()<<query->lastError().text();
+        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+    }
+}
+
+//=========================================================
+void DEditAudit::slotDeleteExpertize()
+{
+    QString sql;
+    QString tmp;
+    if(QMessageBox::warning(this,"Внимание","Вы действительно хотите удалить экспертизу?","Да","Нет") == 0)
+    {
+        try
+        {
+            sql = "DELETE FROM \"ExpertiseData\" WHERE \"ID_AVP\" = ";
+            sql += tmp.setNum(m_idAVP); sql += ";";
+            if(!query->exec(sql))
+            {
+                qDebug()<<query->lastError().text();
+                QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+            }
+            else
+            {
+                ui->lineEditDoc->setText("");
+                checkExistsExpertise();
+            }
+        }
+        catch(std::exception &e)
+        {
+            qDebug()<<e.what();
+        }
+    }
+    else
+        return;
+}
+
+//=========================================================
+void DEditAudit::slotPreviewExpertize()
+{
+    QByteArray data;
+    QString tmp;
+    QString sql;
+    sql = "SELECT \"Data\",\"FileName\" FROM \"ExpertiseData\" WHERE \"ID_AVP\" = ";
+    sql += tmp.setNum(m_idAVP); sql += ";";
+//    qDebug()<<"sql = "<<sql;
+    if(query->exec(sql))
+    {
+        if(query->next())
+        {
+            data = query->value(0).toByteArray();
+            QString pathFileName;
+            pathFileName = "./"+query->value(1).toString();
+            QFile file(pathFileName);
+            if(file.open(QFile::WriteOnly))
+            {
+                file.write(data);
+                qDebug()<<"data.size()="<<data.size();
+                file.close();
+            }
+            else
+                qDebug()<<"Не могу открыть файл: "+pathFileName;
+            if(data.size() != 0)
+            {
+                QDesktopServices::openUrl(QUrl::fromLocalFile(pathFileName));
+            }
+        }
+        else
+            QMessageBox::warning(this, tr("Внимание"),tr("Нет прикрепленной экспертизы!"),tr("Да"));
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        qDebug()<<query->lastError().text();
+    }
+}
+
+//=========================================================
+void DEditAudit::slotConfirm()
+{
+    accept();
+}
+
+//=========================================================
+void DEditAudit::slotReturnAVP()
+{
+    QString sql,tmp;
+    try
+    {
+        sql = "UPDATE \"Task\" SET \"ID_TaskStatus\"=";
+        sql += tmp.setNum(getIdTaskStatus("Экспертиза"));
+        sql += " WHERE \"ID\"=";
+        sql += tmp.setNum(m_idTask); sql += ";";
+        qDebug()<<"sql="<<sql;
+        if(!query->exec(sql))
+        {
+            qDebug()<<query->lastError().text();
+            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+        }
+        else
+        {
+//            ui->labelCurrentStatus->setText(ui->comboBoxStatus->currentText());
+            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса на \"Экспертиза\" в закладке \"Текущие экспертизы\" АВП",ui->labelNameAVP->text());
+            ((MainWindow*)parent())->initTableCurrentAudit();
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+        qDebug()<<query->lastError().text();
+        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+    }
+    reject();
+}
+
+//=========================================================
+void DEditAudit::setTaskID(long ID)
+{
+    m_idTask = ID;
+}
+
+//=========================================================
+bool DEditAudit::checkExistsExpertise()
+{
+    bool exists = false;
+    QByteArray data;
+    QString tmp;
+    QString sql;
+    sql = "SELECT \"Data\",\"FileName\" FROM \"ExpertiseData\" WHERE \"ID_AVP\" = ";
+    sql += tmp.setNum(m_idAVP); sql += ";";
+//    qDebug()<<"sql = "<<sql;
+    if(query->exec(sql))
+    {
+        if(query->next())
+        {
+            exists = true;
+            ui->label_2->setEnabled(false);
+            ui->lineEditDoc->setText(query->value(1).toString());
+            ui->lineEditDoc->setEnabled(false);
+            ui->label->setEnabled(false);
+            ui->toolButton->setEnabled(false);
+            ui->toolButtonDeleteExpertise->setEnabled(true);
+            ui->toolButtonPreviewExpertise->setEnabled(true);
+        }
+        else
+        {
+            exists = false;
+            ui->label_2->setEnabled(true);
+            ui->lineEditDoc->setText("");
+            ui->lineEditDoc->setEnabled(true);
+            ui->label->setEnabled(true);
+            ui->toolButton->setEnabled(true);
+            ui->toolButtonDeleteExpertise->setEnabled(false);
+            ui->toolButtonPreviewExpertise->setEnabled(false);
+        }
+    }
+    else
+    {
+        qDebug()<<query->lastError().text();
+        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+    }
+    return exists;
 }
 
 //=========================================================
@@ -464,7 +682,9 @@ void DEditAudit::slotAtachFile()
 //=========================================================
 void DEditAudit::slotAtachAudit()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString fileName ="";
+    QString sql;
     fileName = QFileDialog::getOpenFileName(this,
                        QString::fromUtf8("Открыть файл"),
                        QDir::currentPath(),
@@ -473,7 +693,26 @@ void DEditAudit::slotAtachAudit()
     if(fileName != "")
     {
         ui->lineEditDoc->setText(fileName);
+        if(ui->lineEditDoc->text().length()>0)
+        {
+            QString fileName;
+            QStringList list = ui->lineEditDoc->text().split("/");
+            fileName = list.at(list.count()-1);
+            qDebug()<<"fileName="<<fileName;
+            sql = "INSERT INTO \"ExpertiseData\"(\"Data\",\"ID_AVP\",\"FileName\") VALUES(:Data,:ID_AVP,:FileName);";
+            query_data->prepare(sql);
+            query_data->bindValue(":Data", getData(ui->lineEditDoc->text()));
+            query_data->bindValue(":ID_AVP", m_idAVP);
+            query_data->bindValue(":FileName", fileName);
+
+            qDebug()<<"sql="<<sql;
+            if(!query_data->exec())
+                qDebug()<<"ERROR:"<<query_data->lastError().text();
+            else
+                checkExistsExpertise();
+        }
     }
+    QApplication::restoreOverrideCursor();
 }
 
 //=========================================================
@@ -497,6 +736,29 @@ int DEditAudit::getIdAnalysisResult()
 }
 
 //=========================================================
+int DEditAudit::getIdTaskStatus(QString taskStatus)
+{
+    int id = -1;
+    QString sql;
+    try
+    {
+        sql = "SELECT \"ID\" FROM \"TaskStatus\" WHERE \"StatusName\"=\'"+ taskStatus +"\';";
+        if(query->exec(sql))
+        {
+            if(query->next())
+                id = query->value(0).toInt();
+        }
+        else
+            qDebug()<<query->lastError().text();
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return id;
+}
+
+//=========================================================
 QByteArray DEditAudit::getData(QString fileName)
 {
 //    qDebug()<<"fileName="<<fileName;
@@ -511,6 +773,50 @@ QByteArray DEditAudit::getData(QString fileName)
     else
         qDebug()<<"Не могу открыть файл:"<<fileName;
     return data;
+}
+
+//=========================================================
+void DEditAudit::initComboBoxStatus(QString currentStatus)
+{
+    QString sql="";
+    m_status = currentStatus;
+    try
+    {
+        ui->comboBoxStatus->clear();
+
+        sql = "SELECT \"StatusName\",\"ID\" FROM \"TaskStatus\";";
+
+        if(query->exec(sql))
+        {
+            while(query->next())
+            {
+                if((query->value(1).toInt() == 7) ||
+                        (query->value(1).toInt() == 6) ||
+                        (query->value(1).toInt() == 11) ||
+                        (query->value(1).toInt() == 19))
+                    ui->comboBoxStatus->addItem(query->value(0).toString());
+
+            }
+        }
+        else
+            qDebug()<<query->lastError().text();
+        ui->labelCurrentStatus->setText(currentStatus);
+        ui->comboBoxStatus->setCurrentText(currentStatus);
+        if((currentStatus == "Экспертиза") || (currentStatus == "Отложена экспертом") )
+        {
+            ui->pushButtonOk->setEnabled(false);
+            ui->pushButtonReturn->setEnabled(false);
+        }
+        else
+        {
+            ui->pushButtonOk->setEnabled(true);
+            ui->pushButtonReturn->setEnabled(true);
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
 }
 
 //=========================================================
