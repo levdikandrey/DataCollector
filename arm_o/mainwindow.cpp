@@ -2106,10 +2106,7 @@ void MainWindow::initTableTask(bool)
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-//              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusType\" = 3";
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE (ts.\"StatusType\" = 3 OR \"CheckManagerExpert\" = \'true\')";
-//              "ts.\"StatusName\" !=\'";
-//        sql += "Закрыта\' AND ts.\"StatusName\" !=\'Закрыта с экспертизой\'";
             if(ui->groupBoxUser->isChecked())
             {
                 sql +=" AND u.\"FIO\" = \'";sql += ui->comboBoxUser->currentText(); sql += "\'";
@@ -2226,11 +2223,6 @@ void MainWindow::initTableTask(bool)
                 newItem6->setFlags(newItem6->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidgetCurrentTasks->setItem(row,9, newItem6);//Признак АВП
 
-//                QTableWidgetItem *newItem6 = new QTableWidgetItem();
-//                newItem6->setText(query->value(6).toString()+"%");
-//                newItem6->setFlags(newItem6->flags() ^ Qt::ItemIsEditable);
-//                ui->tableWidgetCurrentTasks->setItem(row,9, newItem6);//Процент завершенности
-
                 QTableWidgetItem *newItem7 = initViolations(query->value(10).toInt(),1);
                 ui->tableWidgetCurrentTasks->setItem(row,10, newItem7);//Нарушения
 
@@ -2259,7 +2251,7 @@ void MainWindow::initTableTask(bool)
                         (query->value(5).toString()!="Закрыта с экспертизой") &&
                         (query->value(5).toString()!="Проверена оператором") &&
                         (query->value(5).toString()!="Одобрена экспертом") &&
-                        (query->value(5).toString()!="Экпертиза"))
+                        (query->value(5).toString()!="Экспертиза"))
                     setColorRowTable(ui->tableWidgetCurrentTasks,row,0xff,0xc0,0xcb);
 
                 row++;
@@ -3451,11 +3443,11 @@ void MainWindow::slotDeleteTask()
             {
                 while (!selectedRows.empty())
                 {
-                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text(); sql += ";";
+                    sql = "DELETE FROM \"Task\" WHERE \"ID\"=";sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),13)->text(); sql += ";";
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
                     {
-                        addRecordJournalJobAVP(1,"Удаление задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),12)->text().toLong()));
+                        addRecordJournalJobAVP(1,"Удаление задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong()));
                         ui->tableWidgetCurrentTasks->removeRow(selectedRows[0].row());
                         selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
                     }
