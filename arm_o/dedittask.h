@@ -3,6 +3,7 @@
 #include <QDialog>
 #include <QSqlQuery>
 #include <QTableWidget>
+#include "dinfoavp.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class D_EditTask; }
@@ -61,6 +62,7 @@ private slots:
     void slotAtachFile();
     void slotApply();
     void slotCancel();
+    void slotInfo();
     void slotExit();
 
     void slotStatusActivated(int);
@@ -91,6 +93,7 @@ private:
     int getIdAnalysisResult();
     QByteArray getData(QString fileName);
     bool flagConnected;
+    DInfoAVP *dInfoAVP;
 };
 
 #endif // DEDITTASK_H

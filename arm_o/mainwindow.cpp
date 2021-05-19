@@ -252,6 +252,7 @@ MainWindow::MainWindow(QWidget *parent)
     dAppointExpert = new DAppointExpert(this);
     dPreviewArchive = new DPreviewArchive(this);
     dManualConnectTestDB = new DManualConnectTestDB();
+    dCloseViolation = new DCloseViolation();
 
     m_currentIdAVS = -1;
     m_currentState = -1;
@@ -491,7 +492,7 @@ void MainWindow::slotAppointExpert()
 //            qDebug()<<sql;
             if(query->exec(sql))
             {
-                addRecordJournalJobAVP(1,"Назначение эксперта: "+ dAppointExpert->getExpertName() + " для задачи АВП", getNameRusAVP(ui->tableWidgetAudit_4->item(selectedRows[0].row(),12)->text().toLong()));
+                addRecordJournalJobAVP(1,"Назначение эксперта: "+ dAppointExpert->getExpertName() + " для задачи АВП", getNameRusAVP(ui->tableWidgetAudit_4->item(selectedRows[0].row(),12)->text().toLong()),1);
                 ui->tableWidgetAudit_4->removeRow(selectedRows[0].row());
                 selectedRows = ui->tableWidgetAudit_4->selectionModel()->selectedRows();
             }
@@ -505,6 +506,35 @@ void MainWindow::slotAppointExpert()
     }
 }
 
+//=========================================================
+bool MainWindow::checkExistAVP(const QString &url,const QString &year,const QString &nameAVP, const QString &filmMaker)
+{
+    QString sql;
+    bool res = true;
+    try
+    {
+        sql = "SELECT avp.\"URL\",avp.\"NameRus\",aa.\"YearOfRelease\",aa.\"FilmMaker\" FROM avp "
+              "INNER JOIN \"AVPattribute\" aa ON avp.\"ID\" = aa.\"ID_AVP\" "
+              "WHERE avp.\"URL\"=\'"+url+"\' OR (avp.\"NameRus\" =\'"+nameAVP+"\' AND aa.\"YearOfRelease\"=\'"+year+"\' AND aa.\"FilmMaker\"=\'"+filmMaker+"\');";
+        qDebug()<<sql;
+        if(!query->exec(sql))
+        {
+            res = false;
+        }
+        else
+        {
+            if(query->next())
+                res = true;
+            else
+                res = false;
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return res;
+}
 //=========================================================
 void MainWindow::saveInJournalRecordClose()
 {
@@ -520,18 +550,21 @@ void MainWindow::saveInJournalRecordClose()
 }
 
 //=========================================================
-void MainWindow::addRecordJournalJobAVP(int category, QString info,QString nameAVP)
+void MainWindow::addRecordJournalJobAVP(int category, QString info,QString nameAVP,long id_avp)
 {
-//    qDebug()<<__PRETTY_FUNCTION__;
+    qDebug()<<__PRETTY_FUNCTION__;
     QString sql;
     QString fio;
     QString tmp;
-    sql = "INSERT INTO \"JournalJobAVP\"(\"DateEvent\",\"ID_User\",\"Info\",\"Сategory\",\"NameAVP\") VALUES(\'";
+    sql = "INSERT INTO \"JournalJobAVP\"(\"DateEvent\",\"ID_User\",\"Info\",\"Сategory\",\"NameAVP\",\"ID_AVP\") VALUES(\'";
     sql += QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"); sql += "\',";
     sql += fio.setNum(getIdUser(currentUserName)); sql += ",\'"; sql += info; sql +="\',";
     sql += tmp.setNum(category);
-    sql += ",\'"; sql+=nameAVP;sql += "\');";
-//    qDebug()<<sql;
+    sql += ",\'"; sql+=nameAVP;
+    sql += "\',";
+    sql += tmp.setNum(id_avp);
+    sql += ");";
+    qDebug()<<sql;
     if(!query->exec(sql))
         qDebug()<<query->lastError().text();
 }
@@ -2056,7 +2089,12 @@ void MainWindow::initTableMyTask()
 
                 QDate currentDT = QDateTime::currentDateTime().date();
                 QDate realizationDT = query->value(12).toDate();
-                if((currentDT > realizationDT) && (query->value(4).toString()!="Закрыта"))
+//                if((currentDT > realizationDT) && (query->value(4).toString()!="Закрыта"))
+                    if( (currentDT > realizationDT) && (query->value(4).toString()!="Закрыта") &&
+                            (query->value(4).toString()!="Закрыта с экспертизой") &&
+                            (query->value(4).toString()!="Проверена оператором") &&
+                            (query->value(4).toString()!="Одобрена экспертом") &&
+                            (query->value(4).toString()!="Экспертиза"))
                     setColorRowTable(ui->tableWidgetMyTasks,row,0xff,0xc0,0xcb);
                 row++;
             }
@@ -3125,7 +3163,7 @@ void MainWindow::slotEditAVP()
                 return;
             }
 
-            addRecordJournalJobAVP(1,"Редактирование АВП",dEditAVP->getNameAVP());
+            addRecordJournalJobAVP(1,"Редактирование АВП",dEditAVP->getNameAVP(),ui->tableWidgetAVP->item(selectedRows[0].row(),9)->text().toLong());
 //            slotReload();
             ui->tableWidgetAVP->item(selectedRows[0].row(),0)->setText(dEditAVP->getNameAVP());
             ui->tableWidgetAVP->item(selectedRows[0].row(),1)->setText(dEditAVP->getURL_AVP());
@@ -3167,21 +3205,22 @@ void MainWindow::slotAddAVP()
             dataAVP.dateSaveInDB = QDateTime::currentDateTime();
             dataAVP.userSaveInDB = currentUserName;
 
-            if(cImportData->existAVP(dAddAVP->getURL_AVP()))
+            if(checkExistAVP(dAddAVP->getURL_AVP(),dAddAVP->getYearOfRelease(),dAddAVP->getNameAVP(),dAddAVP->getFilmMaker()))
+//        if(cImportData->existAVP(dAddAVP->getURL_AVP()))
             {
-                QMessageBox::warning(this,"Внимание","Невозможно добавить. АВП с таким URL существует!","Да");
+                QMessageBox::warning(this,"Внимание","Невозможно добавить. АВП такое существует!","Да");
                 return;
             }
 
             if(cImportData->addSaveInDB(dataAVP))
             {
                 QMessageBox::information(this,"Добавление АВП","АВП добавлено успешно.","Да");
-                addRecordJournalJobAVP(1,"Добавление АВП",dAddAVP->getNameAVP());
+//                addRecordJournalJobAVP(1,"Добавление АВП",dAddAVP->getNameAVP(),1); //ToDo
             }
             else
             {
                 QMessageBox::critical(this,"Ошибка","Ошибка добавления АВП!","Да");
-                addRecordJournalJobAVP(2,"Ошибка добавления АВП!",dAddAVP->getNameAVP());
+//                addRecordJournalJobAVP(2,"Ошибка добавления АВП!",dAddAVP->getNameAVP(),1);//ToDo
             }
         }
         catch(std::exception &e)
@@ -3234,7 +3273,7 @@ void MainWindow::slotAddTask()
                 if(!query->exec(sql))
                     qDebug()<<query->lastError().text();
                 else
-                    addRecordJournalJobAVP(1,"Добавление новой задачи АВП",getNameRusAVP(idAVP.first));
+                    addRecordJournalJobAVP(1,"Добавление новой задачи АВП",getNameRusAVP(idAVP.first),idAVP.first);
             }
             initTableTask(true);
         }
@@ -3327,7 +3366,7 @@ void MainWindow::slotEditTask()
                     info += "(поменялся комментарий)";
                 }
                 info +=" АВП";
-                addRecordJournalJobAVP(1,info, getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong()));
+                addRecordJournalJobAVP(1,info, getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong()),ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong());
                 dEditTaskUser->flagEditOperator = false;
                 dEditTaskUser->flagEditPriority = false;
                 dEditTaskUser->flagEditStatus = false;
@@ -3414,7 +3453,7 @@ void MainWindow::slotDeleteAVP()
 //                qDebug()<<"sql ="<<sql;
                 if(query->exec(sql))
                 {
-                    addRecordJournalJobAVP(3,"Удаление АВП",ui->tableWidgetAVP->item(selectedRows[0].row(),0)->text());
+                    addRecordJournalJobAVP(3,"Удаление АВП",ui->tableWidgetAVP->item(selectedRows[0].row(),0)->text(),ui->tableWidgetAVP->item(selectedRows[0].row(),9)->text().toLong());
                     ui->tableWidgetAVP->removeRow(selectedRows[0].row());
                     selectedRows = ui->tableWidgetAVP->selectionModel()->selectedRows();
                 }
@@ -3447,7 +3486,7 @@ void MainWindow::slotDeleteTask()
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
                     {
-                        addRecordJournalJobAVP(1,"Удаление задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong()));
+                        addRecordJournalJobAVP(1,"Удаление задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong()),ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong());
                         ui->tableWidgetCurrentTasks->removeRow(selectedRows[0].row());
                         selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
                     }
@@ -3505,7 +3544,7 @@ void MainWindow::slotEditMyTask()
             if(!query->exec(sql))
                 qDebug()<<query->lastError().text();
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Мои задачи\" АВП", getNameRusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),13)->text().toLong()));
+                addRecordJournalJobAVP(1,"Редактирование \"Мои задачи\" АВП", getNameRusAVP(ui->tableWidgetMyTasks->item(selectedRows[0].row(),13)->text().toLong()),ui->tableWidgetMyTasks->item(selectedRows[0].row(),13)->text().toLong());
 
             initTableTask(true);
         }
@@ -3569,7 +3608,7 @@ void MainWindow::slotEditCurrentAudit()
                 QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
             }
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Текущие экспертизы\" АВП", getNameRusAVP(ui->tableWidgetAudit_4->item(selectedRows[0].row(),14)->text().toLong()));
+                addRecordJournalJobAVP(1,"Редактирование \"Текущие экспертизы\" АВП", getNameRusAVP(ui->tableWidgetAudit_4->item(selectedRows[0].row(),14)->text().toLong()),ui->tableWidgetAudit_4->item(selectedRows[0].row(),14)->text().toLong());
         }
         catch(std::exception &e)
         {
@@ -3627,7 +3666,7 @@ void MainWindow::slotEditAudit()
                 QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
             }
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Экспертиза\" АВП", getNameRusAVP(ui->tableWidgetAudit->item(selectedRows[0].row(),13)->text().toLong()));
+                addRecordJournalJobAVP(1,"Редактирование \"Экспертиза\" АВП", getNameRusAVP(ui->tableWidgetAudit->item(selectedRows[0].row(),13)->text().toLong()),ui->tableWidgetAudit->item(selectedRows[0].row(),13)->text().toLong());
         }
         catch(std::exception &e)
         {
@@ -3681,7 +3720,7 @@ void MainWindow::slotEditAuditRKN()
                 QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
             }
             else
-                addRecordJournalJobAVP(1,"Редактирование \"Инспектр РКН\" АВП", getNameRusAVP(ui->tableWidgetAudit_2->item(selectedRows[0].row(),14)->text().toLong()));
+                addRecordJournalJobAVP(1,"Редактирование \"Инспектр РКН\" АВП", getNameRusAVP(ui->tableWidgetAudit_2->item(selectedRows[0].row(),14)->text().toLong()),ui->tableWidgetAudit_2->item(selectedRows[0].row(),14)->text().toLong());
         }
         catch(std::exception &e)
         {
@@ -3966,30 +4005,9 @@ void MainWindow::slotTextChanged7(const QString &text)
 void MainWindow::slotFindArchiveAVP()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    QString sql="";
+    QString sql="",tmp;
     try
     {
-//        sql = "SELECT DISTINCT avp.\"NameRus\", "
-//              "avp.\"URL\","
-//              "u.\"FIO\","
-//              "ue.\"FIO\","
-//              "ts.\"StatusName\","
-//              "\"Task\".\"Comment\","
-//              "\"Task\".\"ID\","
-//              "\"Task\".\"ID_AVP\", "
-//              "\"Task\".\"DateClose\", "
-//              "aa.\"Age\", "
-//              "aa.\"YearOfRelease\" FROM \"Task\" "
-//              "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
-//              "INNER JOIN \"AnalysisResult\" ar ON \"Task\".\"ID_AVP\" = ar.\"ID_AVP\" "
-//              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\" = v.\"ID\" "
-//              "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
-//              "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
-//              "LEFT JOIN \"User\" ue ON \"Task\".\"ID_Expert\" = ue.\"ID\" "
-//              "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-//              " WHERE (ts.\"StatusType\" =1 OR ts.\"StatusType\" =2)";
-
-
         sql = "SELECT DISTINCT avp.\"NameRus\", "
               "avp.\"URL\","
               "u.\"FIO\","
@@ -4007,11 +4025,44 @@ void MainWindow::slotFindArchiveAVP()
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "LEFT JOIN \"User\" ue ON \"Task\".\"ID_Expert\" = ue.\"ID\" "
-              "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\"";
+              "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\""
+              " WHERE (ts.\"StatusType\" =1 OR ts.\"StatusType\" =2)";
               if(!ui->lineEditFindString_2->text().isEmpty())
-                  sql += " WHERE (ts.\"StatusType\" =1 OR ts.\"StatusType\" =2) AND avp.\"NameRus\" LIKE \'"+ui->lineEditFindString_2->text()+"%\';";
-              else
-                  sql += " ORDER BY avp.\"ID\" LIMIT 1000 OFFSET 0;";
+                  sql +=" AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_2->text()+"%\'";
+
+              if(ui->groupBoxUser_3->isChecked())
+              {
+                  sql +=" AND u.\"FIO\" = \'";sql += ui->comboBoxUser_3->currentText(); sql += "\'";
+              }
+              if(ui->groupBoxExpert->isChecked())
+              {
+                  sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxExpert->currentText(); sql += "\'";
+              }
+              if(ui->groupBoxStatusArchive->isChecked())
+              {
+                  sql +=" AND ts.\"StatusName\" = \'";sql += ui->comboBoxStatusAchive->currentText(); sql += "\'";
+              }
+              if(ui->groupBoxAgeArchive->isChecked())
+              {
+                   sql +=" AND aa.\"Age\" = \'";sql += ui->comboBoxAgeArchive->currentText(); sql += "\'";
+              }
+              if(ui->groupBoxYearOfReleaseArchive->isChecked())
+              {
+                   sql +=" AND aa.\"YearOfRelease\" = \'";sql += tmp.setNum(ui->spinBoxYearOfReleaseArchive->value()); sql += "\'";
+              }
+              if(ui->groupBoxViolationArchive->isChecked())
+              {
+                  sql +=" AND v.\"Violation\" = \'";sql += ui->comboBoxViolationArchive->currentText(); sql += "\'";
+              }
+              if(ui->groupBoxDate_3->isChecked())
+              {
+                  sql +=" AND (\"Task\".\"DateClose\" >='"; sql += ui->dateEditDateBegin_3->date().toString("yyyy-MM-dd");
+                  sql += "\'::date AND \"Task\".\"DateClose\" <=\'";sql += ui->dateEditDateEnd_3->date().toString("yyyy-MM-dd");  sql += "\'::date + \'1 day\'::interval)";
+              }
+              sql += " ORDER BY \"Task\".\"ID\" LIMIT 1000 OFFSET 0;";
+              qDebug()<<"sql="<<sql;
+
+//              sql += tmp.setNum((numberPage-1)*1000);sql+=";";
         if(query->exec(sql))
         {
             if(query->size()==0)
@@ -4227,7 +4278,7 @@ void MainWindow::slotFindAVP2()
               "WHERE ts.\"StatusName\" !=\'";
         sql += "Закрыта\' AND ts.\"StatusName\" !=\'Закрыта с экспертизой\'";
         if(!ui->lineEditFindString_3->text().isEmpty())
-            sql += " AND avp.\"NameRus\" LIKE \'"+ui->lineEditFindString_3->text()+"%\'";
+            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_3->text()+"%\'";
 //        else
 //            sql += " ORDER BY avp.\"ID\" LIMIT 1000 OFFSET 0;";
 
@@ -4412,7 +4463,7 @@ void MainWindow::slotFindAVP3()
         sql += "\' AND (ts.\"StatusName\" =\'Назначена\' OR ts.\"StatusName\" =\'В работе\' OR ts.\"StatusName\" =\'Проверена оператором\' OR ts.\"StatusName\" =\'Отложенная\')";
         // ORDER BY \"Task\".\"ID\";";
         if(!ui->lineEditFindString_4->text().isEmpty())
-            sql += " AND avp.\"NameRus\" LIKE \'"+ui->lineEditFindString_4->text()+"%\'";
+            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_4->text()+"%\'";
 
         if(ui->groupBoxUserMyTask->isChecked())
         {
@@ -4608,7 +4659,7 @@ void MainWindow::slotFindAVP4()
         sql += "Экспертиза\'";
 
         if(!ui->lineEditFindString_5->text().isEmpty())
-            sql += " AND avp.\"NameRus\" LIKE \'"+ui->lineEditFindString_5->text()+"%\'";
+            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_5->text()+"%\'";
 
         if(ui->groupBoxUser_2->isChecked())
         {
@@ -4782,7 +4833,7 @@ void MainWindow::slotFindAVP5()
         sql+="\' ";
 
         if(!ui->lineEditFindString_6->text().isEmpty())
-            sql += " AND avp.\"NameRus\" LIKE \'"+ui->lineEditFindString_6->text()+"%\'";
+            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_6->text()+"%\'";
 
         if(ui->groupBoxUserExpert->isChecked())
         {
@@ -4940,7 +4991,7 @@ void MainWindow::slotFindAVP6()
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusName\" =\'";
         sql += "Экспертиза\'";
         if(!ui->lineEditFindString_7->text().isEmpty())
-            sql += " AND avp.\"NameRus\" LIKE \'"+ui->lineEditFindString_7->text()+"%\'";
+            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_7->text()+"%\'";
         if(ui->groupBoxUser_4->isChecked())
         {
             sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxUser_4->currentText(); sql += "\'";
@@ -5107,7 +5158,7 @@ void MainWindow::slotFindAVP()
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON u.\"ID\" = aa.\"ID_User\"";
               if(!ui->lineEditFindString->text().isEmpty())
-                  sql += " WHERE avp.\"NameRus\" LIKE \'"+ui->lineEditFindString->text()+"%\';";
+                  sql += " WHERE avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString->text()+"%\';";
               else
                   sql += " ORDER BY avp.\"ID\" LIMIT 1000 OFFSET 0;";
         if(query->exec(sql))
@@ -5824,20 +5875,23 @@ void MainWindow::slotCurrentTaskChageStatus()
     {
             try
             {
-                if(QMessageBox::warning(this,"Внимание","После закрытия задача уйдет в архив.\nВы действительно хотите поменять статус?","Да","Нет") == 0)
+//            if(QMessageBox::warning(this,"Внимание","После закрытия задача уйдет в архив.\nВы действительно хотите поменять статус?","Да","Нет") == 0)
+                if(dCloseViolation->exec()==QDialog::Accepted)
                 {
                     while (!selectedRows.empty())
                     {
                         sql = "UPDATE \"Task\" SET \"ID_TaskStatus\" = 4, \"DateClose\" = \'";
                         QDateTime currentDate = QDateTime::currentDateTime();
                         sql += currentDate.toString("yyyy-MM-ddTHH:mm:ss");
-                        sql +="\' WHERE \"ID\"=";
-                        sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),10)->text();
+                        sql +="\',\"Comment\" = \'";
+                        sql += dCloseViolation->getComment();
+                        sql+= "\' WHERE \"ID\"=";
+                        sql += ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),13)->text();
                         sql += ";";
                         qDebug()<<"sql ="<<sql;
                         if(query->exec(sql))
                         {
-                            addRecordJournalJobAVP(1,"Закрытие задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),11)->text().toLong()));
+                            addRecordJournalJobAVP(1,"Закрытие задачи АВП", getNameRusAVP(ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong()),ui->tableWidgetCurrentTasks->item(selectedRows[0].row(),14)->text().toLong());
                             ui->tableWidgetCurrentTasks->removeRow(selectedRows[0].row());
                             selectedRows = ui->tableWidgetCurrentTasks->selectionModel()->selectedRows();
                         }

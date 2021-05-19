@@ -39,6 +39,7 @@ DEditTask::DEditTask(QWidget *parent)
     connect(ui->radioButton_3,SIGNAL(clicked(bool)), SLOT(slotRent(bool)));
     ui->label_3->hide();
     ui->spinBoxPercent->hide();
+    dInfoAVP = new DInfoAVP(this);
 }
 
 //=========================================================
@@ -523,7 +524,7 @@ void DEditTask::slotDeleteViolation()
             {
                 while (!selectedRows.empty())
                 {
-                    ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Удаление нарушения - " + ui->tableWidgetViolation->takeItem(selectedRows[0].row(),0)->text()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP));
+                    ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Удаление нарушения - " + ui->tableWidgetViolation->takeItem(selectedRows[0].row(),0)->text()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP),m_idAVP);
                     sql = "DELETE FROM \"AnalysisResult\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->takeItem(selectedRows[0].row(),3)->text(); sql += ";";
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))
@@ -659,7 +660,7 @@ void DEditTask::slotApplyViolation()
             if(!query_data->exec())
                 qDebug()<<"ERROR:"<<query_data->lastError().text();
         }
-        ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения - " + ui->comboBoxViolation->currentText()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP));
+        ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения - " + ui->comboBoxViolation->currentText()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP),m_idAVP);
         initTableViolation(m_idAVP);
     }
     catch(std::exception &e)
@@ -750,6 +751,13 @@ void DEditTask::slotCancel()
     ui->spinBoxPercent->setValue(m_percent.toInt());
     ui->pushButtonApply->setEnabled(false);
     ui->pushButtonCancel->setEnabled(false);
+}
+
+//=========================================================
+void DEditTask::slotInfo()
+{
+    dInfoAVP->initTable(m_idAVP);
+    dInfoAVP->exec();
 }
 
 //=========================================================

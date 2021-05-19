@@ -25,7 +25,9 @@ SOURCES += \
     client.cpp \
     dappointexpert.cpp \
     dchangepassword.cpp \
+    dcloseviolation.cpp \
     deditavp.cpp \
+    dinfoavp.cpp \
     djournaljobavp.cpp \
     djournalsession.cpp \
     dmanualconnecttestdb.cpp \
@@ -62,7 +64,9 @@ HEADERS += \
     client.h \
     dappointexpert.h \
     dchangepassword.h \
+    dcloseviolation.h \
     deditavp.h \
+    dinfoavp.h \
     djournaljobavp.h \
     djournalsession.h \
     dmanualconnecttestdb.h \
@@ -101,6 +105,7 @@ FORMS += \
     d_addviolation.ui \
     d_appointexpert.ui \
     d_changepassword.ui \
+    d_closeviolation.ui \
     d_editaudit.ui \
     d_editavp.ui \
     d_editgroup.ui \
@@ -110,6 +115,7 @@ FORMS += \
     d_enter.ui \
     d_group.ui \
     d_importdata.ui \
+    d_infoavp.ui \
     d_journaljobavp.ui \
     d_journalsession.ui \
     d_manualconnecttestdb.ui \

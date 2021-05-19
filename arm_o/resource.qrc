@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>icons/info.png</file>
     <file>icons/attach2.png</file>
     <file>icons/attach1.png</file>
     <file>icons/reviewEx.png</file>

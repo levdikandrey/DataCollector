@@ -35,6 +35,7 @@
 #include "dpreviewarchive.h"
 #include "dmanualconnecttestdb.h"
 #include "dreportallviolationavp.h"
+#include "dcloseviolation.h"
 
 #include "client.h"
 #include "aprotocol.h"
@@ -438,6 +439,7 @@ private:
     DPreviewArchive *dPreviewArchive;
     DManualConnectTestDB *dManualConnectTestDB;
     DReportAllViolationAVP *dReportAllViolationAVP;
+    DCloseViolation *dCloseViolation;
 
     Client *m_client;
 
@@ -494,6 +496,7 @@ private:
 
     void closeEvent(QCloseEvent *event);
     void saveInJournalRecordClose();
+    bool checkExistAVP(const QString &url,const QString &year,const QString &nameAVP, const QString &filmMaker);
 
 public:
     QString sendCommandAnalysisAVP(uint64_t idAVP);
@@ -511,7 +514,7 @@ public:
      * @param category
      * @param info
      */
-    void addRecordJournalJobAVP(int category, QString info, QString nameAVP);
+    void addRecordJournalJobAVP(int category, QString info, QString nameAVP, long id_avp);
     QString getNameRusAVP(uint64_t idAVP);
     const QTableWidget* getTableCurrentExpert() const;
 };

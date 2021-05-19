@@ -46,6 +46,7 @@ DEditTaskUser::DEditTaskUser(QWidget *parent)
     connect(ui->dateEdit, SIGNAL(dateChanged(const QDate &)), this, SLOT(slotDateChanged(const  QDate &)));
     ui->label_3->hide();
     ui->spinBoxPercent->hide();
+    dInfoAVP = new DInfoAVP(this);
 }
 
 //=========================================================
@@ -560,6 +561,13 @@ QTableWidget* DEditTaskUser::getViolations() const
 void DEditTaskUser::slotApply()
 {
     accept();
+}
+
+//=========================================================
+void DEditTaskUser::slotInfo()
+{
+    dInfoAVP->initTable(m_idAVP);
+    dInfoAVP->exec();
 }
 
 //=========================================================

@@ -33,6 +33,7 @@ DEditAudit::DEditAudit(QWidget *parent) :
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(4, 100);
     ui->tableWidgetViolation->horizontalHeader()->resizeSection(5, 0);
     m_flagAnswer = true;
+    dInfoAVP = new DInfoAVP(this);
 }
 
 //=========================================================
@@ -387,7 +388,7 @@ void DEditAudit::slotChangeStatus()
         else
         {
             ui->labelCurrentStatus->setText(ui->comboBoxStatus->currentText());
-            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса \"Текущие экспертизы\" АВП",ui->labelNameAVP->text());
+            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса \"Текущие экспертизы\" АВП",ui->labelNameAVP->text(),m_idAVP);
             ((MainWindow*)parent())->initTableCurrentAudit();
         }
     }
@@ -477,6 +478,37 @@ void DEditAudit::slotConfirm()
 }
 
 //=========================================================
+void DEditAudit::slotInfo()
+{
+    dInfoAVP->initTable(m_idAVP);
+    dInfoAVP->exec();
+//    QString sql,tmp;
+//    try
+//    {
+//        sql = "SELECT * FROM \"JournalJobAVP\";
+//        sql += " WHERE \"ID_AVP\"=";
+//        sql += tmp.setNum(m_idAVP); sql += ";";
+//        qDebug()<<"sql="<<sql;
+//        if(!query->exec(sql))
+//        {
+//            qDebug()<<query->lastError().text();
+//            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+//        }
+//        else
+//        {
+//            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса на \"Экспертиза\" в закладке \"Текущие экспертизы\" АВП",ui->labelNameAVP->text(),m_idAVP);
+//            ((MainWindow*)parent())->initTableCurrentAudit();
+//        }
+//    }
+//    catch(std::exception &e)
+//    {
+//        qDebug()<<e.what();
+//        qDebug()<<query->lastError().text();
+//        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
+//    }
+}
+
+//=========================================================
 void DEditAudit::slotReturnAVP()
 {
     QString sql,tmp;
@@ -495,7 +527,7 @@ void DEditAudit::slotReturnAVP()
         else
         {
 //            ui->labelCurrentStatus->setText(ui->comboBoxStatus->currentText());
-            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса на \"Экспертиза\" в закладке \"Текущие экспертизы\" АВП",ui->labelNameAVP->text());
+            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса на \"Экспертиза\" в закладке \"Текущие экспертизы\" АВП",ui->labelNameAVP->text(),m_idAVP);
             ((MainWindow*)parent())->initTableCurrentAudit();
         }
     }

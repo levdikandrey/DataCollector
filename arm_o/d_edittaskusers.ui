@@ -412,6 +412,29 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/info.png</normaloff>:/icons/icons/info.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -436,7 +459,7 @@ p, li { white-space: pre-wrap; }
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>446</x>
+     <x>404</x>
      <y>660</y>
     </hint>
     <hint type="destinationlabel">
@@ -452,7 +475,7 @@ p, li { white-space: pre-wrap; }
    <slot>slotCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>572</x>
+     <x>530</x>
      <y>660</y>
     </hint>
     <hint type="destinationlabel">
@@ -468,7 +491,7 @@ p, li { white-space: pre-wrap; }
    <slot>slotExit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>698</x>
+     <x>656</x>
      <y>660</y>
     </hint>
     <hint type="destinationlabel">
@@ -509,6 +532,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>D_EditTaskUser</receiver>
+   <slot>slotInfo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>687</x>
+     <y>649</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>712</x>
+     <y>593</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotApply()</slot>
@@ -516,5 +555,6 @@ p, li { white-space: pre-wrap; }
   <slot>slotExit()</slot>
   <slot>slotPreviewExpertise()</slot>
   <slot>slotValueChangedDay(int)</slot>
+  <slot>slotInfo()</slot>
  </slots>
 </ui>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>756</width>
-    <height>751</height>
+    <width>798</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -796,6 +796,29 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonInfo">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/icons/icons/info.png</normaloff>:/icons/icons/info.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -909,7 +932,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>78</x>
-     <y>328</y>
+     <y>322</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -940,8 +963,8 @@
    <slot>slotAtachFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>509</y>
+     <x>778</x>
+     <y>503</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -956,8 +979,8 @@
    <slot>slotActivated(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>377</y>
+     <x>778</x>
+     <y>371</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -988,8 +1011,8 @@
    <slot>slotTextChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>639</x>
-     <y>503</y>
+     <x>740</x>
+     <y>497</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1004,8 +1027,8 @@
    <slot>slotAtachAudit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>669</x>
-     <y>289</y>
+     <x>711</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
      <x>607</x>
@@ -1021,7 +1044,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>563</x>
-     <y>735</y>
+     <y>729</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -1052,8 +1075,8 @@
    <slot>slotDeleteExpertize()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>691</x>
-     <y>272</y>
+     <x>749</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
      <x>751</x>
@@ -1068,8 +1091,8 @@
    <slot>slotPreviewExpertize()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>719</x>
-     <y>267</y>
+     <x>787</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
      <x>751</x>
@@ -1109,6 +1132,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButtonInfo</sender>
+   <signal>clicked()</signal>
+   <receiver>DEditAudit</receiver>
+   <slot>slotInfo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>772</x>
+     <y>705</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>794</x>
+     <y>679</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotApply()</slot>
@@ -1130,5 +1169,6 @@
   <slot>slotPreviewExpertize()</slot>
   <slot>slotConfirm()</slot>
   <slot>slotReturnAVP()</slot>
+  <slot>slotInfo()</slot>
  </slots>
 </ui>

@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QSqlQuery>
 #include <QTableWidget>
+#include "dinfoavp.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class D_EditTaskUser; }
@@ -71,6 +72,7 @@ private slots:
      * @brief slotValueChangedDay - функция устанавливает количество дней аренды АВП.
      */
     void slotValueChangedDay(int);
+    void slotInfo();
 
 
 private:
@@ -83,6 +85,8 @@ private:
     QString m_comment;
     QString m_percent;
     QString m_violation;
+
+    DInfoAVP *dInfoAVP;
 
     int m_idAVP;
 };

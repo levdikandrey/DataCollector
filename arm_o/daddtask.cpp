@@ -885,7 +885,8 @@ void DAddTask::slotSelectAVS(QString nameAVS)
 //=========================================================
 void DAddTask::slotApply()
 {
-    accept();
+    if(QMessageBox::warning(this,"Внимание","Вы точно  уверены в дате выполнения?","Да","Нет")==0)
+        accept();
 }
 
 //=========================================================

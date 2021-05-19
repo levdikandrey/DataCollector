@@ -5,6 +5,7 @@
 #include <QSqlQuery>
 #include <QTableWidget>
 #include <QLineEdit>
+#include "dinfoavp.h"
 
 namespace Ui {
 class DEditAudit;
@@ -167,6 +168,7 @@ public slots:
      */
     void slotConfirm();
     void slotReturnAVP();
+    void slotInfo();
 
 private:
     Ui::DEditAudit *ui;
@@ -194,6 +196,7 @@ private:
      * @return
      */
     int getIdTaskStatus(QString taskStatus);
+    DInfoAVP *dInfoAVP;
 };
 
 #endif // DEDITAUDIT_H
