@@ -52,6 +52,12 @@ const QString DAppointExpert::getExpertName() const
 }
 
 //=========================================================
+QString DAppointExpert::getCommentExpert()
+{
+    return ui->textEdit->toPlainText();
+}
+
+//=========================================================
 void DAppointExpert::slotApply()
 {
     QModelIndexList selectedRows = ((MainWindow*)parent())->getTableCurrentExpert()->selectionModel()->selectedRows();

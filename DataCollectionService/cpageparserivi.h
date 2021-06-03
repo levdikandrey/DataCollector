@@ -86,6 +86,7 @@ public slots:
      */
     void doWork(const QString &dirName);
     void doWorkMegogo(const QString &dirName);
+    void doWorkOkooTV(const QString &dirName);
 
 private:
     /**

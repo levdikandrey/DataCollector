@@ -16,6 +16,7 @@ public:
     explicit DAppointExpert(QWidget *parent = nullptr);
     ~DAppointExpert();
     const QString getExpertName() const;
+    QString getCommentExpert();
 
 public slots:
     void slotApply();

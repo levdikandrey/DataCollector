@@ -24,6 +24,11 @@ void CPageParserIVI::setDB(const QSqlDatabase &db)
 }
 
 //=========================================================
+void CPageParserIVI::doWorkOkooTV(const QString &startDir)
+{
+}
+
+//=========================================================
 void CPageParserIVI::doWorkMegogo(const QString &startDir)
 {
     qDebug()<<__PRETTY_FUNCTION__;

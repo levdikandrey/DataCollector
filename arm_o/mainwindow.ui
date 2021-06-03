@@ -249,7 +249,7 @@
           <string>Добавить задачу</string>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="tabBarAutoHide">
           <bool>false</bool>
@@ -396,6 +396,43 @@
                  </layout>
                 </item>
                </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Выберите АВС:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBoxAVS">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>300</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>3000</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Выберите АВС</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Все</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item>
@@ -749,43 +786,6 @@
                 </size>
                </property>
               </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Выберите АВС:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="comboBoxAVS">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>300</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>3000</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Выберите АВС</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Все</string>
-                </property>
-               </item>
-              </widget>
              </item>
             </layout>
            </item>
@@ -3908,6 +3908,7 @@
     <addaction name="actionAddAVP"/>
     <addaction name="actionViolation"/>
     <addaction name="actionStatus"/>
+    <addaction name="actionAVS"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -4142,6 +4143,11 @@
   <action name="actionReportAllViolationAVP">
    <property name="text">
     <string>Отчет общей статистики АВП с нарушениями</string>
+   </property>
+  </action>
+  <action name="actionAVS">
+   <property name="text">
+    <string>Добавить АВС</string>
    </property>
   </action>
  </widget>

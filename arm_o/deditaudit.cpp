@@ -43,6 +43,28 @@ DEditAudit::~DEditAudit()
 }
 
 //=========================================================
+void DEditAudit::setCommentExpert()
+{
+    QString sql="",tmp, str;
+    try
+    {
+        sql ="SELECT \"CommentExpert\" FROM \"Task\" WHERE \"ID_AVP\"=";
+        sql += tmp.setNum(m_idAVP);
+        sql += ";";
+        if(query->exec(sql))
+        {
+            query->next();
+            ui->textEdit_2->setText(query->value(0).toString());
+        }
+        qDebug()<<"sql="<<sql;
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+}
+
+//=========================================================
 void DEditAudit::initTableViolation(long id_avp)
 {
     qDebug()<<__PRETTY_FUNCTION__;
@@ -482,30 +504,6 @@ void DEditAudit::slotInfo()
 {
     dInfoAVP->initTable(m_idAVP);
     dInfoAVP->exec();
-//    QString sql,tmp;
-//    try
-//    {
-//        sql = "SELECT * FROM \"JournalJobAVP\";
-//        sql += " WHERE \"ID_AVP\"=";
-//        sql += tmp.setNum(m_idAVP); sql += ";";
-//        qDebug()<<"sql="<<sql;
-//        if(!query->exec(sql))
-//        {
-//            qDebug()<<query->lastError().text();
-//            QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
-//        }
-//        else
-//        {
-//            ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Редактирование статуса на \"Экспертиза\" в закладке \"Текущие экспертизы\" АВП",ui->labelNameAVP->text(),m_idAVP);
-//            ((MainWindow*)parent())->initTableCurrentAudit();
-//        }
-//    }
-//    catch(std::exception &e)
-//    {
-//        qDebug()<<e.what();
-//        qDebug()<<query->lastError().text();
-//        QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
-//    }
 }
 
 //=========================================================
@@ -538,6 +536,19 @@ void DEditAudit::slotReturnAVP()
         QMessageBox::warning(this, tr("Внимание"),query->lastError().text(),tr("Да"));
     }
     reject();
+}
+
+//=========================================================
+void DEditAudit::setComment(QString comment)
+{
+    m_comment = comment;
+    ui->textEdit->setText(comment);
+}
+
+//=========================================================
+QString DEditAudit::getTaskStatus()
+{
+    return ui->labelCurrentStatus->text();
 }
 
 //=========================================================
@@ -632,6 +643,7 @@ void DEditAudit::slotApplyViolation()
     hideViolationGroup();
     ui->pushButtonApplyViolation->setEnabled(false);
 
+    ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Добавление нового нарушения - " + ui->comboBoxViolation->currentText()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP),m_idAVP);
     ((MainWindow*)parent())->initTableAudit();
     QApplication::restoreOverrideCursor();
 }
@@ -674,6 +686,7 @@ void DEditAudit::slotDeleteViolation()
             {
                 while (!selectedRows.empty())
                 {
+                    ((MainWindow*)parent())->addRecordJournalJobAVP(1,"Удаление нарушения - " + ui->tableWidgetViolation->takeItem(selectedRows[0].row(),0)->text()+". Для АВП",((MainWindow*)parent())->getNameRusAVP(m_idAVP),m_idAVP);
                     sql = "DELETE FROM \"AnalysisResult\" WHERE \"ID\"=";sql += ui->tableWidgetViolation->takeItem(selectedRows[0].row(),5)->text(); sql += ";";
 //                    qDebug()<<"sql ="<<sql;
                     if(query->exec(sql))

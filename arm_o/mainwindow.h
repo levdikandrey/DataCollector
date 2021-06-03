@@ -36,6 +36,7 @@
 #include "dmanualconnecttestdb.h"
 #include "dreportallviolationavp.h"
 #include "dcloseviolation.h"
+#include "dlistavs.h"
 
 #include "client.h"
 #include "aprotocol.h"
@@ -125,6 +126,7 @@ public:
     CImportData *cImportData;
 
 private slots:
+    void slotListAVS();
     /**
      * @brief slotImportData - функция импорта данных из Excel
      */
@@ -440,6 +442,7 @@ private:
     DManualConnectTestDB *dManualConnectTestDB;
     DReportAllViolationAVP *dReportAllViolationAVP;
     DCloseViolation *dCloseViolation;
+    DListAVS *dListAVS;
 
     Client *m_client;
 

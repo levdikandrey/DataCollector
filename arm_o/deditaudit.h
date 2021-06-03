@@ -85,6 +85,9 @@ public:
      bool checkExistsExpertise();
      void setTaskID(long ID);
      bool m_flagAnswer;
+     void setComment(QString comment);
+     QString getTaskStatus();
+     void setCommentExpert();
 
 public slots:
      /**
@@ -178,6 +181,7 @@ private:
     int m_idAVP;
     long m_idTask;
     QString m_status;
+    QString m_comment;
 
     /**
      * @brief getIdAnalysisResult

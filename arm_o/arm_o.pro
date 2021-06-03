@@ -23,6 +23,7 @@ PSQL_LIBDIR = C:\PostgreSQL\10\lib
 SOURCES += \
     aprotocol.cpp \
     client.cpp \
+    daddavs.cpp \
     dappointexpert.cpp \
     dchangepassword.cpp \
     dcloseviolation.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     dinfoavp.cpp \
     djournaljobavp.cpp \
     djournalsession.cpp \
+    dlistavs.cpp \
     dmanualconnecttestdb.cpp \
     dpreviewarchive.cpp \
     dreportallstatistics.cpp \
@@ -62,6 +64,7 @@ SOURCES += \
 HEADERS += \
     aprotocol.h \
     client.h \
+    daddavs.h \
     dappointexpert.h \
     dchangepassword.h \
     dcloseviolation.h \
@@ -69,6 +72,7 @@ HEADERS += \
     dinfoavp.h \
     djournaljobavp.h \
     djournalsession.h \
+    dlistavs.h \
     dmanualconnecttestdb.h \
     dpreviewarchive.h \
     dreportallstatistics.h \
@@ -99,6 +103,7 @@ HEADERS += \
 
 FORMS += \
     d_addavp.ui \
+    d_addavs.ui \
     d_addgroup.ui \
     d_addtask.ui \
     d_adduser.ui \
@@ -118,6 +123,7 @@ FORMS += \
     d_infoavp.ui \
     d_journaljobavp.ui \
     d_journalsession.ui \
+    d_listavs.ui \
     d_manualconnecttestdb.ui \
     d_previewarchive.ui \
     d_reportallstatistics.ui \

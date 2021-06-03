@@ -185,6 +185,7 @@ public slots:
 signals:
     void operate(const QString &);
     void operateMegogo(const QString &);
+    void operateOkkoTV(const QString &);
 
 protected:
     CDataCollectionService(QObject *parent = nullptr);
@@ -198,7 +199,7 @@ public:
     // Метод инициализации запроса на получение данных
      bool getData(const QString &url, const QString &fileName);
      void run();
-
+    void remakeOkko();
 };
 
 #endif // CDATACOLLECTIONSERVICE_H

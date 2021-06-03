@@ -1,79 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DAppointExpert</class>
- <widget class="QDialog" name="DAppointExpert">
+ <class>DAddAVS</class>
+ <widget class="QDialog" name="DAddAVS">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>219</height>
+    <width>446</width>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Назначить эксперта</string>
+   <string>Добавить АВС</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label_11">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
-      <string>Эксперты:</string>
+      <string>Наименование АВС:</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QGroupBox" name="groupBox_2">
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="lineEditName"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize">
+     <property name="minimumSize">
       <size>
-       <width>16777215</width>
-       <height>120</height>
+       <width>130</width>
+       <height>0</height>
       </size>
      </property>
-     <property name="title">
-      <string>Комментарий:</string>
+     <property name="text">
+      <string>URL АВС: </string>
      </property>
-     <property name="checkable">
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QLineEdit" name="lineEditURL_AVS">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="readOnly">
       <bool>false</bool>
      </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QTextEdit" name="textEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>100</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item row="2" column="2">
@@ -84,18 +73,18 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>3</height>
+       <height>1</height>
       </size>
      </property>
     </spacer>
    </item>
    <item row="3" column="0" colspan="3">
     <widget class="QFrame" name="frame">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>55</height>
+      </size>
      </property>
      <property name="frameShape">
       <enum>QFrame::WinPanel</enum>
@@ -105,16 +94,16 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <property name="topMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <property name="bottomMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <item>
        <spacer name="horizontalSpacer">
@@ -123,8 +112,8 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>161</width>
-          <height>18</height>
+          <width>613</width>
+          <height>20</height>
          </size>
         </property>
        </spacer>
@@ -153,7 +142,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButtonCancel">
+       <widget class="QPushButton" name="pushButtonExit">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -161,11 +150,11 @@
          </size>
         </property>
         <property name="text">
-         <string>Отмена</string>
+         <string>Выход</string>
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/icons/icons/cancel.png</normaloff>:/icons/icons/cancel.png</iconset>
+          <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -178,9 +167,6 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="comboBoxExperts"/>
-   </item>
   </layout>
  </widget>
  <resources>
@@ -190,38 +176,37 @@
   <connection>
    <sender>pushButtonApply</sender>
    <signal>clicked()</signal>
-   <receiver>DAppointExpert</receiver>
+   <receiver>DAddAVS</receiver>
    <slot>slotApply()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>149</x>
-     <y>68</y>
+     <x>237</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
-     <x>75</x>
-     <y>87</y>
+     <x>0</x>
+     <y>93</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>pushButtonCancel</sender>
+   <sender>pushButtonExit</sender>
    <signal>clicked()</signal>
-   <receiver>DAppointExpert</receiver>
-   <slot>slotCancel()</slot>
+   <receiver>DAddAVS</receiver>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>299</x>
-     <y>64</y>
+     <x>373</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>337</x>
-     <y>89</y>
+     <x>441</x>
+     <y>114</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>slotApply()</slot>
-  <slot>slotCancel()</slot>
  </slots>
 </ui>
