@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->toolButtonExcel->hide();
     ui->actionClearDB->setEnabled(false);
+    ui->groupBox_3->hide();
     initDialog();
 
     connect(ui->actionExit, SIGNAL(triggered()), SLOT(slotExit()));
@@ -788,7 +789,7 @@ void MainWindow::initDialog()
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(3, 80);//Год выпуска
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(4, 150);//ФИО
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(5,150);//ФИО, эксперта
-    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(6,110);//Дата закрытия задачи
+    ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(6,150);//Дата закрытия задачи
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(7,150);//Статус
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(8,200);//Нарушения
     ui->tableWidgetAuditArchive->horizontalHeader()->resizeSection(9,200);//Подтипы нарушений
@@ -1924,8 +1925,8 @@ void MainWindow::initTableMyTask()
               "avp.\"QuantityDay\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
-              "INNER JOIN \"AnalysisResult\" ar ON \"Task\".\"ID_AVP\" = ar.\"ID_AVP\" "
-              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\" = v.\"ID\" "
+//              "INNER JOIN \"AnalysisResult\" ar ON \"Task\".\"ID_AVP\" = ar.\"ID_AVP\" "
+//              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\" = v.\"ID\" "
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
@@ -2072,9 +2073,9 @@ void MainWindow::initTableMyTask()
                 QTableWidgetItem *newItem11 = new QTableWidgetItem();
                 if(query->value(9).toString() == "Yes")
                 {
-                    QIcon icon11;
-                    icon11.addFile(QString::fromUtf8(":/icons/icons/attach.png"), QSize(), QIcon::Normal, QIcon::Off);
-                    newItem11->setIcon(icon11);
+//                    QIcon icon11;
+//                    icon11.addFile(QString::fromUtf8(":/icons/icons/attach.png"), QSize(), QIcon::Normal, QIcon::Off);
+//                    newItem11->setIcon(icon11);
                     newItem11->setText("Есть");
                 }
                 else
@@ -2120,6 +2121,7 @@ void MainWindow::initTableMyTask()
 //=========================================================
 void MainWindow::initTableTask(bool)
 {
+    qDebug()<<__PRETTY_FUNCTION__;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString sql="",tmp;
 
@@ -2146,12 +2148,14 @@ void MainWindow::initTableTask(bool)
               "avp.\"QuantityDay\" "
               "FROM \"Task\" "
               "INNER JOIN avp ON \"Task\".\"ID_AVP\" = avp.\"ID\" "
-              "INNER JOIN \"AnalysisResult\" ar ON \"Task\".\"ID_AVP\" = ar.\"ID_AVP\" "
-              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\" = v.\"ID\" "
+//              "INNER JOIN \"AnalysisResult\" ar ON \"Task\".\"ID_AVP\" = ar.\"ID_AVP\" "
+//              "INNER JOIN \"Violation\" v ON ar.\"ID_Violation\" = v.\"ID\" "
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON \"Task\".\"ID_User\" = u.\"ID\" "
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\" "
-              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE (ts.\"StatusType\" = 3 OR \"CheckManagerExpert\" = \'true\')";
+              "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" "
+//              "WHERE (ts.\"StatusType\" = 3 OR \"CheckManagerExpert\" = \'true\')";
+             "WHERE (ts.\"StatusType\" = 3 OR ts.\"StatusType\" = 4)";
             if(ui->groupBoxUser->isChecked())
             {
                 sql +=" AND u.\"FIO\" = \'";sql += ui->comboBoxUser->currentText(); sql += "\'";
@@ -2933,9 +2937,9 @@ void MainWindow::initTableAVP(int numberPage, long idAVS, int state)
                 icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                 newItem->setIcon(icon);
                 QString nameAVP = query->value(0).toString();
-                if(!query->value(11).isNull() && query->value(11).toString()!="0")
+                if(!query->value(11).isNull() && query->value(11).toString()!="" && query->value(11).toString()!="0")
                     nameAVP +=". Cезон "+query->value(11).toString();
-                if(!query->value(12).isNull() && query->value(12).toString()!="0")
+                if(!query->value(12).isNull() && query->value(12).toString()!="" && query->value(12).toString()!="0")
                     nameAVP +=". Серия "+query->value(12).toString();
                 newItem->setText(nameAVP);
 //                newItem->setText(query->value(0).toString());
@@ -3601,7 +3605,10 @@ void MainWindow::slotEditCurrentAudit()
     dEditAudit->hideCurrentExpert();
     dEditAudit->checkExistsExpertise();
     dEditAudit->setCommentExpert();
+    dEditAudit->setComment(ui->tableWidgetAudit_4->item(selectedRows[0].row(),12)->text());
+
     QApplication::restoreOverrideCursor();
+
 
     if(dEditAudit->exec() == QDialog::Accepted)
     {
@@ -4049,7 +4056,11 @@ void MainWindow::slotFindArchiveAVP()
               "INNER JOIN \"TaskStatus\" ts ON \"Task\".\"ID_TaskStatus\" = ts.\"ID\""
               " WHERE (ts.\"StatusType\" =1 OR ts.\"StatusType\" =2)";
               if(!ui->lineEditFindString_2->text().isEmpty())
-                  sql +=" AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_2->text()+"%\'";
+              {
+                  QString text =  ui->lineEditFindString_2->text();
+                  sql += " AND replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е')";
+//                  sql +=" AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_2->text()+"%\'";
+              }
 
               if(ui->groupBoxUser_3->isChecked())
               {
@@ -4299,9 +4310,11 @@ void MainWindow::slotFindAVP2()
               "WHERE ts.\"StatusName\" !=\'";
         sql += "Закрыта\' AND ts.\"StatusName\" !=\'Закрыта с экспертизой\'";
         if(!ui->lineEditFindString_3->text().isEmpty())
-            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_3->text()+"%\'";
-//        else
-//            sql += " ORDER BY avp.\"ID\" LIMIT 1000 OFFSET 0;";
+        {
+            QString text =  ui->lineEditFindString_3->text();
+            sql += " AND replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е')";
+//            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_3->text()+"%\'";
+        }
 
             if(ui->groupBoxUser->isChecked())
             {
@@ -4484,7 +4497,11 @@ void MainWindow::slotFindAVP3()
         sql += "\' AND (ts.\"StatusName\" =\'Назначена\' OR ts.\"StatusName\" =\'В работе\' OR ts.\"StatusName\" =\'Проверена оператором\' OR ts.\"StatusName\" =\'Отложенная\')";
         // ORDER BY \"Task\".\"ID\";";
         if(!ui->lineEditFindString_4->text().isEmpty())
-            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_4->text()+"%\'";
+        {
+            QString text =  ui->lineEditFindString_4->text();
+            sql += " AND replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е')";
+//            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_4->text()+"%\'";
+        }
 
         if(ui->groupBoxUserMyTask->isChecked())
         {
@@ -4680,7 +4697,11 @@ void MainWindow::slotFindAVP4()
         sql += "Экспертиза\'";
 
         if(!ui->lineEditFindString_5->text().isEmpty())
-            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_5->text()+"%\'";
+        {
+            QString text =  ui->lineEditFindString_5->text();
+            sql += " AND replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е')";
+//            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_5->text()+"%\'";
+        }
 
         if(ui->groupBoxUser_2->isChecked())
         {
@@ -4854,7 +4875,11 @@ void MainWindow::slotFindAVP5()
         sql+="\' ";
 
         if(!ui->lineEditFindString_6->text().isEmpty())
-            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_6->text()+"%\'";
+        {
+            QString text =  ui->lineEditFindString_6->text();
+            sql += " AND replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е')";
+//            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_6->text()+"%\'";
+        }
 
         if(ui->groupBoxUserExpert->isChecked())
         {
@@ -5012,7 +5037,11 @@ void MainWindow::slotFindAVP6()
               "INNER JOIN \"Priority\" p ON \"Task\".\"ID_Priority\" = p.\"ID\" WHERE ts.\"StatusName\" =\'";
         sql += "Экспертиза\'";
         if(!ui->lineEditFindString_7->text().isEmpty())
-            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_7->text()+"%\'";
+        {
+            QString text =  ui->lineEditFindString_7->text();
+            sql += " AND replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е')";
+//            sql += " AND avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString_7->text()+"%\'";
+        }
         if(ui->groupBoxUser_4->isChecked())
         {
             sql +=" AND ue.\"FIO\" = \'";sql += ui->comboBoxUser_4->currentText(); sql += "\'";
@@ -5175,15 +5204,17 @@ void MainWindow::slotFindAVP()
               "avp.\"NameOriginal\","
               "avs.\"NameAVS\","
               "avp.\"ID\","
-              "aa.\"Age\" FROM avp "
+              "aa.\"Age\","
+              "avp.\"Season_num\","
+              "avp.\"Track_num\" "
+              "FROM avp "
               "INNER JOIN avs ON avp.\"ID_AVS\" = avs.\"ID\" "
               "INNER JOIN \"AVPattribute\" aa ON aa.\"ID_AVP\" = avp.\"ID\" "
               "INNER JOIN \"User\" u ON u.\"ID\" = aa.\"ID_User\"";
               if(!ui->lineEditFindString->text().isEmpty())
               {
                   text =  ui->lineEditFindString->text();
-
-                  sql += " WHERE avp.\"NameRus\" ILIKE \'%"+ui->lineEditFindString->text()+"%\';";
+                  sql += " WHERE replace(upper(avp.\"NameRus\"),'Ё','Е') ILIKE replace(upper(\'%"+text+"%\'),'Ё','Е');";
               }
               else
                   sql += " ORDER BY avp.\"ID\" LIMIT 1000 OFFSET 0;";
@@ -5209,7 +5240,15 @@ void MainWindow::slotFindAVP()
                     QIcon icon;
                     icon.addFile(QString::fromUtf8(":/icons/icons/film_projector_cinema.png"), QSize(), QIcon::Normal, QIcon::Off);
                     newItem->setIcon(icon);
-                    newItem->setText(query->value(0).toString());
+
+                    QString nameAVP = query->value(0).toString();
+                    if(!query->value(11).isNull() && query->value(11).toString()!="" && query->value(11).toString()!="0")
+                        nameAVP +=". Cезон "+query->value(11).toString();
+                    if(!query->value(12).isNull() && query->value(12).toString()!="" && query->value(12).toString()!="0")
+                        nameAVP +=". Серия "+query->value(12).toString();
+                    newItem->setText(nameAVP);
+
+//                    newItem->setText(query->value(0).toString());
                     newItem->setFlags(newItem->flags() ^ Qt::ItemIsEditable);
                     ui->tableWidgetAVP->setItem(row,0, newItem);
 

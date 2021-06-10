@@ -20,6 +20,7 @@ DEditAudit::DEditAudit(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->groupBox_3->hide();
+    ui->pushButtonCancel->hide();
 
     query = new QSqlQuery(db);
     query_data = new QSqlQuery(db);

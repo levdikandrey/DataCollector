@@ -15,10 +15,12 @@
 
 extern std::deque<SCommand> listAVP;
 extern QSqlDatabase db;
+extern QSqlDatabase db1;
 //=========================================================
 ThreadReadQueue::ThreadReadQueue()
 {
     query = new QSqlQuery(db);
+    query1 = new QSqlQuery(db1);
     m_requestSender = new RequestSender();
 }
 
@@ -81,6 +83,8 @@ void ThreadReadQueue::addAnalysisResult(uint64_t idAVP, uint64_t idViolation, QS
 //        qDebug()<<"sql = "<<sql;
         if(!query->exec(sql))
             qDebug()<<query->lastError().text();
+        if(!query1->exec(sql))
+            qDebug()<<query1->lastError().text();
 
     }
     catch(std::exception &e)

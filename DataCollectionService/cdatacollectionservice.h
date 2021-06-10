@@ -148,6 +148,7 @@ private:
     void makeRefIMBD_ForAVP();
     void remakeColumnYearOfRelease();
     void makeNewFileForKinopoisk(QString fileName);
+    void updateTableDownloadata(long id_avs);
 //    void makeListURL_AppleTV(QString fileName);
     //=============== end list test utils
 
@@ -199,7 +200,7 @@ public:
     // Метод инициализации запроса на получение данных
      bool getData(const QString &url, const QString &fileName);
      void run();
-    void remakeOkko();
+    void remakeOkko();//правит ссылки
 };
 
 #endif // CDATACOLLECTIONSERVICE_H

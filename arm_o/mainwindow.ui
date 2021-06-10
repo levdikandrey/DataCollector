@@ -475,6 +475,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QLabel" name="label_22">
+               <property name="text">
+                <string>Название АВП:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLineEdit" name="lineEditFindString">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -3601,7 +3608,7 @@
              </column>
              <column>
               <property name="text">
-               <string>Дата исследования</string>
+               <string>Дата добавления в архив</string>
               </property>
              </column>
              <column>
@@ -4386,7 +4393,7 @@
    <slot>slotNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>995</x>
+     <x>1258</x>
      <y>680</y>
     </hint>
     <hint type="destinationlabel">
@@ -4402,7 +4409,7 @@
    <slot>slotPrevious()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>661</x>
+     <x>924</x>
      <y>680</y>
     </hint>
     <hint type="destinationlabel">
@@ -4418,7 +4425,7 @@
    <slot>slotChangeNumberPage()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>840</x>
+     <x>1035</x>
      <y>673</y>
     </hint>
     <hint type="destinationlabel">
@@ -4434,8 +4441,8 @@
    <slot>slotSelectAVS(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1541</x>
-     <y>673</y>
+     <x>1033</x>
+     <y>166</y>
     </hint>
     <hint type="destinationlabel">
      <x>963</x>

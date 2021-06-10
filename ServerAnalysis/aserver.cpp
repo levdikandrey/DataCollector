@@ -12,6 +12,7 @@
 #endif
 
 extern QSqlDatabase db;
+extern QSqlDatabase db1;
 //=========================================================
 AServer::AServer(size_t threads, QObject * parent) :
         QTcpServer(parent),
@@ -19,6 +20,7 @@ AServer::AServer(size_t threads, QObject * parent) :
         m_rrcounter(0)
 {
     initDB();
+    initDB1();
     initThreads();
 }
 
@@ -54,6 +56,36 @@ bool AServer::initDB()
         else
         {
             qDebug()<<"Error: Connect to DB AVP!";
+            res = false;
+        }
+    }
+    catch(std::exception &e)
+    {
+        qDebug()<<e.what();
+    }
+    return res;
+}
+
+//=========================================================
+bool AServer::initDB1()
+{
+//    qDebug()<<__PRETTY_FUNCTION__;
+    bool res = true;
+    try
+    {
+        db1 = QSqlDatabase::addDatabase("QPSQL");
+        db1.setHostName("127.0.0.1");
+        db1.setDatabaseName("test_avpDB");
+        db1.setUserName("postgres");
+        db1.setPassword("postgres");
+        bool ok = db1.open();
+        if(ok)
+        {
+            qDebug()<<"Connect to test DB AVP";
+        }
+        else
+        {
+            qDebug()<<"Error: Connect to test DB AVP!";
             res = false;
         }
     }

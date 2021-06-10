@@ -75,6 +75,7 @@ private:
     uint64_t m_idAVP;
     uint64_t m_idAVS;
     QSqlQuery *query;
+    QSqlQuery *query1;
     AClient *client;
     SCommand m_sCommand;
     RequestSender *m_requestSender;

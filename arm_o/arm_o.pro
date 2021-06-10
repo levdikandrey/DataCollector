@@ -21,6 +21,7 @@ PSQL_INCDIR = C:\PostgreSQL\10\include
 PSQL_LIBDIR = C:\PostgreSQL\10\lib
 
 SOURCES += \
+    MultiSelectComboBox.cpp \
     aprotocol.cpp \
     client.cpp \
     daddavs.cpp \
@@ -62,6 +63,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    MultiSelectComboBox.h \
     aprotocol.h \
     client.h \
     daddavs.h \

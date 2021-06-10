@@ -21,6 +21,7 @@ constexpr size_t DEFAULT_PORT = 50100;
 
 std::deque<SCommand> listAVP;
 QSqlDatabase db;
+QSqlDatabase db1;
 
 int main(int argc, char** argv)
 {

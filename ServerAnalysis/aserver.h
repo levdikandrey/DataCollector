@@ -27,6 +27,7 @@ protected:
 private:
     void initThreads();
     bool initDB();
+    bool initDB1();
 
 signals:
     void operateReadQueue(const QString &);
